@@ -1,0 +1,8 @@
+export { Piece, IPiece } from './Piece'
+export { default as B } from './B'
+export { default as J } from './J'
+export { default as M } from './M'
+export { default as P } from './P'
+export { default as S } from './S'
+export { default as X } from './X'
+export { default as Z } from './Z'

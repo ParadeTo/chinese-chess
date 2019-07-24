@@ -1,18 +1,36 @@
 <template>
   <div class="home">
-    <img alt="Vue logo" src="../assets/logo.png">
-    <HelloWorld msg="Welcome to Your Vue.js + TypeScript App"/>
+    <Board :board="game && game.board" />
   </div>
 </template>
 
 <script lang="ts">
+import { mapState, mapMutations } from 'vuex'
+import { Action, State, Getter, Mutation, namespace } from 'vuex-class'
 import { Component, Vue } from 'vue-property-decorator'
-import HelloWorld from '@/components/HelloWorld.vue' // @ is an alias to /src
+
+import Board from '@/components/Board.vue'
+import { Game } from '../chess/Game'
+import { IGameState } from '../store/types';
+
+const GameGetter = namespace('game', Getter)
+const GameMutation = namespace('game', Mutation)
 
 @Component({
   components: {
-    HelloWorld
+    Board
+  },
+  computed: mapState('game', [ 'game' ]),
+  methods: {
+    ...mapMutations('game', { initGame: 'initGame' })
   }
 })
-export default class Home extends Vue {}
+export default class Home extends Vue {
+  private game!: Game
+  @GameMutation initGame!: () => IGameState
+  mounted() {
+    this.initGame()
+  }
+
+}
 </script>
