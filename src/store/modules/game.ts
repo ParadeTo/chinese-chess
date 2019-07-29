@@ -1,6 +1,6 @@
 import { GetterTree, MutationTree, Module } from 'vuex'
 
-import { Game } from '@/chess/Game'
+import Game from '@/chess/Game'
 
 import { IGameState, IRootState } from '../types'
 

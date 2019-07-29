@@ -1,91 +1,73 @@
 /**
  * chess piece
- * 黑方
- *      bj0: 车
-        bm0: 马
-        bx0: 象
-        bs0: 士
-        bb0: 将
-        bs1
-        bx1
-        bm1
-        bj1
-        bp0: 炮
-        bp1: 炮
-        bz0: 卒
-        bz1
-        bz2
-        bz3
-        bz4
-  红方
-        rj0: 车
-        rm0: 马
-        rx0: 相
-        rs0: 士
-        rb0: 帅
-        rs1
-        rx1
-        rm1
-        rj1
-        rp0: 炮
-        rp1
-        rz0: 兵
-        rz1
-        rz2
-        rz3
-        rz4
 */
 import Board from '../Board'
 
-export class Piece {
+export abstract class Piece {
   key: string
   color: string
-  character: string
-  index: number
+  role: string
   pos: number[]
-  constructor (name: PieceName, position: number[]) {
-    this.key = name
-    this.color = name.substr(0, 1)
-    this.character = name.substr(1, 2)
-    this.index = Number(name.substr(2, 3))
+  selected: boolean
+  side: Side
+
+  constructor (role: Role, color: Color, position: number[], side?: Side) {
+    this.key = color + role
+    this.color = color
+    this.role = role
     this.pos = position
+    this.selected = false
+    if (!side) this.side = color === 'r' ? 'b' : 't'
+    else this.side = side
   }
+
+  canPlaceAtDest(dest: number[], board: Board) {
+    const destPiece = board.getPieceByPos(dest)
+    return !(destPiece && destPiece.color === this.color)
+  }
+
+  // abstract getMoves(pos: number[], board: Board): number[][]
+  abstract canMove(pos: number[], board: Board): boolean
 }
 
-export interface IPiece {
-  getMoves(pos: number[], board: Board): number[][]
-}
+// bottom top
+export type Side = 'b' | 't'
 
-export type PieceName =
-  | 'bj0'
-  | 'bm0'
-  | 'bx0'
-  | 'bs0'
-  | 'bb0'
-  | 'bs1'
-  | 'bx1'
-  | 'bm1'
-  | 'bj1'
-  | 'bp0'
-  | 'bp1'
-  | 'bz0'
-  | 'bz1'
-  | 'bz2'
-  | 'bz3'
-  | 'bz4'
-  | 'rj0'
-  | 'rm0'
-  | 'rx0'
-  | 'rs0'
-  | 'rb0'
-  | 'rs1'
-  | 'rx1'
-  | 'rm1'
-  | 'rj1'
-  | 'rp0'
-  | 'rp1'
-  | 'rz0'
-  | 'rz1'
-  | 'rz2'
-  | 'rz3'
-  | 'rz4'
+export type Color = 'r' | 'b'
+
+// 车 马 相 士 将(boss) 炮 卒
+export type Role = 'j' | 'm' | 'x' | 's' | 'b' | 'p' | 'z'
+
+// export type PieceName =
+//   | 'bj0'
+//   | 'bm0'
+//   | 'bx0'
+//   | 'bs0'
+//   | 'bb0'
+//   | 'bs1'
+//   | 'bx1'
+//   | 'bm1'
+//   | 'bj1'
+//   | 'bp0'
+//   | 'bp1'
+//   | 'bz0'
+//   | 'bz1'
+//   | 'bz2'
+//   | 'bz3'
+//   | 'bz4'
+//   | 'rj0'
+//   | 'rm0'
+//   | 'rx0'
+//   | 'rs0'
+//   | 'rb0'
+//   | 'rs1'
+//   | 'rx1'
+//   | 'rm1'
+//   | 'rj1'
+//   | 'rp0'
+//   | 'rp1'
+//   | 'rz0'
+//   | 'rz1'
+//   | 'rz2'
+//   | 'rz3'
+//   | 'rz4'

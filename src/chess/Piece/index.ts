@@ -1,4 +1,4 @@
-export { Piece, IPiece } from './Piece'
+export { Piece } from './Piece'
 export { default as B } from './B'
 export { default as J } from './J'
 export { default as M } from './M'

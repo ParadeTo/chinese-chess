@@ -1,4 +1,4 @@
-import { Game } from '@/chess/Game'
+import Game from '@/chess/Game'
 
 describe('Game.ts', () => {
   it('init game', () => {

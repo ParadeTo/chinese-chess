@@ -1,4 +1,4 @@
-import { Game } from '@/chess/Game'
+import Game from '@/chess/Game'
 
 export interface IGameState {
   game: Game | null

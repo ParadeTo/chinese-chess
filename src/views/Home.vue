@@ -10,8 +10,8 @@ import { Action, State, Getter, Mutation, namespace } from 'vuex-class'
 import { Component, Vue } from 'vue-property-decorator'
 
 import Board from '@/components/Board.vue'
-import { Game } from '../chess/Game'
-import { IGameState } from '../store/types';
+import Game from '@/chess/Game'
+import { IGameState } from '../store/types'
 
 const GameGetter = namespace('game', Getter)
 const GameMutation = namespace('game', Mutation)
@@ -28,9 +28,8 @@ const GameMutation = namespace('game', Mutation)
 export default class Home extends Vue {
   private game!: Game
   @GameMutation initGame!: () => IGameState
-  mounted() {
+  mounted () {
     this.initGame()
   }
-
 }
 </script>
