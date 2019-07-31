@@ -8,10 +8,9 @@ export default class B extends Piece {
   constructor(color: Color, pos: number[], side?: Side) {
     super('b', color, pos, side)
   }
-
-  // getMoves(pos: number[], board: Board) {
-  //   return [[1]]
-  // }
+  getNextPositions(board: Board): number[][] {
+    return [[1]]
+  }
 
   canMove(dest: number[], board: Board): boolean {
     const {

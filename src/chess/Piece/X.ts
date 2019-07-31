@@ -5,11 +5,6 @@ import Board from '../Board'
  * 相 象
  */
 export default class X extends Piece {
-  possiblePos = {
-    t: [[0, 2], [2, 0], [2, 4], [4, 2], [6, 0], [6, 4], [8, 2]],
-    b: [[0, 7], [2, 9], [2, 5], [4, 7], [6, 9], [6, 5], [8, 7]]
-  }
-
   constructor(color: Color, pos: number[]) {
     super('x', color, pos)
   }
@@ -19,10 +14,14 @@ export default class X extends Piece {
       pos: [origX, origY]
     } = this
     const [destX, destY] = dest
+    const { cells } = board
 
     if (
-      this.possiblePos[this.side].some(pos => pos[0] === destX && pos[1] === destY) &&
-      (Math.abs(origX - destX) === 2 && Math.abs(origY - destY) === 2)
+      Board.inOwnSide([destX, destY], this.side) &&
+      ((destY - origY === 2 && destX - origX === 2 && !cells[origX + 1][origY + 1]) ||
+        (destY - origY === 2 && destX - origX === -2 && !cells[origX - 1][origY + 1]) ||
+        (destY - origY === -2 && destX - origX === 2 && !cells[origX + 1][origY - 1]) ||
+        (destY - origY === -2 && destX - origX === -2 && !cells[origX - 1][origY - 1]))
     ) {
       return this.canPlaceAtDest(dest, board)
     }
@@ -30,7 +29,12 @@ export default class X extends Piece {
     return false
   }
 
-  // getMoves (pos: number[], board: Board) {
-  //   return [[1]]
-  // }
+  getNextPositions(board: Board): number[][] {
+    const {
+      pos: [currentX, currentY]
+    } = this
+    return [[-2, -2], [2, 2], [-2, 2], [2, -2]]
+      .map(([dx, dy]) => [currentX + dx, currentY + dy])
+      .filter(pos => this.canMove(pos, board) && Board.inOwnSide(pos, this.side))
+  }
 }

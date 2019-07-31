@@ -53,7 +53,8 @@ export default class P extends Piece {
 
     return false
   }
-  // getMoves (pos: number[], board: Board) {
-  //   return [[1]]
-  // }
+
+  getNextPositions(board: Board): number[][] {
+    return [[1]]
+  }
 }

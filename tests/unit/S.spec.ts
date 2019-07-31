@@ -44,4 +44,28 @@ describe('S', () => {
       expect(board.canMove(pieces[0], pos)).toBe(expected)
     })
   })
+
+  it('getNextPositions', () => {
+    ;[
+      {
+        pieces: [new S('r', [5, 9])],
+        nextPositions: [[4, 8]]
+      },
+      {
+        pieces: [new S('r', [4, 8])],
+        nextPositions: [[3, 7], [5, 9], [3, 9], [5, 7]]
+      },
+      {
+        pieces: [new S('b', [4, 1])],
+        nextPositions: [[3, 0], [5, 2], [3, 2], [5, 0]]
+      },
+      {
+        pieces: [new S('b', [3, 0])],
+        nextPositions: [[4, 1]]
+      }
+    ].forEach(({ pieces, nextPositions }) => {
+      const board = new Board(pieces)
+      expect(board.getNextPositions(pieces[0])).toEqual(nextPositions)
+    })
+  })
 })

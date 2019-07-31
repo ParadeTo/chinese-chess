@@ -30,7 +30,30 @@ export default class Z extends Piece {
     return false
   }
 
-  // getMoves(pos: number[], board: Board): number[][] {
-  //   throw new Error("Method not implemented.");
-  // }
+  getNextPositions(board: Board): number[][] {
+    const {
+      pos: [currentX, currentY]
+    } = this
+    const moves = []
+    if (this.side === 'b') {
+      if (currentY > 4) {
+        moves.push([0, -1])
+      } else {
+        if (currentY - 1 >= 0) moves.push([0, -1])
+        if (currentX - 1 >= 0) moves.push([-1, 0])
+        if (currentX + 1 < Board.WIDTH) moves.push([1, 0])
+      }
+    } else {
+      if (currentY < 5) {
+        moves.push([0, 1])
+      } else {
+        if (currentY + 1 < Board.HEIGHT) moves.push([0, 1])
+        if (currentX - 1 >= 0) moves.push([-1, 0])
+        if (currentX + 1 < Board.WIDTH) moves.push([1, 0])
+      }
+    }
+    return moves
+      .map(([dx, dy]) => [currentX + dx, currentY + dy])
+      .filter(pos => this.canMove(pos, board))
+  }
 }

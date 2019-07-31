@@ -26,7 +26,7 @@ export abstract class Piece {
     return !(destPiece && destPiece.color === this.color)
   }
 
-  // abstract getMoves(pos: number[], board: Board): number[][]
+  abstract getNextPositions(board: Board): number[][]
   abstract canMove(pos: number[], board: Board): boolean
 }
 

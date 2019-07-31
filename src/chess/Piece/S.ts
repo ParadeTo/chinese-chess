@@ -30,7 +30,12 @@ export default class S extends Piece {
     return false
   }
 
-  // getMoves(pos: number[], board: Board) {
-  //   return [[1]]
-  // }
+  getNextPositions(board: Board): number[][] {
+    const {
+      pos: [currentX, currentY]
+    } = this
+    return [[-1, -1], [1, 1], [-1, 1], [1, -1]]
+      .map(([dx, dy]) => [currentX + dx, currentY + dy])
+      .filter(pos => this.canMove(pos, board) && Board.inNinePlace(pos, this.side))
+  }
 }

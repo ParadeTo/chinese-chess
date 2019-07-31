@@ -42,7 +42,8 @@ export default class J extends Piece {
 
     return this.canPlaceAtDest(dest, board)
   }
-  // getMoves (pos: number[], board: Board) {
-  //   return [[1]]
-  // }
+
+  getNextPositions (board: Board) {
+    return [[1]]
+  }
 }

@@ -24,6 +24,16 @@ export default class Board {
     return (x >= 3 && x <= 5) && (side === 't' ? y >= 0 && y <= 2 : y >= 7 && y <= 9)
   }
 
+  static inBoard(pos: number[]) {
+    const [x, y] = pos
+    return (x >= 0 && x <= 8 && y >= 0 && y <= 9)
+  }
+
+  static inOwnSide(pos: number[], side: Side) {
+    const [x, y] = pos
+    return (y >= 0 && y < 5 && side === 't') || (y > 4 && y < Board.HEIGHT && side === 'b')
+  }
+
   getPieceByPos(pos: number[]) {
     const [x, y] = pos
     const cells = Object.values(this.cells)
@@ -33,6 +43,10 @@ export default class Board {
 
   canMove(piece: Piece, pos: number[]) {
     return piece.canMove(pos, this)
+  }
+
+  getNextPositions(piece: Piece): number[][] {
+    return piece.getNextPositions(this)
   }
 
   updatePiece(piece: Piece, newPos: number[]) {
