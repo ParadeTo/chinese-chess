@@ -5,7 +5,7 @@ export default class Board {
   static HEIGHT = 10
   cells: (Piece|null)[][] = []
   currentPlayer = 'r'
-  pieces: { [key: string]: Piece } = {}
+  pieces: Piece[] = []
   constructor (pieces: Piece[]) {
     for (let i = 0; i < Board.HEIGHT; i++) {
       this.cells[i] = []
@@ -15,7 +15,7 @@ export default class Board {
     }
     pieces.forEach(piece => {
       this.cells[piece.pos[0]][piece.pos[1]] = piece
-      this.pieces[piece.key] = piece
+      this.pieces.push(piece)
     })
   }
 
@@ -35,15 +35,18 @@ export default class Board {
     return piece.canMove(pos, this)
   }
 
-  updatePiece(key: string, newPos: number[]) {
+  updatePiece(piece: Piece, newPos: number[]) {
+    if (!piece.canMove(newPos, this)) return false
     const [newX, newY] = newPos
-    const orig = this.pieces[key]
     const newPosPiece = this.cells[newX][newY]
-    if (newPosPiece) delete this.pieces[key]
-    const [origX, origY] = orig.pos
+    if (newPosPiece) {
+      const index = this.pieces.findIndex(piece => piece === newPosPiece)
+      this.pieces.splice(index, 1)
+    }
+    const [origX, origY] = piece.pos
     this.cells[origX][origY] = null
-    this.cells[newX][newY] = orig
-    orig.pos = newPos
+    this.cells[newX][newY] = piece
+    piece.pos = newPos
     this.currentPlayer = (this.currentPlayer === 'r') ? 'b' : 'r'
     return newPosPiece
   }

@@ -6,7 +6,7 @@
     </pre>
     <template :if="pieces.length">
       <img
-        :key="piece.key"
+        :key="`${piece.key}${piece.pos[0]}${piece.pos[1]}`"
         :src="getImg(piece)"
         :style="`${getPiecePos(piece)}`"
         :class="piece.selected && 'selected'"
@@ -47,7 +47,8 @@ export default class BoardComp extends Vue {
   }
 
   getImg(piece: Piece) {
-    return require(`./img/${piece.role}.png`)
+    console.log(piece)
+    return require(`./img/${piece.color}${piece.role}.png`)
   }
 
   getPiecePos(piece: Piece) {
@@ -100,12 +101,12 @@ export default class BoardComp extends Vue {
     }
 
     const selectedPiece = this.pieces.find(piece => piece.selected)
-    if (selectedPiece) selectedPiece.pos = [x, y]
+    if (selectedPiece) this.board.updatePiece(selectedPiece, [x, y])
   }
 
   @Watch('board')
   onBoardChange() {
-    this.pieces = Object.values((this.board && this.board.pieces))
+    this.pieces = (this.board && this.board.pieces)
   }
 }
 </script>

@@ -30,7 +30,7 @@ export default class Z extends Piece {
     return false
   }
 
-  // getMoves(pos: number[], board: Board) {
-  //   return [[1]]
+  // getMoves(pos: number[], board: Board): number[][] {
+  //   throw new Error("Method not implemented.");
   // }
 }
