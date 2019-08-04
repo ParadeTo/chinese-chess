@@ -29,6 +29,11 @@ export default class M extends Piece {
   }
 
   getNextPositions(board: Board): number[][] {
-    return [[1]]
+    const {
+      pos: [currentX, currentY]
+    } = this
+    return [[-2, -1], [2, -1], [-2, 1], [2, 1], [-1, -2], [-1, 2], [1, -2], [1, 2]]
+      .map(([dx, dy]) => [currentX + dx, currentY + dy])
+      .filter(pos => board.canMove(this, pos))
   }
 }

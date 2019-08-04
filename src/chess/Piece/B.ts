@@ -8,8 +8,14 @@ export default class B extends Piece {
   constructor(color: Color, pos: number[], side?: Side) {
     super('b', color, pos, side)
   }
+
   getNextPositions(board: Board): number[][] {
-    return [[1]]
+    const {
+      pos: [currentX, currentY]
+    } = this
+    return [[-1, 0], [1, 0], [0, 1], [0, -1]]
+      .map(([dx, dy]) => [currentX + dx, currentY + dy])
+      .filter(pos => this.canMove(pos, board))
   }
 
   canMove(dest: number[], board: Board): boolean {

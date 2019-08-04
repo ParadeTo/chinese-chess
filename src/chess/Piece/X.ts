@@ -35,6 +35,6 @@ export default class X extends Piece {
     } = this
     return [[-2, -2], [2, 2], [-2, 2], [2, -2]]
       .map(([dx, dy]) => [currentX + dx, currentY + dy])
-      .filter(pos => this.canMove(pos, board) && Board.inOwnSide(pos, this.side))
+      .filter(pos => board.canMove(this, pos))
   }
 }

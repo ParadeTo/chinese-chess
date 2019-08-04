@@ -55,6 +55,84 @@ export default class P extends Piece {
   }
 
   getNextPositions(board: Board): number[][] {
-    return [[1]]
+    const {
+      pos: [currentX, currentY]
+    } = this
+    const { cells } = board
+    const moves = []
+    let i = currentX - 1
+    while (i >= 0) {
+      const piece1 = cells[i][currentY]
+      if (piece1) {
+        let j = i - 1
+        while (j >= 0) {
+          const piece2 = cells[j][currentY]
+          if (piece2) {
+            if (piece2.color !== this.color) moves.push([j, currentY])
+            break
+          }
+          j--
+        }
+        break
+      }
+      moves.push([i, currentY])
+      i--
+    }
+    i = currentX + 1
+    while (i < Board.WIDTH) {
+      const pos = [i, currentY]
+      const piece1 = cells[i][currentY]
+      if (piece1) {
+        let j = i + 1
+        while (j < Board.WIDTH) {
+          const piece2 = cells[j][currentY]
+          if (piece2) {
+            if (piece2.color !== this.color) moves.push([j, currentY])
+            break
+          }
+          j++
+        }
+        break
+      }
+      moves.push(pos)
+      i++
+    }
+    i = currentY - 1
+    while (i >= 0) {
+      const piece1 = cells[currentX][i]
+      if (piece1) {
+        let j = i - 1
+        while (j >= 0) {
+          const piece2 = cells[currentX][j]
+          if (piece2) {
+            if (piece2.color !== this.color) moves.push([currentX, j])
+            break
+          }
+          j--
+        }
+        break
+      }
+      moves.push([currentX, i])
+      i--
+    }
+    i = currentY + 1
+    while (i < Board.HEIGHT) {
+      const piece1 = cells[currentX][i]
+      if (piece1) {
+        let j = i + 1
+        while (j < Board.HEIGHT) {
+          const piece2 = cells[currentX][j]
+          if (piece2) {
+            if (piece2.color !== this.color) moves.push([currentX, j])
+            break
+          }
+          j++
+        }
+        break
+      }
+      moves.push([currentX, i])
+      i++
+    }
+    return moves
   }
 }

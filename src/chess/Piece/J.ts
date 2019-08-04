@@ -43,7 +43,56 @@ export default class J extends Piece {
     return this.canPlaceAtDest(dest, board)
   }
 
-  getNextPositions (board: Board) {
-    return [[1]]
+  getNextPositions (board: Board): number[][] {
+    const {
+      pos: [currentX, currentY]
+    } = this
+    const { cells } = board
+    const moves = []
+    let i = currentX - 1
+    while (i >= 0) {
+      const pos = [i, currentY]
+      const piece = cells[i][currentY]
+      if (piece) {
+        if (piece.color !== this.color) moves.push(pos)
+        break
+      }
+      moves.push(pos)
+      i--
+    }
+    i = currentX + 1
+    while (i < Board.WIDTH) {
+      const pos = [i, currentY]
+      const piece = cells[i][currentY]
+      if (piece) {
+        if (piece.color !== this.color) moves.push(pos)
+        break
+      }
+      moves.push(pos)
+      i++
+    }
+    i = currentY - 1
+    while (i >= 0) {
+      const pos = [currentX, i]
+      const piece = cells[currentX][i]
+      if (piece) {
+        if (piece.color !== this.color) moves.push(pos)
+        break
+      }
+      moves.push(pos)
+      i--
+    }
+    i = currentY + 1
+    while (i < Board.HEIGHT) {
+      const pos = [currentX, i]
+      const piece = cells[currentX][i]
+      if (piece) {
+        if (piece.color !== this.color) moves.push(pos)
+        break
+      }
+      moves.push(pos)
+      i++
+    }
+    return moves
   }
 }
