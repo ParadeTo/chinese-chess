@@ -1,5 +1,5 @@
 import Board from '@/chess/Board'
-import { Piece, J, Z } from '@/chess/Piece'
+import { Piece, J, Z, Color } from '@/chess/Piece'
 
 describe('Board', () => {
   it('updatePiece', () => {
@@ -29,7 +29,7 @@ describe('Board', () => {
     ].forEach(({ pieces, pos, newPos, eaten, canMove, currentPlayer }) => {
       const board = new Board(pieces)
       const pieceNum = board.getPieceNum()
-      if (currentPlayer) board.currentPlayer = currentPlayer
+      if (currentPlayer) board.currentPlayer = currentPlayer as Color
       const piece = board.cells[pos[0]][pos[1]] as Piece
       board.updatePiece(piece, newPos)
       if (canMove) {

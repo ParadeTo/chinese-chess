@@ -47,7 +47,6 @@ export default class BoardComp extends Vue {
   }
 
   getImg(piece: Piece) {
-    console.log(piece)
     return require(`./img/${piece.color}${piece.role}.png`)
   }
 
@@ -106,7 +105,7 @@ export default class BoardComp extends Vue {
 
   @Watch('board')
   onBoardChange() {
-    this.pieces = (this.board && this.board.pieces)
+    this.pieces = (this.board && this.board.getAllPieces())
   }
 }
 </script>

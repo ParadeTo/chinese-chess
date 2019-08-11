@@ -1,11 +1,18 @@
-import { Piece, Side } from './Piece/Piece'
+import { Piece, Side, Color } from './Piece/Piece'
 
 export default class Board {
   static WIDTH = 9
   static HEIGHT = 10
-  cells: (Piece | null)[][] = []
-  currentPlayer = 'r'
-  pieces: Piece[] = []
+
+  public currentPlayer: Color = 'r'
+  public cells: (Piece | null)[][] = []
+  public pieces: {
+    [key in Color]: Piece[]
+  } = {
+    r: [],
+    b: []
+  }
+
   constructor(pieces: Piece[]) {
     for (let i = 0; i < Board.HEIGHT; i++) {
       this.cells[i] = []
@@ -15,7 +22,7 @@ export default class Board {
     }
     pieces.forEach(piece => {
       this.cells[piece.pos[0]][piece.pos[1]] = piece
-      this.pieces.push(piece)
+      this.pieces.r.push(piece)
     })
   }
 
@@ -32,6 +39,10 @@ export default class Board {
   static inOwnSide(pos: number[], side: Side) {
     const [x, y] = pos
     return (y >= 0 && y < 5 && side === 't') || (y > 4 && y < Board.HEIGHT && side === 'b')
+  }
+
+  getAllPieces() {
+    return [...this.pieces.r, ...this.pieces.b]
   }
 
   getPieceByPos(pos: number[]) {
@@ -64,8 +75,9 @@ export default class Board {
     const [newX, newY] = newPos
     const newPosPiece = this.cells[newX][newY]
     if (newPosPiece) {
-      const index = this.pieces.findIndex(piece => piece === newPosPiece)
-      this.pieces.splice(index, 1)
+      const pieces = this.pieces[newPosPiece.color]
+      const index = pieces.findIndex(piece => piece === newPosPiece)
+      pieces.splice(index, 1)
     }
     const [origX, origY] = piece.pos
     this.cells[origX][origY] = null

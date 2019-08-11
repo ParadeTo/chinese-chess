@@ -34,25 +34,25 @@ export default class Z extends Piece {
     const {
       pos: [currentX, currentY]
     } = this
-    const moves = []
+    const positions = []
     if (this.side === 'b') {
       if (currentY > 4) {
-        moves.push([0, -1])
+        positions.push([0, -1])
       } else {
-        if (currentY - 1 >= 0) moves.push([0, -1])
-        if (currentX - 1 >= 0) moves.push([-1, 0])
-        if (currentX + 1 < Board.WIDTH) moves.push([1, 0])
+        if (currentY - 1 >= 0) positions.push([0, -1])
+        if (currentX - 1 >= 0) positions.push([-1, 0])
+        if (currentX + 1 < Board.WIDTH) positions.push([1, 0])
       }
     } else {
       if (currentY < 5) {
-        moves.push([0, 1])
+        positions.push([0, 1])
       } else {
-        if (currentY + 1 < Board.HEIGHT) moves.push([0, 1])
-        if (currentX - 1 >= 0) moves.push([-1, 0])
-        if (currentX + 1 < Board.WIDTH) moves.push([1, 0])
+        if (currentY + 1 < Board.HEIGHT) positions.push([0, 1])
+        if (currentX - 1 >= 0) positions.push([-1, 0])
+        if (currentX + 1 < Board.WIDTH) positions.push([1, 0])
       }
     }
-    return moves
+    return positions
       .map(([dx, dy]) => [currentX + dx, currentY + dy])
       .filter(pos => this.canMove(pos, board))
   }

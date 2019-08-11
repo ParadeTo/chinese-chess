@@ -59,7 +59,7 @@ export default class P extends Piece {
       pos: [currentX, currentY]
     } = this
     const { cells } = board
-    const moves = []
+    const positions = []
     let i = currentX - 1
     while (i >= 0) {
       const piece1 = cells[i][currentY]
@@ -68,14 +68,14 @@ export default class P extends Piece {
         while (j >= 0) {
           const piece2 = cells[j][currentY]
           if (piece2) {
-            if (piece2.color !== this.color) moves.push([j, currentY])
+            if (piece2.color !== this.color) positions.push([j, currentY])
             break
           }
           j--
         }
         break
       }
-      moves.push([i, currentY])
+      positions.push([i, currentY])
       i--
     }
     i = currentX + 1
@@ -87,14 +87,14 @@ export default class P extends Piece {
         while (j < Board.WIDTH) {
           const piece2 = cells[j][currentY]
           if (piece2) {
-            if (piece2.color !== this.color) moves.push([j, currentY])
+            if (piece2.color !== this.color) positions.push([j, currentY])
             break
           }
           j++
         }
         break
       }
-      moves.push(pos)
+      positions.push(pos)
       i++
     }
     i = currentY - 1
@@ -105,14 +105,14 @@ export default class P extends Piece {
         while (j >= 0) {
           const piece2 = cells[currentX][j]
           if (piece2) {
-            if (piece2.color !== this.color) moves.push([currentX, j])
+            if (piece2.color !== this.color) positions.push([currentX, j])
             break
           }
           j--
         }
         break
       }
-      moves.push([currentX, i])
+      positions.push([currentX, i])
       i--
     }
     i = currentY + 1
@@ -123,16 +123,16 @@ export default class P extends Piece {
         while (j < Board.HEIGHT) {
           const piece2 = cells[currentX][j]
           if (piece2) {
-            if (piece2.color !== this.color) moves.push([currentX, j])
+            if (piece2.color !== this.color) positions.push([currentX, j])
             break
           }
           j++
         }
         break
       }
-      moves.push([currentX, i])
+      positions.push([currentX, i])
       i++
     }
-    return moves
+    return positions
   }
 }

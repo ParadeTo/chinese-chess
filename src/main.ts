@@ -4,6 +4,7 @@ import router from './router'
 import store from './store'
 
 import 'weui/dist/style/weui.min.css'
+import './index.less'
 
 Vue.config.productionTip = false
 Vue.config.devtools = true

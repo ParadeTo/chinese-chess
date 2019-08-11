@@ -1,9 +1,22 @@
 import Board from './Board'
-import { Piece, B, J, M, P, S, X, Z } from './Piece'
+import { Piece, B, J, M, P, S, X, Z, Color } from './Piece'
+import { IAI } from '@/ai/AI'
+
+export interface IPlayer {
+  color: Color
+  name: 'human' | 'robot'
+  IAI?: IAI
+}
 
 export default class Game {
   board: Board
-  constructor () {
+  bPlayer: IPlayer
+  tPlayer: IPlayer
+  private currentPlayer: IPlayer
+  constructor(
+    bPlayer: IPlayer = { color: 'r', name: 'human' },
+    tPlayer: IPlayer = { color: 'b', name: 'robot' }
+  ) {
     const pieces = [
       new J('b', [0, 0]),
       new M('b', [1, 0]),
@@ -32,7 +45,7 @@ export default class Game {
       new M('r', [7, 9]),
       new J('r', [8, 9]),
       new P('r', [1, 7]),
-      new Z('r', [7, 7]),
+      new P('r', [7, 7]),
       new Z('r', [0, 6]),
       new Z('r', [2, 6]),
       new Z('r', [4, 6]),
@@ -40,5 +53,17 @@ export default class Game {
       new Z('r', [8, 6])
     ]
     this.board = new Board(pieces)
+    this.bPlayer = bPlayer
+    this.tPlayer = tPlayer
+    this.currentPlayer = bPlayer.color === 'r' ? bPlayer : tPlayer
+  }
+
+  switchPlayer () {
+    if (this.currentPlayer === this.tPlayer) this.currentPlayer = this.bPlayer
+    else this.currentPlayer = this.tPlayer
+  }
+
+  getNextMove() {
+
   }
 }

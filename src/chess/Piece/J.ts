@@ -48,16 +48,16 @@ export default class J extends Piece {
       pos: [currentX, currentY]
     } = this
     const { cells } = board
-    const moves = []
+    const positions = []
     let i = currentX - 1
     while (i >= 0) {
       const pos = [i, currentY]
       const piece = cells[i][currentY]
       if (piece) {
-        if (piece.color !== this.color) moves.push(pos)
+        if (piece.color !== this.color) positions.push(pos)
         break
       }
-      moves.push(pos)
+      positions.push(pos)
       i--
     }
     i = currentX + 1
@@ -65,10 +65,10 @@ export default class J extends Piece {
       const pos = [i, currentY]
       const piece = cells[i][currentY]
       if (piece) {
-        if (piece.color !== this.color) moves.push(pos)
+        if (piece.color !== this.color) positions.push(pos)
         break
       }
-      moves.push(pos)
+      positions.push(pos)
       i++
     }
     i = currentY - 1
@@ -76,10 +76,10 @@ export default class J extends Piece {
       const pos = [currentX, i]
       const piece = cells[currentX][i]
       if (piece) {
-        if (piece.color !== this.color) moves.push(pos)
+        if (piece.color !== this.color) positions.push(pos)
         break
       }
-      moves.push(pos)
+      positions.push(pos)
       i--
     }
     i = currentY + 1
@@ -87,12 +87,12 @@ export default class J extends Piece {
       const pos = [currentX, i]
       const piece = cells[currentX][i]
       if (piece) {
-        if (piece.color !== this.color) moves.push(pos)
+        if (piece.color !== this.color) positions.push(pos)
         break
       }
-      moves.push(pos)
+      positions.push(pos)
       i++
     }
-    return moves
+    return positions
   }
 }
