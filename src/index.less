@@ -1,4 +1,5 @@
-@import './variables.scss';
+@import './var.less';
+@import './icon.less';
 
 * {
   -webkit-touch-callout: none;
@@ -48,7 +49,7 @@ select {
 
 .weui-tabbar__item.router-link-exact-active {
   i, p {
-    color: $primary-color;
+    color: @primary-color;
   }
 }
 

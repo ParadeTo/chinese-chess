@@ -6,38 +6,30 @@
     </div> -->
     <router-view/>
     <div class="weui-tabbar">
-      <router-link to="/" class="weui-tabbar__item">
+      <router-link to="/setting" class="weui-tabbar__item">
         <span style="display: inline-block;position: relative;">
           <div alt="" class="weui-tabbar__icon">
-            <i class="iconfont icon-shouye"></i>
-          </div>
-        </span>
-        <p class="weui-tabbar__label">Home</p>
-      </router-link>
-      <router-link to="/settings" class="weui-tabbar__item">
-        <span style="display: inline-block;position: relative;">
-          <div alt="" class="weui-tabbar__icon">
-            <i class="iconfont icon-shezhi"></i>
+            <i class="iconfont icon-setting"></i>
           </div>
         </span>
         <p class="weui-tabbar__label">Setting</p>
       </router-link>
-      <router-link to="/change" class="weui-tabbar__item">
+      <router-link to="/" class="weui-tabbar__item">
         <span style="display: inline-block;position: relative;">
           <div alt="" class="weui-tabbar__icon">
-            <i class="iconfont icon-shijian"></i>
+            <i class="iconfont icon-xiangqi"></i>
           </div>
-          <span class="weui-badge" style="position: absolute;top: -2px;right: -13px;">1</span>
         </span>
-        <p class="weui-tabbar__label">About</p>
+        <p class="weui-tabbar__label">Game</p>
       </router-link>
       <router-link to="/about" class="weui-tabbar__item">
         <span style="display: inline-block;position: relative;">
           <div alt="" class="weui-tabbar__icon">
-            <i class="iconfont icon-xinxi"></i>
+            <i class="iconfont icon-about"></i>
           </div>
+          <span class="weui-badge" style="position: absolute;top: -2px;right: -13px;">1</span>
         </span>
-        <p class="weui-tabbar__label">Other</p>
+        <p class="weui-tabbar__label">About</p>
       </router-link>
     </div>
   </div>
