@@ -1,14 +1,13 @@
 import AI, { IAI } from '../AI'
-import Board from '@/chess/Board'
-import { Color, Piece } from '@/chess/Piece'
+import { Piece } from '@/chess/Piece'
 
 export default class RandomAI extends AI implements IAI {
   static generateRandomNum(n: number): number {
     return Math.floor(Math.random() * n)
   }
 
-  getNextMove(color: Color): Promise<{ piece: Piece; dest: number[]; }> {
-    const pieces = this.board.pieces[color]
+  getNextMove(): Promise<{ piece: Piece; dest: number[]; }> {
+    const pieces = this.board.pieces[this.color]
     const len = pieces.length
     let moves: number[][] = []
     let piece

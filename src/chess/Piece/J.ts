@@ -5,8 +5,8 @@ import Board from '../Board'
  * 车
  */
 export default class J extends Piece {
-  constructor(color: Color, pos: number[], side?: Side) {
-    super('j', color, pos, side)
+  constructor(params: { color: Color, pos: number[], side?: Side, key?: string }) {
+    super({ role: 'j', ...params })
   }
 
   canMove(dest: number[], board: Board): boolean {

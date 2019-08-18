@@ -5,21 +5,21 @@ describe('Board', () => {
   it('updatePiece', () => {
     ;[
       {
-        pieces: [new J('r', [4, 5])],
+        pieces: [new J({ color: 'r', pos: [4, 5] })],
         pos: [4, 5],
         newPos: [4, 5],
         eaten: false,
         canMove: false
       },
       {
-        pieces: [new J('r', [4, 5])],
+        pieces: [new J({ color: 'r', pos: [4, 5] })],
         pos: [4, 5],
         newPos: [5, 5],
         eaten: false,
         canMove: true
       },
       {
-        pieces: [new J('r', [4, 5]), new Z('b', [4, 6])],
+        pieces: [new J({ color: 'r', pos: [4, 5] }), new Z({ color: 'b', pos: [4, 6] })],
         pos: [4, 5],
         newPos: [4, 6],
         eaten: true,

@@ -1,61 +1,19 @@
-import Board from './Board'
+import Board, { UpdatePieceResult } from './Board'
 import { Piece, B, J, M, P, S, X, Z, Color } from './Piece'
 import { IAI } from '@/ai/AI'
-
-export interface IPlayer {
-  color: Color
-  name: 'human' | 'robot'
-  IAI?: IAI
-}
+import Player from './Player'
+import RandomAI from '@/ai/random'
 
 export default class Game {
   board: Board
-  bPlayer: IPlayer
-  tPlayer: IPlayer
-  private currentPlayer: IPlayer
-  constructor(
-    bPlayer: IPlayer = { color: 'r', name: 'human' },
-    tPlayer: IPlayer = { color: 'b', name: 'robot' }
-  ) {
-    const pieces = [
-      new J('b', [0, 0]),
-      new M('b', [1, 0]),
-      new X('b', [2, 0]),
-      new S('b', [3, 0]),
-      new B('b', [4, 0]),
-      new S('b', [5, 0]),
-      new X('b', [6, 0]),
-      new M('b', [7, 0]),
-      new J('b', [8, 0]),
-      new P('b', [1, 2]),
-      new P('b', [7, 2]),
-      new Z('b', [0, 3]),
-      new Z('b', [2, 3]),
-      new Z('b', [4, 3]),
-      new Z('b', [6, 3]),
-      new Z('b', [8, 3]),
-
-      new J('r', [0, 9]),
-      new M('r', [1, 9]),
-      new X('r', [2, 9]),
-      new S('r', [3, 9]),
-      new B('r', [4, 9]),
-      new S('r', [5, 9]),
-      new X('r', [6, 9]),
-      new M('r', [7, 9]),
-      new J('r', [8, 9]),
-      new P('r', [1, 7]),
-      new P('r', [7, 7]),
-      new Z('r', [0, 6]),
-      new Z('r', [2, 6]),
-      new Z('r', [4, 6]),
-      new Z('r', [6, 6]),
-      new Z('r', [8, 6])
-    ]
-    this.board = new Board(pieces)
+  bPlayer: Player
+  tPlayer: Player
+  public currentPlayer: Player
+  constructor(board: Board, bPlayer: Player, tPlayer: Player) {
+    this.board = board
     this.bPlayer = bPlayer
     this.tPlayer = tPlayer
-    this.currentPlayer = bPlayer.color === 'r' ? bPlayer : tPlayer
+    this.currentPlayer = this.bPlayer.color === 'r' ? this.bPlayer : this.tPlayer
   }
 
   switchPlayer () {
@@ -63,7 +21,61 @@ export default class Game {
     else this.currentPlayer = this.tPlayer
   }
 
-  getNextMove() {
-
+  updatePiece(piece: Piece, newPos: number[]): UpdatePieceResult {
+    if (piece.color === this.currentPlayer.color) {
+      return this.board.updatePiece(piece, newPos)
+    }
+    return { result: false }
   }
+
+  async autoMove() {
+    let nextMove
+    if (this.currentPlayer.ai) {
+      nextMove = await this.currentPlayer.ai.getNextMove()
+      return this.updatePiece(nextMove.piece, nextMove.dest)
+    }
+    throw new Error('Only robot can execute autoMove!')
+  }
+}
+
+export const createGame = () => {
+  const pieces = [
+    new J({ color: 'b', pos: [0, 0], key: 'bj1' }),
+    new M({ color: 'b', pos: [1, 0], key: 'bm1' }),
+    new X({ color: 'b', pos: [2, 0], key: 'bx1' }),
+    new S({ color: 'b', pos: [3, 0], key: 'bs1' }),
+    new B({ color: 'b', pos: [4, 0], key: 'bb' }),
+    new S({ color: 'b', pos: [5, 0], key: 'bs2' }),
+    new X({ color: 'b', pos: [6, 0], key: 'bx2' }),
+    new M({ color: 'b', pos: [7, 0], key: 'bm2' }),
+    new J({ color: 'b', pos: [8, 0], key: 'bj2' }),
+    new P({ color: 'b', pos: [1, 2], key: 'bp1' }),
+    new P({ color: 'b', pos: [7, 2], key: 'bp2' }),
+    new Z({ color: 'b', pos: [0, 3], key: 'bz1' }),
+    new Z({ color: 'b', pos: [2, 3], key: 'bz2' }),
+    new Z({ color: 'b', pos: [4, 3], key: 'bz3' }),
+    new Z({ color: 'b', pos: [6, 3], key: 'bz4' }),
+    new Z({ color: 'b', pos: [8, 3], key: 'bz5' }),
+
+    new J({ color: 'r', pos: [0, 9], key: 'rj1' }),
+    new M({ color: 'r', pos: [1, 9], key: 'rm1' }),
+    new X({ color: 'r', pos: [2, 9], key: 'rx1' }),
+    new S({ color: 'r', pos: [3, 9], key: 'rs1' }),
+    new B({ color: 'r', pos: [4, 9], key: 'rb' }),
+    new S({ color: 'r', pos: [5, 9], key: 'rs2' }),
+    new X({ color: 'r', pos: [6, 9], key: 'rx2' }),
+    new M({ color: 'r', pos: [7, 9], key: 'rm2' }),
+    new J({ color: 'r', pos: [8, 9], key: 'rj2' }),
+    new P({ color: 'r', pos: [1, 7], key: 'rp1' }),
+    new P({ color: 'r', pos: [7, 7], key: 'rp2' }),
+    new Z({ color: 'r', pos: [0, 6], key: 'rz1' }),
+    new Z({ color: 'r', pos: [2, 6], key: 'rz2' }),
+    new Z({ color: 'r', pos: [4, 6], key: 'rz3' }),
+    new Z({ color: 'r', pos: [6, 6], key: 'rz4' }),
+    new Z({ color: 'r', pos: [8, 6], key: 'rz5' })
+  ]
+  const board = new Board(pieces)
+  const tPlayer = new Player('b', 'robot', new RandomAI(board, 'b'))
+  const bPlayer = new Player('r', 'human')
+  return new Game(board, bPlayer, tPlayer)
 }

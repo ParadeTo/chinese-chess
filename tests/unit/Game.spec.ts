@@ -1,8 +1,12 @@
-import Game from '@/chess/Game'
+import Game, { createGame } from '@/chess/Game'
 
+let game: Game
 describe('Game.ts', () => {
+  beforeEach(() => {
+    game = createGame()
+  })
+
   it('init game', () => {
-    const game = new Game()
     let sum = 0
     game.board.cells.forEach(row => {
       row.forEach(cell => {
@@ -10,5 +14,10 @@ describe('Game.ts', () => {
       })
     })
     expect(sum).toBe(32)
+  })
+
+  it('switchPlayer', () => {
+    game.switchPlayer()
+    expect(game.currentPlayer.color).toBe('b')
   })
 })

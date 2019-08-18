@@ -1,4 +1,4 @@
-import { Piece, Color } from './Piece'
+import { Piece, Color, Side } from './Piece'
 import Board from '../Board'
 
 /**
@@ -10,8 +10,8 @@ export default class S extends Piece {
     b: [[3, 9], [5, 9], [4, 8], [3, 7], [5, 7]]
   }
 
-  constructor(color: Color, pos: number[]) {
-    super('s', color, pos)
+  constructor(params: { color: Color, pos: number[], side?: Side, key?: string }) {
+    super({ role: 's', ...params })
   }
 
   canMove(dest: number[], board: Board): boolean {

@@ -3,11 +3,13 @@ import { Color, Piece } from '@/chess/Piece'
 
 export default class AI {
   board: Board
-  constructor(board: Board) {
+  color: Color
+  constructor(board: Board, color: Color) {
+    this.color = color
     this.board = board
   }
 }
 
 export interface IAI {
-  getNextMove(color: Color): Promise<{ piece: Piece, dest: number[] }>
+  getNextMove(): Promise<{ piece: Piece, dest: number[] }>
 }

@@ -1,12 +1,12 @@
-import { Piece, Color } from './Piece'
+import { Piece, Color, Side } from './Piece'
 import Board from '../Board'
 
 /**
  * 马
  */
 export default class M extends Piece {
-  constructor(color: Color, pos: number[]) {
-    super('m', color, pos)
+  constructor(params: { color: Color, pos: number[], side?: Side, key?: string }) {
+    super({ role: 'm', ...params })
   }
 
   canMove(dest: number[], board: Board): boolean {

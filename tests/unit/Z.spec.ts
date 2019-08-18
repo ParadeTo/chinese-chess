@@ -5,72 +5,72 @@ describe('Z', () => {
   it('canMove', () => {
     ;[
       {
-        pieces: [new Z('r', [4, 6])],
+        pieces: [new Z({ color: 'r', pos: [4, 6] })],
         pos: [4, 5],
         canMove: true
       },
       {
-        pieces: [new Z('b', [4, 6])],
+        pieces: [new Z({ color: 'b', pos: [4, 6] })],
         pos: [4, 5],
         canMove: false
       },
       {
-        pieces: [new Z('r', [4, 6])],
+        pieces: [new Z({ color: 'r', pos: [4, 6] })],
         pos: [4, 7],
         canMove: false
       },
       {
-        pieces: [new Z('b', [4, 6])],
+        pieces: [new Z({ color: 'b', pos: [4, 6] })],
         pos: [4, 7],
         canMove: true
       },
       {
-        pieces: [new Z('r', [4, 6])],
+        pieces: [new Z({ color: 'r', pos: [4, 6] })],
         pos: [5, 6],
         canMove: false
       },
       {
-        pieces: [new Z('b', [4, 6])],
+        pieces: [new Z({ color: 'b', pos: [4, 6] })],
         pos: [5, 6],
         canMove: true
       },
       {
-        pieces: [new Z('r', [4, 6])],
+        pieces: [new Z({ color: 'r', pos: [4, 6] })],
         pos: [3, 6],
         canMove: false
       },
       {
-        pieces: [new Z('b', [4, 6])],
+        pieces: [new Z({ color: 'b', pos: [4, 6] })],
         pos: [3, 6],
         canMove: true
       },
       {
-        pieces: [new Z('r', [4, 3])],
+        pieces: [new Z({ color: 'r', pos: [4, 3] })],
         pos: [3, 3],
         canMove: true
       },
       {
-        pieces: [new Z('b', [4, 3])],
+        pieces: [new Z({ color: 'b', pos: [4, 3] })],
         pos: [3, 3],
         canMove: false
       },
       {
-        pieces: [new Z('r', [4, 3])],
+        pieces: [new Z({ color: 'r', pos: [4, 3] })],
         pos: [5, 3],
         canMove: true
       },
       {
-        pieces: [new Z('b', [4, 3])],
+        pieces: [new Z({ color: 'b', pos: [4, 3] })],
         pos: [5, 3],
         canMove: false
       },
       {
-        pieces: [new Z('r', [4, 3]), new J('b', [5, 3])],
+        pieces: [new Z({ color: 'r', pos: [4, 3] }), new J({ color: 'b', pos: [5, 3] })],
         pos: [5, 3],
         canMove: true
       },
       {
-        pieces: [new Z('r', [4, 3]), new J('r', [5, 3])],
+        pieces: [new Z({ color: 'r', pos: [4, 3] }), new J({ color: 'r', pos: [5, 3] })],
         pos: [5, 3],
         canMove: false,
         notReverse: true
@@ -87,35 +87,35 @@ describe('Z', () => {
   it('getNextPositions', () => {
     ;[
       {
-        pieces: [new Z('r', [4, 6])],
+        pieces: [new Z({ color: 'r', pos: [4, 6] })],
         nextPositions: [[4, 5]]
       },
       {
-        pieces: [new Z('b', [4, 6])],
+        pieces: [new Z({ color: 'b', pos: [4, 6] })],
         nextPositions: [[4, 7], [3, 6], [5, 6]]
       },
       {
-        pieces: [new Z('r', [4, 4])],
+        pieces: [new Z({ color: 'r', pos: [4, 4] })],
         nextPositions: [[4, 3], [3, 4], [5, 4]]
       },
       {
-        pieces: [new Z('b', [4, 4])],
+        pieces: [new Z({ color: 'b', pos: [4, 4] })],
         nextPositions: [[4, 5]]
       },
       {
-        pieces: [new Z('r', [0, 0])],
+        pieces: [new Z({ color: 'r', pos: [0, 0] })],
         nextPositions: [[1, 0]]
       },
       {
-        pieces: [new Z('r', [8, 0])],
+        pieces: [new Z({ color: 'r', pos: [8, 0] })],
         nextPositions: [[7, 0]]
       },
       {
-        pieces: [new Z('b', [0, 9])],
+        pieces: [new Z({ color: 'b', pos: [0, 9] })],
         nextPositions: [[1, 9]]
       },
       {
-        pieces: [new Z('b', [8, 9])],
+        pieces: [new Z({ color: 'b', pos: [8, 9] })],
         nextPositions: [[7, 9]]
       }
     ].forEach(({ pieces, nextPositions }) => {

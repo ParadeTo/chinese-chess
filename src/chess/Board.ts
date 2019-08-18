@@ -1,5 +1,7 @@
 import { Piece, Side, Color } from './Piece/Piece'
 
+export type UpdatePieceResult = { result: boolean; eatenPiece?: Piece | null }
+
 export default class Board {
   static WIDTH = 9
   static HEIGHT = 10
@@ -22,7 +24,7 @@ export default class Board {
     }
     pieces.forEach(piece => {
       this.cells[piece.pos[0]][piece.pos[1]] = piece
-      this.pieces.r.push(piece)
+      this.pieces[piece.color].push(piece)
     })
   }
 
@@ -70,13 +72,13 @@ export default class Board {
     return num
   }
 
-  updatePiece(piece: Piece, newPos: number[]) {
-    if (!this.canMove(piece, newPos)) return false
+  updatePiece(piece: Piece, newPos: number[]): UpdatePieceResult {
+    if (!this.canMove(piece, newPos)) return { result: false }
     const [newX, newY] = newPos
-    const newPosPiece = this.cells[newX][newY]
-    if (newPosPiece) {
-      const pieces = this.pieces[newPosPiece.color]
-      const index = pieces.findIndex(piece => piece === newPosPiece)
+    const eatenPiece = this.cells[newX][newY]
+    if (eatenPiece) {
+      const pieces = this.pieces[eatenPiece.color]
+      const index = pieces.findIndex(piece => piece === eatenPiece)
       pieces.splice(index, 1)
     }
     const [origX, origY] = piece.pos
@@ -84,6 +86,6 @@ export default class Board {
     this.cells[newX][newY] = piece
     piece.pos = newPos
     this.currentPlayer = this.currentPlayer === 'r' ? 'b' : 'r'
-    return newPosPiece
+    return { result: true, eatenPiece }
   }
 }

@@ -1,12 +1,18 @@
 <template>
   <div class="board" @click="onBoardClick" ref="board">
     <img src="./img/board.png" class="bg" ref="bg" />
-    <pre>
-      {{pieces}}
-    </pre>
     <template :if="pieces.length">
-      <img
+      <!-- <img
         :key="`${piece.key}${piece.pos[0]}${piece.pos[1]}`"
+        :src="getImg(piece)"
+        :style="`${getPiecePos(piece)}`"
+        :class="piece.selected && game.currentPlayer.color === piece.color && 'selected'"
+        @click="onPieceClick(piece)"
+        class="piece"
+        v-for="piece in pieces"
+      />-->
+      <img
+        :key="`${piece.key}`"
         :src="getImg(piece)"
         :style="`${getPiecePos(piece)}`"
         :class="piece.selected && 'selected'"
@@ -20,7 +26,8 @@
 
 <script lang='ts'>
 import { Component, Prop, Vue, Watch } from 'vue-property-decorator'
-import Board from '../chess/Board'
+import Game from '@/chess/Game'
+import Board, { UpdatePieceResult } from '@/chess/Board'
 import { Piece } from '../chess/Piece'
 
 const startX = 7
@@ -31,12 +38,14 @@ const pieceWidth = 9
 const buff = 0.2
 
 @Component({})
-export default class BoardComp extends Vue {
-  @Prop() private board!: Board
+export default class ChineseChess extends Vue {
+  @Prop() private game!: Game
 
   pieces: Piece[] = []
   width: number = 0
   height: number = 0
+  gameOver: boolean = false
+  selectedPiece!: Piece
 
   mounted() {
     const { width } = (this.$refs.board as Element).getBoundingClientRect()
@@ -62,7 +71,6 @@ export default class BoardComp extends Vue {
     const x = ((offsetX * 100) / this.width - (startX + pieceWidth / 2)) / xInterval
     const xLow = Math.floor(x)
     const xHigh = Math.ceil(x)
-
     if (xLow + buff > x) boardX = xLow
     if (xHigh - buff < x) boardX = xHigh
     if (boardX < 0 || boardX >= Board.WIDTH) boardX = -1
@@ -78,17 +86,27 @@ export default class BoardComp extends Vue {
   }
 
   onPieceClick(piece: Piece) {
+    if (this.selectedPiece && this.selectedPiece.color !== piece.color) {
+      this.processOneRound(this.selectedPiece, piece.pos)
+      return
+    }
+
     if (piece.selected) {
       piece.selected = false
       return
     }
+
     this.pieces.forEach(p => {
       p.selected = false
     })
-    piece.selected = true
+
+    if (piece.color === this.game.currentPlayer.color && this.game.currentPlayer.name === 'human') {
+      piece.selected = true
+      this.selectedPiece = piece
+    }
   }
 
-  onBoardClick(e: MouseEvent) {
+  async onBoardClick(e: MouseEvent) {
     const { offsetX, offsetY } = e
     const [x, y] = this.getClickPos(offsetX, offsetY)
 
@@ -100,12 +118,45 @@ export default class BoardComp extends Vue {
     }
 
     const selectedPiece = this.pieces.find(piece => piece.selected)
-    if (selectedPiece) this.board.updatePiece(selectedPiece, [x, y])
+    if (selectedPiece) {
+      this.processOneRound(selectedPiece, [x, y])
+    }
   }
 
-  @Watch('board')
-  onBoardChange() {
-    this.pieces = (this.board && this.board.getAllPieces())
+  async processOneRound(piece: Piece, dest: number[]) {
+    const { result, eatenPiece } = this.game.updatePiece(piece, dest)
+    if (result) {
+      eatenPiece && this.rmEatenPiece(eatenPiece)
+      this.game.switchPlayer()
+      this.selectedPiece.selected = false
+      const { result: autoMoveResult, eatenPiece: autoMoveEatenPiece } = await this.autoMove()
+      if (autoMoveResult) {
+        this.game.switchPlayer()
+        autoMoveEatenPiece && this.rmEatenPiece(autoMoveEatenPiece)
+      }
+      return true
+    }
+    return false
+  }
+
+  
+
+  autoMove(): Promise<UpdatePieceResult> {
+    return new Promise((resolve, reject) => {
+      setTimeout(async () => {
+        resolve(await this.game.autoMove())
+      }, 400)
+    })
+  }
+
+  rmEatenPiece(eatenPiece: Piece) {
+    const index = this.pieces.findIndex(piece => piece === eatenPiece)
+    this.pieces.splice(index, 1)
+  }
+
+  @Watch('game')
+  onGameChange() {
+    this.pieces = this.game && this.game.board && this.game.board.getAllPieces()
   }
 }
 </script>
@@ -124,6 +175,7 @@ export default class BoardComp extends Vue {
     width: 9%;
     top: 0;
     left: 0;
+    transition: 0.3s left, 0.3s top;
     &.selected {
       box-shadow: 0px 0px 4px 2px #fff700;
     }

@@ -1,6 +1,6 @@
 /**
  * chess piece
-*/
+ */
 import Board from '../Board'
 
 export abstract class Piece {
@@ -11,11 +11,23 @@ export abstract class Piece {
   selected: boolean
   side: Side
 
-  constructor (role: Role, color: Color, position: number[], side?: Side) {
-    this.key = color + role
+  constructor({
+    role,
+    color,
+    pos,
+    side,
+    key
+  }: {
+    role: Role
+    color: Color
+    pos: number[]
+    side?: Side
+    key?: string
+  }) {
+    this.key = key || color + role
     this.color = color
     this.role = role
-    this.pos = position
+    this.pos = pos
     this.selected = false
     if (!side) this.side = color === 'r' ? 'b' : 't'
     else this.side = side

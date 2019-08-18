@@ -5,8 +5,8 @@ import Board from '../Board'
  * boss
  */
 export default class B extends Piece {
-  constructor(color: Color, pos: number[], side?: Side) {
-    super('b', color, pos, side)
+  constructor(params: { color: Color, pos: number[], side?: Side, key?: string }) {
+    super({ role: 'b', ...params })
   }
 
   getNextPositions(board: Board): number[][] {

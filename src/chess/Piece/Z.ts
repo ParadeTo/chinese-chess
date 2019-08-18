@@ -5,8 +5,8 @@ import Board from '../Board'
  * 卒 兵
  */
 export default class Z extends Piece {
-  constructor(color: Color, pos: number[], side?: Side) {
-    super('z', color, pos, side)
+  constructor(params: { color: Color, pos: number[], side?: Side, key?: string }) {
+    super({ role: 'z', ...params })
   }
 
   isCrossedRiver() {

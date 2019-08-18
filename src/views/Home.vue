@@ -1,6 +1,6 @@
 <template>
   <div class="home">
-    <Board :board="game && game.board" />
+    <ChineseChess :game="game" />
     <button class="btn" @click="onStart">{{ started ? 'ReStart' : 'Start' }}</button>
   </div>
 </template>
@@ -10,7 +10,7 @@ import { Component, Vue } from 'vue-property-decorator'
 import { mapState, mapMutations } from 'vuex'
 import { Getter, Mutation, namespace } from 'vuex-class'
 
-import Board from '@/components/Board.vue'
+import ChineseChess from '@/components/ChineseChess.vue'
 import Game from '../chess/Game'
 import { IGameState } from '../store/types'
 
@@ -19,7 +19,7 @@ const GameMutation = namespace('game', Mutation)
 
 @Component({
   components: {
-    Board
+    ChineseChess
   },
   computed: mapState('game', ['game']),
   methods: {

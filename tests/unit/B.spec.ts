@@ -5,57 +5,57 @@ describe('B', () => {
   it('canMove', () => {
     ;[
       {
-        pieces: [new B('r', [5, 9])],
+        pieces: [new B({ color: 'r', pos: [5, 9] })],
         pos: [6, 9],
         expected: false
       },
       {
-        pieces: [new B('r', [5, 9])],
+        pieces: [new B({ color: 'r', pos: [5, 9] })],
         pos: [3, 9],
         expected: false
       },
       {
-        pieces: [new B('r', [5, 9])],
+        pieces: [new B({ color: 'r', pos: [5, 9] })],
         pos: [4, 9],
         expected: true
       },
       {
-        pieces: [new B('r', [3, 9])],
+        pieces: [new B({ color: 'r', pos: [3, 9] })],
         pos: [2, 9],
         expected: false
       },
       {
-        pieces: [new B('r', [3, 7])],
+        pieces: [new B({ color: 'r', pos: [3, 7] })],
         pos: [3, 6],
         expected: false
       },
       {
-        pieces: [new B('b', [5, 9])],
+        pieces: [new B({ color: 'b', pos: [5, 9] })],
         pos: [6, 9],
         expected: false
       },
       {
-        pieces: [new B('b', [5, 9])],
+        pieces: [new B({ color: 'b', pos: [5, 9] })],
         pos: [3, 9],
         expected: false
       },
       {
-        pieces: [new B('b', [5, 9], 'b')],
+        pieces: [new B({ color: 'b', pos: [5, 9], side: 'b' })],
         pos: [4, 9],
         expected: true
       },
       {
-        pieces: [new B('r', [3, 2], 't')],
+        pieces: [new B({ color: 'r', pos: [3, 2], side: 't' })],
         pos: [3, 3],
         expected: false
       },
       {
-        pieces: [new B('b', [3, 2]), new Z('r', [3, 1])],
+        pieces: [new B({ color: 'b', pos: [3, 2] }), new Z({ color: 'r', pos: [3, 1] })],
         pos: [3, 1],
         expected: true
       },
       {
-        pieces: [new B('b', [3, 2]), new Z('b', [3, 1])],
+        pieces: [new B({ color: 'b', pos: [3, 2] }), new Z({ color: 'b', pos: [3, 1] })],
         pos: [3, 1],
         expected: false
       }
@@ -68,7 +68,7 @@ describe('B', () => {
   it('getNextPositions', () => {
     ;[
       {
-        pieces: [new B('r', [5, 9])],
+        pieces: [new B({ color: 'r', pos: [5, 9] })],
         nextPositions: [[4, 9], [5, 8]]
       }
     ].forEach(({ pieces, nextPositions }) => {
