@@ -6,7 +6,7 @@ import Board from '../Board'
 export abstract class Piece {
   key: string
   color: Color
-  role: string
+  role: Role
   pos: number[]
   selected: boolean
   side: Side

@@ -11,7 +11,7 @@ self.onmessage = (e: { data: { type: string, data: any }}) => {
   console.log('get message: ')
   console.log(type, data)
   if (type === Msg.INIT_AI) {
-    let d = data as { aiType: AiType; board: Board; color: Color }
-    ai = createAi(d.aiType, d.board, d.color)
+    let { aiType, board, color } = data as { aiType: AiType; board: Board; color: Color }
+    ai = createAi({ aiType, board, color })
   }
 }

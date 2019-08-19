@@ -5,16 +5,18 @@ import Board from '../Board'
  * 车
  */
 export default class J extends Piece {
-  constructor(params: { color: Color, pos: number[], side?: Side, key?: string }) {
+  constructor(params: { color: Color; pos: number[]; side?: Side; key?: string }) {
     super({ role: 'j', ...params })
   }
 
   canMove(dest: number[], board: Board): boolean {
-    const { pos: [origX, origY] } = this
+    const {
+      pos: [origX, origY]
+    } = this
     const [destX, destY] = dest
     const { cells } = board
 
-    if (destX === origX && destY === origY) return false
+    if ((destX === origX && destY === origY) || (destX !== origX && destY !== origY)) return false
 
     if (destX === origX) {
       let startY = origY + 1
@@ -43,7 +45,7 @@ export default class J extends Piece {
     return this.canPlaceAtDest(dest, board)
   }
 
-  getNextPositions (board: Board): number[][] {
+  getNextPositions(board: Board): number[][] {
     const {
       pos: [currentX, currentY]
     } = this

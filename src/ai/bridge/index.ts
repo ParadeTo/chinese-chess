@@ -11,7 +11,8 @@ import { Piece, Color } from '@/chess/Piece'
 export default class Bridge implements IAI {
   worker: Worker
   event: Event
-  constructor (board: Board, color: Color, aiType: AiType, workerPath: string) {
+  constructor (args: { board: Board, color: Color, aiType: AiType, workerPath: string }) {
+    const { board, color, aiType, workerPath } = args
     this.event = new Event()
     this.worker = new Worker(workerPath)
     this.worker.onmessage = this.onMessage

@@ -3,7 +3,7 @@ import { Color, Piece } from '@/chess/Piece'
 
 export default class AI {
   board: Board
-  color: Color
+  color: Color // own color
   constructor(board: Board, color: Color) {
     this.color = color
     this.board = board

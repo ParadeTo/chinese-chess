@@ -86,6 +86,8 @@ export default class ChineseChess extends Vue {
   }
 
   onPieceClick(piece: Piece) {
+    if (this.gameOver) return
+
     if (this.selectedPiece && this.selectedPiece.color !== piece.color) {
       this.processOneRound(this.selectedPiece, piece.pos)
       return
@@ -127,19 +129,26 @@ export default class ChineseChess extends Vue {
     const { result, eatenPiece } = this.game.updatePiece(piece, dest)
     if (result) {
       eatenPiece && this.rmEatenPiece(eatenPiece)
+      if (eatenPiece && eatenPiece.role === 'b') return this.overGame(eatenPiece)
       this.game.switchPlayer()
       this.selectedPiece.selected = false
       const { result: autoMoveResult, eatenPiece: autoMoveEatenPiece } = await this.autoMove()
       if (autoMoveResult) {
         this.game.switchPlayer()
         autoMoveEatenPiece && this.rmEatenPiece(autoMoveEatenPiece)
+        if (autoMoveEatenPiece && autoMoveEatenPiece.role === 'b') return this.overGame(autoMoveEatenPiece)
       }
       return true
     }
     return false
   }
 
-  
+  overGame(eatenPiece: Piece) {
+    this.$nextTick(() => {
+      window.alert(`${eatenPiece.color === 'r' ? 'Black' : 'Red'} side win!`)
+    })
+    this.gameOver = true
+  }
 
   autoMove(): Promise<UpdatePieceResult> {
     return new Promise((resolve, reject) => {
