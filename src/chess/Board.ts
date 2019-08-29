@@ -2,6 +2,12 @@ import { Piece, Side, Color } from './Piece/Piece'
 
 export type UpdatePieceResult = { result: boolean; eatenPiece?: Piece | null }
 
+export interface IRecord {
+  from: number[]
+  to: number[]
+  eaten: Piece | null
+}
+
 export default class Board {
   static WIDTH = 9
   static HEIGHT = 10
@@ -14,6 +20,8 @@ export default class Board {
     r: [],
     b: []
   }
+
+  private records: IRecord[] = []
 
   constructor(pieces: Piece[]) {
     for (let i = 0; i < Board.HEIGHT; i++) {
@@ -74,6 +82,7 @@ export default class Board {
 
   updatePiece(piece: Piece, newPos: number[]): UpdatePieceResult {
     if (!this.canMove(piece, newPos)) return { result: false }
+
     const [newX, newY] = newPos
     const eatenPiece = this.cells[newX][newY]
     if (eatenPiece) {
@@ -86,6 +95,30 @@ export default class Board {
     this.cells[newX][newY] = piece
     piece.pos = newPos
     this.currentPlayer = this.currentPlayer === 'r' ? 'b' : 'r'
+
+    this.records.push({
+      from: [origX, origY],
+      to: newPos,
+      eaten: eatenPiece
+    })
+
     return { result: true, eatenPiece }
+  }
+
+  backMoves(steps: number = 1) {
+    while (steps--) {
+      const lastMove = this.records.pop()
+      if (lastMove) {
+        const { from, to, eaten } = lastMove
+        const piece = this.cells[to[0]][to[1]] as Piece
+        piece.pos = from
+        this.cells[from[0]][from[1]] = this.cells[to[0]][to[1]]
+        this.cells[to[0]][to[1]] = eaten || null
+        if (eaten) {
+          this.pieces[eaten.color].push(eaten)
+          eaten.pos = to
+        }
+      }
+    }
   }
 }

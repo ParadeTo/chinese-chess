@@ -3,6 +3,7 @@ import { Piece, B, J, M, P, S, X, Z, Color } from './Piece'
 import { IAI } from '@/ai/AI'
 import Player from './Player'
 import RandomAI from '@/ai/random'
+import MiniMaxAI from '@/ai/minimax'
 
 export default class Game {
   board: Board
@@ -16,7 +17,7 @@ export default class Game {
     this.currentPlayer = this.bPlayer.color === 'r' ? this.bPlayer : this.tPlayer
   }
 
-  switchPlayer () {
+  switchPlayer() {
     if (this.currentPlayer === this.tPlayer) this.currentPlayer = this.bPlayer
     else this.currentPlayer = this.tPlayer
   }
@@ -32,7 +33,8 @@ export default class Game {
     let nextMove
     if (this.currentPlayer.ai) {
       nextMove = await this.currentPlayer.ai.getNextMove()
-      return this.updatePiece(nextMove.piece, nextMove.dest)
+      debugger
+      if (nextMove) return this.updatePiece(nextMove.piece, nextMove.dest)
     }
     throw new Error('Only robot can execute autoMove!')
   }
@@ -75,7 +77,8 @@ export const createGame = () => {
     new Z({ color: 'r', pos: [8, 6], key: 'rz5' })
   ]
   const board = new Board(pieces)
-  const tPlayer = new Player('b', 'robot', new RandomAI(board, 'b'))
+  // const tPlayer = new Player('b', 'robot', new RandomAI(board, 'b'))
+  const tPlayer = new Player('b', 'robot', new MiniMaxAI({ board, color: 'b', depth: 2 }))
   const bPlayer = new Player('r', 'human')
   return new Game(board, bPlayer, tPlayer)
 }

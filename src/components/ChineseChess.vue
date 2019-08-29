@@ -133,8 +133,10 @@ export default class ChineseChess extends Vue {
       this.game.switchPlayer()
       this.selectedPiece.selected = false
       const { result: autoMoveResult, eatenPiece: autoMoveEatenPiece } = await this.autoMove()
+      debugger
       if (autoMoveResult) {
         this.game.switchPlayer()
+        debugger
         autoMoveEatenPiece && this.rmEatenPiece(autoMoveEatenPiece)
         if (autoMoveEatenPiece && autoMoveEatenPiece.role === 'b') return this.overGame(autoMoveEatenPiece)
       }

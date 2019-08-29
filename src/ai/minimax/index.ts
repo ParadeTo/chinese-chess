@@ -1,6 +1,8 @@
 import AI, { IAI } from '../AI'
 import { Piece, Color, J } from '@/chess/Piece'
 import Board from '@/chess/Board'
+import { IEvalModel } from './eval'
+import WeightEvalModel from './eval/weight'
 
 interface IPieceNodes {
   piece: Piece
@@ -13,43 +15,76 @@ interface IPieceNodes {
 
 export default class MiniMaxAI extends AI implements IAI {
   depth: number
-  constructor({ board, color, depth }: { depth: number; board: Board; color: Color }) {
+  evalModel: IEvalModel
+  constructor({
+    board,
+    color,
+    depth,
+    evalModel = new WeightEvalModel()
+  }: {
+    depth: number
+    board: Board
+    color: Color
+    evalModel?: IEvalModel
+  }) {
     super(board, color)
     this.depth = depth
+    this.evalModel = evalModel
   }
 
-  generateNodes(forSelf: boolean) {
-    let color: Color = this.color === 'r' ? 'b' : 'r'
-    if (forSelf) {
-      color = this.color === 'r' ? 'r' : 'b'
+  generateNodes(forSelf: boolean = false) {
+    let color: Color = this.color
+    if (!forSelf) {
+      color = this.opponentColor
     }
     const pieces = this.board.pieces[color]
-    const pieceNodes: IPieceNodes[] = []
+    const piecesNodes: IPieceNodes[] = []
     for (let piece of pieces) {
       const nodes = piece.getNextPositions(this.board).map(pos => ({
         to: pos,
         value: -Infinity
       }))
-      const pieceNode = { piece, from: piece.pos, nodes }
-      pieceNodes.push(pieceNode)
+      const pieceNodes = { piece, from: piece.pos, nodes }
+      piecesNodes.push(pieceNodes)
     }
-    return pieceNodes
+    return piecesNodes
   }
 
-  search(depth: number, forSelf: boolean) {
-    const pieceNodes = this.generateNodes(forSelf)
-    for (let pieceNode of pieceNodes) {
-      const { piece, from, nodes } = pieceNode
+  search(depth: number, forSelf: boolean): number {
+    if (depth === 0) {
+      // eval value from current ai's perspective
+      return this.evalModel.eval(this.board, this.color) * (forSelf ? 1 : -1)
+    }
+
+    let max = -Infinity
+    const piecesNodes = this.generateNodes(forSelf)
+    for (let pieceNodes of piecesNodes) {
+      const { piece, from, nodes } = pieceNodes
       for (let node of nodes) {
-        const result = this.board.updatePiece(piece, node.to)
+        this.board.updatePiece(piece, node.to)
+        max = Math.max(max, this.search(depth - 1, !forSelf))
+        this.board.backMoves()
       }
     }
+    return max
   }
 
-  getNextMove(): Promise<{ piece: Piece; dest: number[] }> {
-    return Promise.resolve({
-      piece: new J({ color: 'r', pos: [0, 0] }),
-      dest: [0, 0]
-    })
+  getNextMove(): Promise<{ piece: Piece; dest: number[] } | null> {
+    const piecesNodes = this.generateNodes(true)
+    let max = -Infinity
+    let bestMove = null
+    for (let pieceNodes of piecesNodes) {
+      const { piece, from, nodes } = pieceNodes
+      for (let node of nodes) {
+        this.board.updatePiece(piece, node.to)
+        const value = this.search(this.depth - 1, true)
+        this.board.backMoves()
+        if (value > max) {
+          max = value
+          bestMove = { piece, dest: node.to }
+        }
+      }
+    }
+    return Promise.resolve(bestMove)
   }
 }
