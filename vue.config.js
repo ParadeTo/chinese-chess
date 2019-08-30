@@ -13,7 +13,7 @@ module.exports = {
     config
     // Interact with entry points
       .entry('ai')
-      .add(resolve('src/ai/worker.ts'))
+      .add(resolve('src/ai/bridge/worker.ts'))
       .end()
     // Modify output settings
       .output

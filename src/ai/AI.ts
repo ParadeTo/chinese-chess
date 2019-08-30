@@ -13,5 +13,9 @@ export default class AI {
 }
 
 export interface IAI {
-  getNextMove(): Promise<{ piece: Piece, dest: number[] } | null>
+  getNextMove(): Promise<INextMove | null>
+}
+
+export interface INextMove {
+  from: number[], to: number[]
 }

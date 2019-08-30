@@ -6,7 +6,7 @@ export default class RandomAI extends AI implements IAI {
     return Math.floor(Math.random() * n)
   }
 
-  getNextMove(): Promise<{ piece: Piece; dest: number[]; }> {
+  getNextMove(): Promise<{ from: number[]; to: number[] }> {
     const pieces = this.board.pieces[this.color]
     const len = pieces.length
     let moves: number[][] = []
@@ -18,8 +18,8 @@ export default class RandomAI extends AI implements IAI {
     } while (moves.length === 0)
     const nextPosition = moves[RandomAI.generateRandomNum(moves.length)]
     return Promise.resolve({
-      piece,
-      dest: nextPosition
+      from: piece.pos,
+      to: nextPosition
     })
   }
 }

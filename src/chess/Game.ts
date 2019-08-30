@@ -4,6 +4,7 @@ import { IAI } from '@/ai/AI'
 import Player from './Player'
 import RandomAI from '@/ai/random'
 import MiniMaxAI from '@/ai/minimax'
+import Bridge from '@/ai/bridge'
 
 export default class Game {
   board: Board
@@ -22,7 +23,7 @@ export default class Game {
     else this.currentPlayer = this.tPlayer
   }
 
-  updatePiece(piece: Piece, newPos: number[]): UpdatePieceResult {
+  updatePiece(piece: Piece, newPos: number[], _piece?: any): UpdatePieceResult {
     if (piece.color === this.currentPlayer.color) {
       return this.board.updatePiece(piece, newPos)
     }
@@ -33,8 +34,10 @@ export default class Game {
     let nextMove
     if (this.currentPlayer.ai) {
       nextMove = await this.currentPlayer.ai.getNextMove()
-      debugger
-      if (nextMove) return this.updatePiece(nextMove.piece, nextMove.dest)
+      if (nextMove) {
+        const { from, to, piece } = nextMove as any
+        return this.updatePiece(this.board.cells[from[0]][from[1]] as Piece, to, piece)
+      }
     }
     throw new Error('Only robot can execute autoMove!')
   }
@@ -78,7 +81,12 @@ export const createGame = () => {
   ]
   const board = new Board(pieces)
   // const tPlayer = new Player('b', 'robot', new RandomAI(board, 'b'))
-  const tPlayer = new Player('b', 'robot', new MiniMaxAI({ board, color: 'b', depth: 2 }))
+  // const tPlayer = new Player('b', 'robot', new MiniMaxAI({ board, color: 'b', depth: 3 }))
+  const tPlayer = new Player(
+    'b',
+    'robot',
+    new Bridge({ board, color: 'b', aiType: 'minimax', workerPath: '/ai.bundle.js' })
+  )
   const bPlayer = new Player('r', 'human')
   return new Game(board, bPlayer, tPlayer)
 }

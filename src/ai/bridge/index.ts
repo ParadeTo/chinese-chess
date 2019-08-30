@@ -11,16 +11,29 @@ import { Piece, Color } from '@/chess/Piece'
 export default class Bridge implements IAI {
   worker: Worker
   event: Event
-  constructor (args: { board: Board, color: Color, aiType: AiType, workerPath: string }) {
-    const { board, color, aiType, workerPath } = args
+  constructor({
+    depth = 1,
+    board,
+    color,
+    aiType,
+    workerPath
+  }: {
+    board: Board
+    color: Color
+    aiType: AiType
+    workerPath: string
+    depth?: number
+  }) {
     this.event = new Event()
     this.worker = new Worker(workerPath)
-    this.worker.onmessage = this.onMessage
-    this.initAI({ aiType, color, board })
+    this.worker.onmessage = this.onMessage.bind(this)
+    this.initAI({ aiType, color, board, depth })
   }
 
   onMessage(e: MessageEvent) {
-    const { data: { type, data } } = e
+    const {
+      data: { type, data }
+    } = e
     switch (type) {
       case Msg.RETURN_NEXT_MOVE:
         this.event.emit(Msg.RETURN_NEXT_MOVE, data)
@@ -30,14 +43,15 @@ export default class Bridge implements IAI {
     }
   }
 
-  initAI (data: { aiType: AiType; board: Board; color: Color }) {
+  initAI(data: { depth?: number; aiType: AiType; board: Board; color: Color }) {
     this.worker.postMessage({ type: Msg.INIT_AI, data })
   }
 
-  getNextMove(): Promise<{ piece: Piece; dest: number[]; }> {
-    return new Promise<{ piece: Piece; dest: number[]; }>((resolve, reject) => {
+  getNextMove(): Promise<{ from: number[]; to: number[] }> {
+    return new Promise<{ from: number[]; to: number[] }>((resolve, reject) => {
+      this.worker.postMessage({ type: Msg.GET_NEXT_MOVE })
       this.event.on(Msg.RETURN_NEXT_MOVE, data => {
-        resolve(data as { piece: Piece; dest: number[]; })
+        resolve(data as { from: number[]; to: number[] })
       })
     })
   }

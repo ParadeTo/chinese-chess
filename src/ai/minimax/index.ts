@@ -1,4 +1,4 @@
-import AI, { IAI } from '../AI'
+import AI, { IAI, INextMove } from '../AI'
 import { Piece, Color, J } from '@/chess/Piece'
 import Board from '@/chess/Board'
 import { IEvalModel } from './eval'
@@ -53,7 +53,10 @@ export default class MiniMaxAI extends AI implements IAI {
   search(depth: number, forSelf: boolean): number {
     if (depth === 0) {
       // eval value from current ai's perspective
-      return this.evalModel.eval(this.board, this.color) * (forSelf ? 1 : -1)
+      // for self, want the value to be max
+      // for opponent, want the value to be min
+      const value = this.evalModel.eval(this.board, this.color)
+      return value
     }
 
     let max = -Infinity
@@ -62,29 +65,39 @@ export default class MiniMaxAI extends AI implements IAI {
       const { piece, from, nodes } = pieceNodes
       for (let node of nodes) {
         this.board.updatePiece(piece, node.to)
-        max = Math.max(max, this.search(depth - 1, !forSelf))
+        const value = this.search(depth - 1, !forSelf) * (forSelf ? 1 : -1)
         this.board.backMoves()
+        if (value > max) max = value
       }
     }
-    return max
+    return max * (forSelf ? 1 : -1)
   }
 
-  getNextMove(): Promise<{ piece: Piece; dest: number[] } | null> {
+  getNextMove(): Promise<INextMove | null> {
     const piecesNodes = this.generateNodes(true)
     let max = -Infinity
-    let bestMove = null
+    let bestMove: INextMove | null = null
+    let bestMovePiece = null
     for (let pieceNodes of piecesNodes) {
       const { piece, from, nodes } = pieceNodes
       for (let node of nodes) {
         this.board.updatePiece(piece, node.to)
-        const value = this.search(this.depth - 1, true)
+        const value = this.search(this.depth - 1, false)
         this.board.backMoves()
         if (value > max) {
+          bestMovePiece = piece
           max = value
-          bestMove = { piece, dest: node.to }
+          bestMove = { from: piece.pos, to: node.to }
         }
       }
     }
+    debugger
+    if (bestMovePiece) this.board.updatePiece(bestMovePiece, (bestMove as INextMove).to)
     return Promise.resolve(bestMove)
+  }
+
+  // update the ai's board
+  updatePiece () {
+
   }
 }

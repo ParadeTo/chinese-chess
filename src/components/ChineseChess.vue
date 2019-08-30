@@ -133,10 +133,8 @@ export default class ChineseChess extends Vue {
       this.game.switchPlayer()
       this.selectedPiece.selected = false
       const { result: autoMoveResult, eatenPiece: autoMoveEatenPiece } = await this.autoMove()
-      debugger
       if (autoMoveResult) {
         this.game.switchPlayer()
-        debugger
         autoMoveEatenPiece && this.rmEatenPiece(autoMoveEatenPiece)
         if (autoMoveEatenPiece && autoMoveEatenPiece.role === 'b') return this.overGame(autoMoveEatenPiece)
       }
@@ -152,12 +150,13 @@ export default class ChineseChess extends Vue {
     this.gameOver = true
   }
 
-  autoMove(): Promise<UpdatePieceResult> {
-    return new Promise((resolve, reject) => {
-      setTimeout(async () => {
-        resolve(await this.game.autoMove())
-      }, 400)
-    })
+  async autoMove(): Promise<UpdatePieceResult> {
+    return Promise.resolve(await this.game.autoMove())
+    // return new Promise((resolve, reject) => {
+    //   setTimeout(async () => {
+    //     resolve()
+    //   }, 400)
+    // })
   }
 
   rmEatenPiece(eatenPiece: Piece) {
