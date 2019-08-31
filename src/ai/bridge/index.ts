@@ -1,4 +1,4 @@
-import { IAI } from '../AI'
+import { IAI, INextMove } from '../AI'
 import Event from '@/event'
 import Board from '@/chess/Board'
 import Msg from '@/const'
@@ -27,7 +27,7 @@ export default class Bridge implements IAI {
     this.event = new Event()
     this.worker = new Worker(workerPath)
     this.worker.onmessage = this.onMessage.bind(this)
-    this.initAI({ aiType, color, board, depth })
+    this.initAI({ aiType, depth })
   }
 
   onMessage(e: MessageEvent) {
@@ -43,13 +43,13 @@ export default class Bridge implements IAI {
     }
   }
 
-  initAI(data: { depth?: number; aiType: AiType; board: Board; color: Color }) {
+  initAI(data: { depth?: number; aiType: AiType }) {
     this.worker.postMessage({ type: Msg.INIT_AI, data })
   }
 
-  getNextMove(): Promise<{ from: number[]; to: number[] }> {
+  getNextMove(board: Board, color: Color): Promise<INextMove> {
     return new Promise<{ from: number[]; to: number[] }>((resolve, reject) => {
-      this.worker.postMessage({ type: Msg.GET_NEXT_MOVE })
+      this.worker.postMessage({ type: Msg.GET_NEXT_MOVE, data: { board, color } })
       this.event.on(Msg.RETURN_NEXT_MOVE, data => {
         resolve(data as { from: number[]; to: number[] })
       })

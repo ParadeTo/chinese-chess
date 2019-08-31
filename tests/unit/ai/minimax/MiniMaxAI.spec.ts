@@ -14,8 +14,8 @@ const pieceNodesNum = {
 describe('MiniMaxAI', () => {
   it('generateNodes', () => {
     const game = createGame()
-    const minimaxAI = new MiniMaxAI({ board: game.board, color: 'r', depth: 2 })
-    const piecesNodes = minimaxAI.generateNodes(true)
+    const minimaxAI = new MiniMaxAI({ depth: 2 })
+    const piecesNodes = minimaxAI.generateNodes(game.board, 'r', true)
     piecesNodes.forEach(pieceNodes => {
       expect(pieceNodes.nodes.length).toBe(pieceNodesNum[pieceNodes.piece.role])
     })

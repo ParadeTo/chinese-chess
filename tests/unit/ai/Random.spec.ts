@@ -4,7 +4,7 @@ import Game, { createGame } from '@/chess/Game'
 describe('RandomAI', () => {
   it('listen event', async () => {
     const game = createGame()
-    const randomAI = new RandomAI(game.board, 'r')
-    expect(await randomAI.getNextMove()).toHaveProperty('piece')
+    const randomAI = new RandomAI()
+    expect(await randomAI.getNextMove(game.board, 'r')).toHaveProperty('piece')
   })
 })

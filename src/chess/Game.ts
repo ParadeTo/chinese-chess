@@ -33,7 +33,7 @@ export default class Game {
   async autoMove() {
     let nextMove
     if (this.currentPlayer.ai) {
-      nextMove = await this.currentPlayer.ai.getNextMove()
+      nextMove = await this.currentPlayer.ai.getNextMove(this.board, this.currentPlayer.color)
       if (nextMove) {
         const { from, to, piece } = nextMove as any
         return this.updatePiece(this.board.cells[from[0]][from[1]] as Piece, to, piece)
@@ -85,7 +85,7 @@ export const createGame = () => {
   const tPlayer = new Player(
     'b',
     'robot',
-    new Bridge({ board, color: 'b', aiType: 'minimax', workerPath: '/ai.bundle.js' })
+    new Bridge({ depth: 3, board, color: 'b', aiType: 'minimax', workerPath: '/ai.bundle.js' })
   )
   const bPlayer = new Player('r', 'human')
   return new Game(board, bPlayer, tPlayer)

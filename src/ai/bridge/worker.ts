@@ -19,7 +19,7 @@ const createPiece = ({ color, pos, key, role }: Piece): Piece => {
   return new (mPiece[role as Role])({ color, pos, key })
 }
 
-const initBorad = (board: Board) => {
+const recoverBoard = (board: Board) => {
   const pieces: Piece[] = []
   ;[...board.pieces.b, ...board.pieces.r].forEach(piece => pieces.push(createPiece(piece)))
   return new Board(pieces)
@@ -35,13 +35,14 @@ self.onmessage = async (e: { data: { type: string; data: any } }) => {
   console.log(type, data)
   switch (type) {
     case Msg.INIT_AI:
-      let { aiType, board: rawBoard, color, depth } = data as { depth: number; aiType: AiType; board: Board; color: Color }
-      // the board from message is the pure data without prototype
-      const board = initBorad(rawBoard)
-      ai = createAi({ aiType, board, color, depth })
+      const { aiType, depth } = data as { depth: number; aiType: AiType; }
+      ai = createAi({ aiType, depth })
       break
     case Msg.GET_NEXT_MOVE:
-      const nextMove = await ai.getNextMove()
+      let { board: rawBoard, color } = data as { board: Board; color: Color }
+      // the board from message is the pure data without prototype
+      const board = recoverBoard(rawBoard)
+      const nextMove = await ai.getNextMove(board, color)
       console.log('------')
       // @ts-ignore: don't know how to pass the second arg
       self.postMessage({ type: Msg.RETURN_NEXT_MOVE, data: { ...nextMove } })

@@ -1,5 +1,5 @@
 import RandomAI from './random'
-import AI, { IAI } from './AI'
+import { IAI } from './AI'
 import Board from '@/chess/Board'
 import { Color } from '@/chess/Piece'
 import BridgeAI from './bridge'
@@ -9,21 +9,15 @@ export type AiType = 'random' | 'bridge' | 'minimax'
 
 export const createAi = ({
   aiType,
-  board,
-  color,
-  workerPath,
   depth = 3
 }: {
   aiType: AiType
-  board: Board
-  color: Color
-  workerPath?: string
   depth?: number
 }): IAI => {
   switch (aiType) {
     case 'minimax':
-      return new MiniMaxAI({ board, depth, color })
+      return new MiniMaxAI({ depth })
     default:
-      return new RandomAI(board, color)
+      return new RandomAI()
   }
 }
