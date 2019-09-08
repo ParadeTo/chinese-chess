@@ -1,10 +1,10 @@
 import RandomAI from '@/ai/random'
-import Game, { createGame } from '@/chess/Game'
+import Game, { createGame, createBoard } from '@/chess/Game'
 
 describe('RandomAI', () => {
   it('listen event', async () => {
-    const game = createGame()
+    const board = createBoard()
     const randomAI = new RandomAI()
-    expect(await randomAI.getNextMove(game.board, 'r')).toHaveProperty('piece')
+    expect(await randomAI.getNextMove(board, 'r')).toHaveProperty('from')
   })
 })

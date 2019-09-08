@@ -1,11 +1,11 @@
 import Board from '@/chess/Board'
 import { Piece, J, Z, M, X, S, P, B, Color } from '@/chess/Piece'
-import { createGame } from '@/chess/Game';
+import { createGame, createBoard } from '@/chess/Game'
 
 describe('Board', () => {
   it('getAllPieces', () => {
-    const game = createGame()
-    expect(game.board.getAllPieces().length).toBe(32)
+    const board = createBoard()
+    expect(board.getAllPieces().length).toBe(32)
   })
 
   it('updatePiece', () => {
@@ -66,9 +66,7 @@ describe('Board', () => {
     const z3 = new Z({ color: 'r', pos: [4, 6], key: 'rz3' })
     const z4 = new Z({ color: 'r', pos: [6, 6], key: 'rz4' })
     const z5 = new Z({ color: 'r', pos: [8, 6], key: 'rz5' })
-    const pieces = [
-      bm1, bp1, j1, m1, m2, x1, x2, b, s1, s2, j2, p1, p2, z1, z2, z3, z4, z5
-    ]
+    const pieces = [bm1, bp1, j1, m1, m2, x1, x2, b, s1, s2, j2, p1, p2, z1, z2, z3, z4, z5]
     const board = new Board(pieces)
     board.updatePiece(j1, [0, 8])
     board.updatePiece(m1, [0, 7])
@@ -80,5 +78,28 @@ describe('Board', () => {
     expect(board.cells[1][0]).toBe(bm1)
     expect(bm1.pos).toEqual([1, 0])
     board.backMoves()
+  })
+
+  it('isFinish', () => {
+    ;[
+      {
+        pieces: [
+          new Z({ color: 'r', pos: [8, 6], key: 'rz5' }),
+          new B({ color: 'r', pos: [4, 9], key: 'rb' }),
+          new B({ color: 'b', pos: [4, 0], key: 'rb' })
+        ],
+        expected: false
+      },
+      {
+        pieces: [
+          new Z({ color: 'r', pos: [8, 6], key: 'rz5' }),
+          new B({ color: 'b', pos: [4, 0], key: 'rb' })
+        ],
+        expected: true
+      }
+    ].forEach(({ pieces, expected }) => {
+      const board = new Board(pieces)
+      expect(board.isFinish()).toBe(expected)
+    })
   })
 })

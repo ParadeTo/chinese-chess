@@ -1,14 +1,14 @@
 import WeightEvalModel from '@/ai/minimax/eval/weight'
 import Board from '@/chess/Board'
-import { createGame } from '@/chess/Game'
+import { createBoard } from '@/chess/Game'
 import { B, J } from '@/chess/Piece'
 
 describe('WeightEvalModel', () => {
   it('eval a new game', () => {
     const model = new WeightEvalModel()
-    const game = createGame()
-    expect(model.eval(game.board, 'r')).toBe(0)
-    expect(model.eval(game.board, 'b')).toBe(0)
+    const board = createBoard()
+    expect(model.eval(board, 'r')).toBe(0)
+    expect(model.eval(board, 'b')).toBe(0)
   })
 
   it('eval board', () => {

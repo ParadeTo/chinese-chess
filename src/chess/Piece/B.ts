@@ -13,9 +13,39 @@ export default class B extends Piece {
     const {
       pos: [currentX, currentY]
     } = this
-    return [[-1, 0], [1, 0], [0, 1], [0, -1]]
+
+    const nextPositions = [[-1, 0], [1, 0], [0, 1], [0, -1]]
       .map(([dx, dy]) => [currentX + dx, currentY + dy])
       .filter(pos => this.canMove(pos, board))
+
+    let opponentBoss
+    if (currentY < 3) {
+      for (let i = 7; i <= 9; i++) {
+        const piece = board.cells[currentX][i]
+        if (piece) opponentBoss = piece
+      }
+      if (opponentBoss) {
+        let hasPiece = false
+        for (let i = currentY + 1; i < opponentBoss.pos[1]; i++) {
+          if (board.cells[currentX][i]) hasPiece = true
+        }
+        !hasPiece && nextPositions.push([currentX, opponentBoss.pos[1]])
+      }
+    } else {
+      for (let i = 0; i <= 2; i++) {
+        const piece = board.cells[currentX][i]
+        if (piece) opponentBoss = piece
+      }
+      if (opponentBoss) {
+        let hasPiece = false
+        for (let i = currentY - 1; i > opponentBoss.pos[1]; i--) {
+          if (board.cells[currentX][i]) hasPiece = true
+        }
+        !hasPiece && nextPositions.push([currentX, opponentBoss.pos[1]])
+      }
+    }
+
+    return nextPositions
   }
 
   canMove(dest: number[], board: Board): boolean {
@@ -23,6 +53,9 @@ export default class B extends Piece {
       pos: [origX, origY]
     } = this
     const [destX, destY] = dest
+
+    const destPiece = board.cells[destX][destY]
+    if (destPiece && destPiece.role === 'b' && destPiece.color !== this.color) return true
 
     if (
       Board.inNinePlace(dest, this.side) &&

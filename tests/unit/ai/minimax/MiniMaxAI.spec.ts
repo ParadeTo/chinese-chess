@@ -1,4 +1,4 @@
-import { createGame } from '@/chess/Game'
+import { createBoard } from '@/chess/Game'
 import MiniMaxAI from '@/ai/minimax'
 
 const pieceNodesNum = {
@@ -13,9 +13,9 @@ const pieceNodesNum = {
 
 describe('MiniMaxAI', () => {
   it('generateNodes', () => {
-    const game = createGame()
+    const board = createBoard()
     const minimaxAI = new MiniMaxAI({ depth: 2 })
-    const piecesNodes = minimaxAI.generateNodes(game.board, 'r', true)
+    const piecesNodes = minimaxAI.generateNodes(board, 'r', true)
     piecesNodes.forEach(pieceNodes => {
       expect(pieceNodes.nodes.length).toBe(pieceNodesNum[pieceNodes.piece.role])
     })

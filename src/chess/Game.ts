@@ -43,7 +43,7 @@ export default class Game {
   }
 }
 
-export const createGame = () => {
+export const createBoard = () => {
   const pieces = [
     new J({ color: 'b', pos: [0, 0], key: 'bj1' }),
     new M({ color: 'b', pos: [1, 0], key: 'bm1' }),
@@ -80,12 +80,17 @@ export const createGame = () => {
     new Z({ color: 'r', pos: [8, 6], key: 'rz5' })
   ]
   const board = new Board(pieces)
+  return board
+}
+
+export const createGame = (depth: number = 3) => {
+  const board = createBoard()
   // const tPlayer = new Player('b', 'robot', new RandomAI(board, 'b'))
   // const tPlayer = new Player('b', 'robot', new MiniMaxAI({ board, color: 'b', depth: 3 }))
   const tPlayer = new Player(
     'b',
     'robot',
-    new Bridge({ depth: 3, board, color: 'b', aiType: 'minimax', workerPath: '/ai.bundle.js' })
+    new Bridge({ depth, board, color: 'b', aiType: 'minimax', workerPath: '/ai.bundle.js' })
   )
   const bPlayer = new Player('r', 'human')
   return new Game(board, bPlayer, tPlayer)

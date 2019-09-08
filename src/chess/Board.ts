@@ -51,6 +51,10 @@ export default class Board {
     return (y >= 0 && y < 5 && side === 't') || (y > 4 && y < Board.HEIGHT && side === 'b')
   }
 
+  isFinish () {
+    return !(this.pieces.r.find(piece => piece.role === 'b') && this.pieces.b.find(piece => piece.role === 'b'))
+  }
+
   getAllPieces() {
     return [...this.pieces.r, ...this.pieces.b]
   }
