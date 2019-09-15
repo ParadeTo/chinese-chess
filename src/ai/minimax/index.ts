@@ -1,17 +1,8 @@
 import { IAI, INextMove } from '../AI'
 import { Piece, Color, J } from '@/chess/Piece'
-import Board from '@/chess/Board'
+import Board, { IPieceMoves } from '@/chess/Board'
 import { IEvalModel } from './eval'
 import WeightEvalModel from './eval/weight'
-
-interface IPieceNodes {
-  piece: Piece
-  from: number[]
-  nodes: {
-    to: number[]
-    value: number
-  }[]
-}
 
 export default class MiniMaxAI implements IAI {
   depth: number
@@ -29,24 +20,6 @@ export default class MiniMaxAI implements IAI {
     this.depth = depth
     this.evalModel = evalModel
     this.cutOff = cutOff
-  }
-
-  generateNodes(board: Board, color: Color, forSelf: boolean = false) {
-    let _color: Color = color
-    if (!forSelf) {
-      _color = color === 'r' ? 'b' : 'r'
-    }
-    const pieces = board.pieces[_color]
-    const piecesNodes: IPieceNodes[] = []
-    for (let piece of pieces) {
-      const nodes = piece.getNextPositions(board).map(pos => ({
-        to: pos,
-        value: -Infinity
-      }))
-      const pieceNodes = { piece, from: piece.pos, nodes }
-      piecesNodes.push(pieceNodes)
-    }
-    return piecesNodes
   }
 
   // negamax
@@ -73,8 +46,12 @@ export default class MiniMaxAI implements IAI {
   //   return max * (forSelf ? 1 : -1)
   // }
 
+  static getOpponentColor(color: Color) {
+    return color === 'r' ? 'b' : 'r'
+  }
+
   // minimax
-  search(board: Board, color: Color, depth: number, forSelf: boolean, alpha: number, beta: number): number {
+  search(board: Board, color: Color, depth: number, isMax: boolean, alpha: number, beta: number): number {
     if (depth === 0 || board.isFinish()) {
       // eval value from current ai's perspective
       // for self, want the value to be max
@@ -82,15 +59,16 @@ export default class MiniMaxAI implements IAI {
       return this.evalModel.eval(board, color)
     }
 
-    let value = forSelf ? -Infinity : Infinity
-    const piecesNodes = this.generateNodes(board, color, forSelf)
+    let value = isMax ? -Infinity : Infinity
+    const piecesNodes = board.generateMoves(isMax ? color : MiniMaxAI.getOpponentColor(color))
     for (let pieceNodes of piecesNodes) {
-      const { piece, from, nodes } = pieceNodes
+      const { from: [x, y], nodes } = pieceNodes
+      const piece = board.cells[x][y] as Piece
       for (let node of nodes) {
         board.updatePiece(piece, node.to)
-        const _value = this.search(board, color, depth - 1, !forSelf, alpha, beta)
+        const _value = this.search(board, color, depth - 1, !isMax, alpha, beta)
         board.backMoves()
-        if (forSelf) {
+        if (isMax) {
           value = Math.max(value, _value)
           if (this.cutOff) {
             alpha = Math.max(alpha, value)
@@ -112,26 +90,34 @@ export default class MiniMaxAI implements IAI {
     return value
   }
 
-  getNextMove(board: Board, color: Color): Promise<INextMove | null> {
-    console.time('getNextMove')
-    const piecesNodes = this.generateNodes(board, color, true)
+  getBestMove(board: Board, color: Color, piecesMoves: IPieceMoves[]): Promise<{ bestMove: INextMove, value: number}> {
     let max = -Infinity
     let bestMove: INextMove | null = null
-    let bestMovePiece = null
-    for (let pieceNodes of piecesNodes) {
-      const { piece, from, nodes } = pieceNodes
+    console.time('getBestMove')
+    for (let pieceNodes of piecesMoves) {
+      const { from: [x, y], nodes } = pieceNodes
+      const piece = board.cells[x][y] as Piece
       for (let node of nodes) {
         board.updatePiece(piece, node.to)
         const value = this.search(board, color, this.depth - 1, false, -Infinity, Infinity)
         board.backMoves()
         if (value > max) {
-          bestMovePiece = piece
+          // bestMovePiece = piece
           max = value
           bestMove = { from: piece.pos, to: node.to }
         }
       }
     }
+    console.timeEnd('getBestMove')
+    return Promise.resolve({ bestMove: bestMove as INextMove, value: max })
+  }
+
+  async getNextMove(board: Board, color: Color): Promise<INextMove | null> {
+    console.time('getNextMove')
+    const piecesMoves = board.generateMoves(color)
+    const { bestMove } = await this.getBestMove(board, color, piecesMoves)
     console.timeEnd('getNextMove')
+    const bestMovePiece = board.cells[bestMove.from[0]][bestMove.from[1]]
     if (bestMovePiece) board.updatePiece(bestMovePiece, (bestMove as INextMove).to)
     return Promise.resolve(bestMove)
   }

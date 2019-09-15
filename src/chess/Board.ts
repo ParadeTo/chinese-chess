@@ -8,6 +8,14 @@ export interface IRecord {
   eaten: Piece | null
 }
 
+export interface IPieceMoves {
+  from: number[]
+  nodes: {
+    to: number[]
+    value: number
+  }[]
+}
+
 export default class Board {
   static WIDTH = 9
   static HEIGHT = 10
@@ -49,6 +57,20 @@ export default class Board {
   static inOwnSide(pos: number[], side: Side) {
     const [x, y] = pos
     return (y >= 0 && y < 5 && side === 't') || (y > 4 && y < Board.HEIGHT && side === 'b')
+  }
+
+  generateMoves(color: Color) {
+    const pieces = this.pieces[color]
+    const piecesNodes: IPieceMoves[] = []
+    for (let piece of pieces) {
+      const nodes = piece.getNextPositions(this).map(pos => ({
+        to: pos,
+        value: -Infinity
+      }))
+      const pieceNodes = { from: piece.pos, nodes }
+      piecesNodes.push(pieceNodes)
+    }
+    return piecesNodes
   }
 
   isFinish () {

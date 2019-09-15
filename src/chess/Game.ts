@@ -83,7 +83,7 @@ export const createBoard = () => {
   return board
 }
 
-export const createGame = (depth: number = 3) => {
+export const createGame = (depth: number = 4) => {
   const board = createBoard()
   // const tPlayer = new Player('b', 'robot', new RandomAI(board, 'b'))
   // const tPlayer = new Player('b', 'robot', new MiniMaxAI({ board, color: 'b', depth: 3 }))

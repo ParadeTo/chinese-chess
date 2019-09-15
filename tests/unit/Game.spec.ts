@@ -1,6 +1,6 @@
 import Game, { createBoard } from '@/chess/Game'
 import Player from '@/chess/Player'
-import MiniMaxAI from '@/ai/minimax';
+import MiniMaxAI from '@/ai/minimax'
 
 let game: Game
 describe('Game.ts', () => {

@@ -9,10 +9,11 @@ import { Piece, Color } from '@/chess/Piece'
  * Let the Bridge implements IAI is to use it as AI
  */
 export default class Bridge implements IAI {
-  worker: Worker
+  workers: Worker[] = []
   event: Event
   constructor({
     depth = 1,
+    workerNum = 6,
     board,
     color,
     aiType,
@@ -23,10 +24,13 @@ export default class Bridge implements IAI {
     aiType: AiType
     workerPath: string
     depth?: number
+    workerNum?: number
   }) {
     this.event = new Event()
-    this.worker = new Worker(workerPath)
-    this.worker.onmessage = this.onMessage.bind(this)
+    for (let i = 0; i < workerNum; i++) {
+      this.workers[i] = new Worker(workerPath)
+      this.workers[i].onmessage = this.onMessage.bind(this)
+    }
     this.initAI({ aiType, depth })
   }
 
@@ -38,20 +42,47 @@ export default class Bridge implements IAI {
       case Msg.RETURN_NEXT_MOVE:
         this.event.emit(Msg.RETURN_NEXT_MOVE, data)
         break
+      case Msg.RETURN_BEST_MOVE:
+        this.event.emit(Msg.RETURN_BEST_MOVE, data)
+        break
       default:
         break
     }
   }
 
   initAI(data: { depth?: number; aiType: AiType }) {
-    this.worker.postMessage({ type: Msg.INIT_AI, data })
+    this.workers.forEach(worker => {
+      worker.postMessage({ type: Msg.INIT_AI, data })
+    })
   }
 
   getNextMove(board: Board, color: Color): Promise<INextMove> {
     return new Promise<{ from: number[]; to: number[] }>((resolve, reject) => {
-      this.worker.postMessage({ type: Msg.GET_NEXT_MOVE, data: { board, color } })
-      this.event.on(Msg.RETURN_NEXT_MOVE, data => {
-        resolve(data as { from: number[]; to: number[] })
+      const piecesMoves = board.generateMoves(color)
+      const n = Math.ceil(piecesMoves.length / this.workers.length)
+      let partionNum = 0
+      this.workers.forEach((worker, idx) => {
+        const moves = piecesMoves.slice(idx * n, (idx + 1) * n)
+        if (moves.length > 0) {
+          partionNum++
+          worker.postMessage({
+            type: Msg.GET_BEST_MOVE,
+            data: { board, color, piecesMoves: moves }
+          })
+        }
+      })
+      let i = 0
+      let max = -Infinity
+      let bestMove: INextMove
+      this.event.on(Msg.RETURN_BEST_MOVE, data => {
+        if (data.value > max) {
+          max = data.value
+          bestMove = data.bestMove
+        }
+        i++
+        if (i === partionNum) {
+          resolve(bestMove)
+        }
       })
     })
   }
