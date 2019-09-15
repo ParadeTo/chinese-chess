@@ -1,7 +1,7 @@
 <template>
   <div class="home">
-    <ChineseChess :game="game" />
-    <button class="btn" @click="onStart">{{ started ? 'ReStart' : 'Start' }}</button>
+    <div class="chinese-chess"><ChineseChess :game="game" /></div>
+    <a @click="onStart" href="javascript:;" class="weui-btn weui-btn_block weui-btn_primary btn">{{ started ? '重新开会' : '开始' }}</a>
   </div>
 </template>
 
@@ -10,7 +10,7 @@ import { Component, Vue } from 'vue-property-decorator'
 import { mapState, mapMutations } from 'vuex'
 import { Getter, Mutation, namespace } from 'vuex-class'
 
-import ChineseChess from '@/components/ChineseChess.vue'
+import ChineseChess from '@/components/ChineseChess/index.vue'
 import Game from '../chess/Game'
 import { IGameState } from '../store/types'
 
@@ -40,24 +40,7 @@ export default class Home extends Vue {
 </script>
 
 <style scoped lang='less'>
-@import '../var.less';
-.btn {
-  display: inline-block;
-  padding: 0.7em 1.4em;
-  margin: 20% 0 0;
-  border-radius: 0.15em;
-  box-sizing: border-box;
-  text-decoration: none;
-  text-transform: uppercase;
-  font-weight: bold;
-  color: #ffffff;
-  background-color: @primary-color;
-  box-shadow: inset 0 -0.6em 0 -0.35em rgba(0, 0, 0, 0.17);
-  text-align: center;
-  position: relative;
-  width: 70%;
-  &:active {
-    top: 0.1em;
-  }
+.chinese-chess {
+  // margin: 10px 10px;
 }
 </style>

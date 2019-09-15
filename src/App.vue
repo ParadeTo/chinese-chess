@@ -35,7 +35,7 @@
   </div>
 </template>
 
-<style lang="less">
+<style lang="less" scoped>
 #app {
   font-family: 'Avenir', Helvetica, Arial, sans-serif;
   -webkit-font-smoothing: antialiased;
@@ -55,5 +55,14 @@
 }
 .weui-tabbar {
   position: fixed!important;
+}
+</style>
+
+<style lang="less">
+.weui-btn.btn {
+  margin: 20px 10px;
+  font-size: 16px;
+  font-weight: 700;
+  color: #fff;
 }
 </style>

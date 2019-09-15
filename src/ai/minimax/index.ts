@@ -99,7 +99,7 @@ export default class MiniMaxAI implements IAI {
       const piece = board.cells[x][y] as Piece
       for (let node of nodes) {
         board.updatePiece(piece, node.to)
-        const value = this.search(board, color, this.depth - 1, false, -Infinity, Infinity)
+        const value = this.search(board, MiniMaxAI.getOpponentColor(color), this.depth - 1, false, -Infinity, Infinity)
         board.backMoves()
         if (value > max) {
           // bestMovePiece = piece

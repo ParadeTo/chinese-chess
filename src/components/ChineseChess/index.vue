@@ -28,7 +28,7 @@
 import { Component, Prop, Vue, Watch } from 'vue-property-decorator'
 import Game from '@/chess/Game'
 import Board, { UpdatePieceResult } from '@/chess/Board'
-import { Piece } from '../chess/Piece'
+import { Piece } from '@/chess/Piece'
 
 const startX = 7
 const startY = 2
