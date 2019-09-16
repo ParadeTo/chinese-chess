@@ -5,7 +5,7 @@ import Board from '../Board'
  * 炮
  */
 export default class P extends Piece {
-  constructor(params: { color: Color, pos: number[], side?: Side, key?: string }) {
+  constructor(params: { color: Color; pos: number[]; side?: Side; key?: string }) {
     super({ role: 'p', ...params })
   }
 
@@ -17,7 +17,7 @@ export default class P extends Piece {
     const { cells } = board
     const destPiece = board.getPieceByPos(dest)
 
-    if (destX === origX && destY === origY) return false
+    if ((destX === origX && destY === origY) || (destX !== origX && destY !== origY)) return false
 
     if (destX === origX) {
       let startY = origY + 1
@@ -80,7 +80,6 @@ export default class P extends Piece {
     }
     i = currentX + 1
     while (i < Board.WIDTH) {
-      const pos = [i, currentY]
       const piece1 = cells[i][currentY]
       if (piece1) {
         let j = i + 1
@@ -94,7 +93,7 @@ export default class P extends Piece {
         }
         break
       }
-      positions.push(pos)
+      positions.push([i, currentY])
       i++
     }
     i = currentY - 1

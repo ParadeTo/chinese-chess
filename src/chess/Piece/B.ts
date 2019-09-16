@@ -22,7 +22,7 @@ export default class B extends Piece {
     if (currentY < 3) {
       for (let i = 7; i <= 9; i++) {
         const piece = board.cells[currentX][i]
-        if (piece) opponentBoss = piece
+        if (piece && piece.role === 'b') opponentBoss = piece
       }
       if (opponentBoss) {
         let hasPiece = false
@@ -34,7 +34,7 @@ export default class B extends Piece {
     } else {
       for (let i = 0; i <= 2; i++) {
         const piece = board.cells[currentX][i]
-        if (piece) opponentBoss = piece
+        if (piece && piece.role === 'b') opponentBoss = piece
       }
       if (opponentBoss) {
         let hasPiece = false

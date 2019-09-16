@@ -13,7 +13,7 @@ export default class Bridge implements IAI {
   event: Event
   constructor({
     depth = 1,
-    workerNum = 6,
+    workerNum = 8,
     board,
     color,
     aiType,

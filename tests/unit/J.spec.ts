@@ -40,7 +40,7 @@ describe('J', () => {
         expected: false
       },
       {
-        pieces: [new J({ color: 'r', pos: [9, 0] }), new Z({ color: 'b', pos: [0,0] })],
+        pieces: [new J({ color: 'r', pos: [8, 0] }), new Z({ color: 'b', pos: [0, 0] })],
         pos: [0, 0],
         expected: true
       }

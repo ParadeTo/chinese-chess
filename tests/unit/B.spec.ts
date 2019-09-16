@@ -95,6 +95,10 @@ describe('B', () => {
       {
         pieces: [new B({ color: 'b', pos: [5, 0] }), new B({ color: 'r', pos: [5, 9] }), new J({ color: 'b', pos: [5, 6] })],
         nextPositions: [[4, 0], [5, 1]]
+      },
+      {
+        pieces: [new B({ color: 'b', pos: [5, 0] }), new J({ color: 'r', pos: [5, 9] })],
+        nextPositions: [[4, 0], [5, 1]]
       }
     ].forEach(({ pieces, nextPositions }) => {
       const board = new Board(pieces)

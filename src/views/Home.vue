@@ -1,7 +1,7 @@
 <template>
   <div class="home">
     <div class="chinese-chess"><ChineseChess :game="game" /></div>
-    <a @click="onStart" href="javascript:;" class="weui-btn weui-btn_block weui-btn_primary btn">{{ started ? '重新开会' : '开始' }}</a>
+    <a @click="onStart" href="javascript:;" class="weui-btn weui-btn_block weui-btn_primary btn">{{ started ? '重新开始' : '开始' }}</a>
   </div>
 </template>
 

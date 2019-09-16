@@ -1,7 +1,7 @@
 import { Color } from './Piece'
 import { IAI } from '@/ai/AI'
 
-type Name = 'human' | 'robot'
+type Name = 'human' | 'ai'
 
 export default class Player {
   color: Color
@@ -10,6 +10,6 @@ export default class Player {
   constructor(color: Color, name: Name, ai?: IAI) {
     this.color = color
     this.name = name
-    if (name === 'robot') this.ai = ai
+    if (name === 'ai') this.ai = ai
   }
 }

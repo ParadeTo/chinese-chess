@@ -53,9 +53,7 @@ export default class MiniMaxAI implements IAI {
   // minimax
   search(board: Board, color: Color, depth: number, isMax: boolean, alpha: number, beta: number): number {
     if (depth === 0 || board.isFinish()) {
-      // eval value from current ai's perspective
-      // for self, want the value to be max
-      // for opponent, want the value to be min
+      // 从 ai 的角度来评估局势
       return this.evalModel.eval(board, color)
     }
 
@@ -64,6 +62,11 @@ export default class MiniMaxAI implements IAI {
     for (let pieceNodes of piecesNodes) {
       const { from: [x, y], nodes } = pieceNodes
       const piece = board.cells[x][y] as Piece
+      if (!piece) {
+        console.log(piecesNodes, pieceNodes)
+        debugger
+        continue
+      }
       for (let node of nodes) {
         board.updatePiece(piece, node.to)
         const _value = this.search(board, color, depth - 1, !isMax, alpha, beta)
@@ -99,7 +102,7 @@ export default class MiniMaxAI implements IAI {
       const piece = board.cells[x][y] as Piece
       for (let node of nodes) {
         board.updatePiece(piece, node.to)
-        const value = this.search(board, MiniMaxAI.getOpponentColor(color), this.depth - 1, false, -Infinity, Infinity)
+        const value = this.search(board, color, this.depth - 1, false, -Infinity, Infinity)
         board.backMoves()
         if (value > max) {
           // bestMovePiece = piece

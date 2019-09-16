@@ -21,20 +21,20 @@ export default class Board {
   static HEIGHT = 10
 
   public currentPlayer: Color = 'r'
-  public cells: (Piece | null)[][] = []
-  public pieces: {
+  public readonly cells: (Piece | null)[][] = []
+  public readonly pieces: {
     [key in Color]: Piece[]
   } = {
     r: [],
     b: []
   }
 
-  private records: IRecord[] = []
+  private readonly records: IRecord[] = []
 
   constructor(pieces: Piece[]) {
-    for (let i = 0; i < Board.HEIGHT; i++) {
+    for (let i = 0; i < Board.WIDTH; i++) {
       this.cells[i] = []
-      for (let j = 0; j < Board.WIDTH; j++) {
+      for (let j = 0; j < Board.HEIGHT; j++) {
         this.cells[i][j] = null
       }
     }
@@ -83,8 +83,7 @@ export default class Board {
 
   getPieceByPos(pos: number[]) {
     const [x, y] = pos
-    const cells = Object.values(this.cells)
-    const destPiece = cells[x][y]
+    const destPiece = this.cells[x][y]
     return destPiece
   }
 
@@ -107,6 +106,9 @@ export default class Board {
   }
 
   updatePiece(piece: Piece, newPos: number[]): UpdatePieceResult {
+    if (!piece) {
+      debugger
+    }
     if (!this.canMove(piece, newPos)) return { result: false }
 
     const [newX, newY] = newPos

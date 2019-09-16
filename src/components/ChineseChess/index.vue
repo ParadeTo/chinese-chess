@@ -29,6 +29,7 @@ import { Component, Prop, Vue, Watch } from 'vue-property-decorator'
 import Game from '@/chess/Game'
 import Board, { UpdatePieceResult } from '@/chess/Board'
 import { Piece } from '@/chess/Piece'
+import Player from '@/chess/Player'
 
 const startX = 7
 const startY = 2
@@ -89,7 +90,7 @@ export default class ChineseChess extends Vue {
     if (this.gameOver) return
 
     if (this.selectedPiece && this.selectedPiece.color !== piece.color) {
-      this.processOneRound(this.selectedPiece, piece.pos)
+      this.moveStepForHuman(this.selectedPiece, piece.pos)
       return
     }
 
@@ -121,26 +122,27 @@ export default class ChineseChess extends Vue {
 
     const selectedPiece = this.pieces.find(piece => piece.selected)
     if (selectedPiece) {
-      this.processOneRound(selectedPiece, [x, y])
+      this.moveStepForHuman(selectedPiece, [x, y])
     }
   }
 
-  async processOneRound(piece: Piece, dest: number[]) {
+  moveStepForHuman(piece: Piece, dest: number[]) {
     const { result, eatenPiece } = this.game.updatePiece(piece, dest)
     if (result) {
       eatenPiece && this.rmEatenPiece(eatenPiece)
       if (eatenPiece && eatenPiece.role === 'b') return this.overGame(eatenPiece)
       this.game.switchPlayer()
       this.selectedPiece.selected = false
-      const { result: autoMoveResult, eatenPiece: autoMoveEatenPiece } = await this.autoMove()
-      if (autoMoveResult) {
-        this.game.switchPlayer()
-        autoMoveEatenPiece && this.rmEatenPiece(autoMoveEatenPiece)
-        if (autoMoveEatenPiece && autoMoveEatenPiece.role === 'b') return this.overGame(autoMoveEatenPiece)
-      }
-      return true
     }
-    return false
+  }
+
+  async moveStepForAi() {
+    const { result: autoMoveResult, eatenPiece: autoMoveEatenPiece } = await this.autoMove()
+    if (autoMoveResult) {
+      this.game.switchPlayer()
+      autoMoveEatenPiece && this.rmEatenPiece(autoMoveEatenPiece)
+      if (autoMoveEatenPiece && autoMoveEatenPiece.role === 'b') return this.overGame(autoMoveEatenPiece)
+    }
   }
 
   overGame(eatenPiece: Piece) {
@@ -154,7 +156,7 @@ export default class ChineseChess extends Vue {
     return Promise.resolve(await this.game.autoMove())
     // return new Promise((resolve, reject) => {
     //   setTimeout(async () => {
-    //     resolve()
+    //     resolve()x
     //   }, 400)
     // })
   }
@@ -167,6 +169,13 @@ export default class ChineseChess extends Vue {
   @Watch('game')
   onGameChange() {
     this.pieces = this.game && this.game.board && this.game.board.getAllPieces()
+  }
+
+  @Watch('game.currentPlayer', { deep: true })
+  onChange() {
+    if(this.game.currentPlayer.name === 'ai') {
+      this.moveStepForAi()
+    }
   }
 }
 </script>
