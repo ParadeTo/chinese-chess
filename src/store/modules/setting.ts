@@ -7,12 +7,12 @@ import { deepClone } from '@/utils'
 
 const defaultPlayers: IPlayer[] = [
   {
-    role: 'a',
+    type: 'ai',
     color: 'b',
-    level: 3
+    level: 1
   },
   {
-    role: 'h',
+    type: 'human',
     color: 'r'
   }
 ]
@@ -31,15 +31,16 @@ const mutations: MutationTree<ISettingState> = {
     state.players = deepClone(state.tmpPlayers)
   },
 
-  editPlayers(state: ISettingState, { i, field, value }: { i: number; field: string; value: any }) {
+  editPlayers(state: ISettingState, { i, field, value }: { i: number; field: keyof IPlayer; value: any }) {
     const players = deepClone(state.tmpPlayers)
     players[i][field] = value
+    if (field === 'level') players[i][field] = +value
     if (field === 'color') {
       for (let j = 0; j < players.length; j++) {
         if (j !== i) players[j].color = players[i].color === 'r' ? 'b' : 'r'
       }
     }
-    if (field === 'role' && value === 'a' && !players[i].level) {
+    if (field === 'type' && value === 'ai' && !players[i].level) {
       players[i].level = 1
     }
     state.tmpPlayers = players

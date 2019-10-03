@@ -1,15 +1,15 @@
 import { Color } from './Piece'
 import { IAI } from '@/ai/AI'
 
-type Name = 'human' | 'ai'
+export type PlayerType = 'human' | 'ai'
 
 export default class Player {
   color: Color
-  name: Name
+  type: PlayerType
   ai?: IAI
-  constructor(color: Color, name: Name, ai?: IAI) {
+  constructor(color: Color, type: PlayerType, ai?: IAI) {
     this.color = color
-    this.name = name
-    if (name === 'ai') this.ai = ai
+    this.type = type
+    if (type === 'ai') this.ai = ai
   }
 }

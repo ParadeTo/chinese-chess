@@ -6,7 +6,7 @@ let game: Game
 describe('Game.ts', () => {
   beforeEach(() => {
     const board = createBoard()
-    const tPlayer = new Player('b', 'robot', new MiniMaxAI({ depth: 3 }))
+    const tPlayer = new Player('b', 'ai', new MiniMaxAI({ depth: 3 }))
     const bPlayer = new Player('r', 'human')
     game = new Game(board, bPlayer, tPlayer)
   })

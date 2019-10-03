@@ -106,9 +106,6 @@ export default class Board {
   }
 
   updatePiece(piece: Piece, newPos: number[]): UpdatePieceResult {
-    if (!piece) {
-      debugger
-    }
     if (!this.canMove(piece, newPos)) return { result: false }
 
     const [newX, newY] = newPos
@@ -118,6 +115,7 @@ export default class Board {
       const index = pieces.findIndex(piece => piece === eatenPiece)
       pieces.splice(index, 1)
     }
+
     const [origX, origY] = piece.pos
     this.cells[origX][origY] = null
     this.cells[newX][newY] = piece

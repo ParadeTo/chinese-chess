@@ -7,9 +7,9 @@
             <label for class="weui-label">{{'玩家' + (i+1)}}</label>
           </div>
           <div class="weui-cell__bd">
-            <select class="weui-select" :value="player.role" @change="e => onChange(i, 'role', e)">
-              <option value="a">电脑</option>
-              <option value="h">人类</option>
+            <select class="weui-select" :value="player.type" @change="e => onChange(i, 'type', e)">
+              <option value="ai">电脑</option>
+              <option value="human">人类</option>
             </select>
           </div>
         </div>
@@ -31,13 +31,13 @@
         <div
           :key="i+'l'"
           class="weui-cell weui-cell_select weui-cell_select-after level2"
-          v-if="player.role !== 'h'"
+          v-if="player.type !== 'human'"
         >
           <div class="weui-cell__hd">
             <label for class="weui-label">等级</label>
           </div>
           <div class="weui-cell__bd">
-            <select class="weui-select" v-model="player.level">
+            <select class="weui-select" :value="player.level" @change="e => onChange(i, 'level', e)">
               <option value="1">初级</option>
               <option value="2">中级</option>
               <option value="3">高级</option>
@@ -53,30 +53,31 @@
 
 <script lang="ts">
 import { Component, Vue, Watch } from 'vue-property-decorator'
-import { mapState, mapMutations } from 'vuex'
-import { Getter, Mutation, namespace } from 'vuex-class'
+import { mapState, mapMutations, mapActions } from 'vuex'
+import { Getter, Mutation, Action, namespace } from 'vuex-class'
 
 import Dialog from '@/components/Dialog/index.vue'
 
 import { deepEq } from '@/utils'
 
 import Setting from '../chess/Game'
-import { ISettingState, IPlayer } from '../store/types'
+import { ISettingState, IPlayer, IGameState } from '../store/types'
 import Event from '../event'
-import Player from '../chess/Player'
 
 const SettingMutation = namespace('setting', Mutation)
 const SettingGetter = namespace('setting', Getter)
+const GameAction = namespace('game', Action)
 
 @Component({
   components: {
     Dialog
   },
   computed: {
-    ...mapState('setting', ['players', 'tmpPlayers']),
+    ...mapState('setting', ['players', 'tmpPlayers'])
   },
   methods: {
-    ...mapMutations('setting', ['savePlayers', 'editPlayers'])
+    ...mapMutations('setting', ['savePlayers', 'editPlayers']),
+    ...mapActions('game', { initGame: 'initGame' })
   }
 })
 export default class SettingView extends Vue {
@@ -91,6 +92,12 @@ export default class SettingView extends Vue {
     value: any
   }) => ISettingState
 
+  @GameAction initGame!: () => IGameState
+
+  onStart() {
+    this.initGame()
+  }
+
   get changed() {
     return !deepEq(this.players, this.tmpPlayers)
   }
@@ -103,6 +110,7 @@ export default class SettingView extends Vue {
 
   onOk() {
     this.savePlayers()
+    this.initGame()
     this.showDialog = false
   }
 

@@ -42,11 +42,10 @@ const buff = 0.2
 export default class ChineseChess extends Vue {
   @Prop() private game!: Game
 
-  pieces: Piece[] = []
   width: number = 0
   height: number = 0
   gameOver: boolean = false
-  selectedPiece!: Piece
+  selectedPiece!: Piece | null
 
   mounted() {
     const { width } = (this.$refs.board as Element).getBoundingClientRect()
@@ -98,12 +97,11 @@ export default class ChineseChess extends Vue {
       piece.selected = false
       return
     }
-
     this.pieces.forEach(p => {
       p.selected = false
     })
 
-    if (piece.color === this.game.currentPlayer.color && this.game.currentPlayer.name === 'human') {
+    if (piece.color === this.game.currentPlayer.color && this.game.currentPlayer.type === 'human') {
       piece.selected = true
       this.selectedPiece = piece
     }
@@ -120,19 +118,17 @@ export default class ChineseChess extends Vue {
       return
     }
 
-    const selectedPiece = this.pieces.find(piece => piece.selected)
-    if (selectedPiece) {
-      this.moveStepForHuman(selectedPiece, [x, y])
+    if (this.selectedPiece) {
+      this.moveStepForHuman(this.selectedPiece, [x, y])
     }
   }
 
   moveStepForHuman(piece: Piece, dest: number[]) {
     const { result, eatenPiece } = this.game.updatePiece(piece, dest)
     if (result) {
-      eatenPiece && this.rmEatenPiece(eatenPiece)
       if (eatenPiece && eatenPiece.role === 'b') return this.overGame(eatenPiece)
       this.game.switchPlayer()
-      this.selectedPiece.selected = false
+      if (this.selectedPiece) this.selectedPiece = null
     }
   }
 
@@ -140,40 +136,28 @@ export default class ChineseChess extends Vue {
     const { result: autoMoveResult, eatenPiece: autoMoveEatenPiece } = await this.autoMove()
     if (autoMoveResult) {
       this.game.switchPlayer()
-      autoMoveEatenPiece && this.rmEatenPiece(autoMoveEatenPiece)
       if (autoMoveEatenPiece && autoMoveEatenPiece.role === 'b') return this.overGame(autoMoveEatenPiece)
     }
   }
 
   overGame(eatenPiece: Piece) {
-    this.$nextTick(() => {
+    setTimeout(() => {
       window.alert(`${eatenPiece.color === 'r' ? 'Black' : 'Red'} side win!`)
-    })
+    }, 1000)
     this.gameOver = true
   }
 
   async autoMove(): Promise<UpdatePieceResult> {
     return Promise.resolve(await this.game.autoMove())
-    // return new Promise((resolve, reject) => {
-    //   setTimeout(async () => {
-    //     resolve()x
-    //   }, 400)
-    // })
   }
 
-  rmEatenPiece(eatenPiece: Piece) {
-    const index = this.pieces.findIndex(piece => piece === eatenPiece)
-    this.pieces.splice(index, 1)
-  }
-
-  @Watch('game')
-  onGameChange() {
-    this.pieces = this.game && this.game.board && this.game.board.getAllPieces()
+  get pieces () {
+    return this.game && this.game.board && this.game.board.getAllPieces()
   }
 
   @Watch('game.currentPlayer', { deep: true })
   onChange() {
-    if(this.game.currentPlayer.name === 'ai') {
+    if (this.game.currentPlayer.type === 'ai') {
       this.moveStepForAi()
     }
   }

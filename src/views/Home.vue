@@ -7,15 +7,15 @@
 
 <script lang="ts">
 import { Component, Vue } from 'vue-property-decorator'
-import { mapState, mapMutations } from 'vuex'
-import { Getter, Mutation, namespace } from 'vuex-class'
+import { mapState, mapMutations, mapActions } from 'vuex'
+import { Getter, Mutation, namespace, Action } from 'vuex-class'
 
 import ChineseChess from '@/components/ChineseChess/index.vue'
 import Game from '../chess/Game'
 import { IGameState } from '../store/types'
 
 const GameGetter = namespace('game', Getter)
-const GameMutation = namespace('game', Mutation)
+const GameAction = namespace('game', Action)
 
 @Component({
   components: {
@@ -23,14 +23,14 @@ const GameMutation = namespace('game', Mutation)
   },
   computed: mapState('game', ['game']),
   methods: {
-    ...mapMutations('game', { initGame: 'initGame' })
+    ...mapActions('game', { initGame: 'initGame' })
   }
 })
 export default class Home extends Vue {
   private started = false
   private game!: Game
 
-  @GameMutation initGame!: () => IGameState
+  @GameAction initGame!: () => IGameState
 
   onStart() {
     this.started = true
