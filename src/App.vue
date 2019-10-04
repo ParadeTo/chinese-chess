@@ -27,7 +27,6 @@
           <div alt="" class="weui-tabbar__icon">
             <i class="iconfont icon-about"></i>
           </div>
-          <span class="weui-badge" style="position: absolute;top: -2px;right: -13px;">1</span>
         </span>
         <p class="weui-tabbar__label">About</p>
       </router-link>
