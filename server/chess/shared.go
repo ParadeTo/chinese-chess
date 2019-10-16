@@ -34,3 +34,14 @@ const (
 const (
 	INFINITE = 9999999
 )
+
+type TestDataCanMove struct {
+	pieces   []*Piece
+	pos      [2]int
+	expected bool
+}
+
+type TestDataGetNextPositions struct {
+	pieces        []*Piece
+	nextPositions [][2]int
+}

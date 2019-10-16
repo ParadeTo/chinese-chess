@@ -5,8 +5,68 @@ type J struct {
 }
 
 func (j *J) GetNextPositions(board *Board) [][2]int {
-	var a [][2]int
-	return a
+	var positions [][2]int
+	currentX := j.Pos[0]
+	currentY := j.Pos[1]
+	cells := board.Cells
+
+	i := currentX - 1
+	for i >= 0 {
+		pos := [2]int{i, currentY}
+		piece := cells[i][currentY]
+		if piece != nil {
+			if piece.Color != j.Color {
+				positions = append(positions, pos)
+			}
+			break
+		}
+		positions = append(positions, pos)
+		i--
+	}
+
+	i = currentX + 1
+	for i < WIDTH {
+		pos := [2]int{i, currentY}
+		piece := cells[i][currentY]
+		if piece != nil {
+			if piece.Color != j.Color {
+				positions = append(positions, pos)
+			}
+			break
+		}
+		positions = append(positions, pos)
+		i++
+	}
+
+	i = currentY - 1
+	for i >= 0 {
+		pos := [2]int{currentX, i}
+		piece := cells[currentX][i]
+		if piece != nil {
+			if piece.Color != j.Color {
+				positions = append(positions, pos)
+			}
+			break
+		}
+		positions = append(positions, pos)
+		i--
+	}
+
+	i = currentY + 1
+	for i < HEIGHT {
+		pos := [2]int{currentX, i}
+		piece := cells[currentX][i]
+		if piece != nil {
+			if piece.Color != j.Color {
+				positions = append(positions, pos)
+			}
+			break
+		}
+		positions = append(positions, pos)
+		i++
+	}
+
+	return positions
 }
 
 func (j *J) CanMove(dest [2]int, board *Board) bool {

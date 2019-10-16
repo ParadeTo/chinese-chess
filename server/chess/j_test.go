@@ -1,18 +1,85 @@
 package chess
 
 import (
+	"fmt"
 	. "github.com/smartystreets/goconvey/convey"
 	"testing"
 )
 
-type CanMoveTestData struct {
-	pieces   []*Piece
-	pos      [2]int
-	expected bool
+func TestJ_GetNextPositions(t *testing.T) {
+	testData := []TestDataGetNextPositions{
+		{
+			pieces: []*Piece{
+				NewJ("r", [2]int{4, 4}, Bottom, ""),
+			},
+			nextPositions: [][2]int{{3, 4}, {2, 4}, {1, 4}, {0, 4}, {5, 4}, {6, 4}, {7, 4}, {8, 4}, {4, 3}, {4, 2}, {4, 1}, {4, 0}, {4, 5}, {4, 6}, {4, 7}, {4, 8}, {4, 9}},
+		},
+		{
+			pieces: []*Piece{
+				NewJ("r", [2]int{4, 4}, Bottom, ""),
+				NewZ("r", [2]int{4, 4}, Bottom, ""),
+				NewZ("r", [2]int{5, 5}, Bottom, ""),
+			},
+			nextPositions: [][2]int{{3, 4}, {2, 4}, {1, 4}, {0, 4}, {5, 4}, {6, 4}, {7, 4}, {8, 4}, {4, 3}, {4, 2}, {4, 1}, {4, 0}, {4, 5}, {4, 6}, {4, 7}, {4, 8}, {4, 9}},
+		},
+		{
+			pieces: []*Piece{
+				NewJ("r", [2]int{4, 5}, Bottom, ""),
+				NewZ("b", [2]int{4, 4}, Bottom, ""),
+				NewZ("r", [2]int{5, 5}, Bottom, ""),
+			},
+			nextPositions: [][2]int{{3, 5}, {2, 5}, {1, 5}, {0, 5}, {4, 4}, {4, 6}, {4, 7}, {4, 8}, {4, 9}},
+		},
+		{
+			pieces: []*Piece{
+				NewJ("r", [2]int{4, 5}, Bottom, ""),
+				NewZ("b", [2]int{4, 6}, Bottom, ""),
+				NewZ("r", [2]int{5, 5}, Bottom, ""),
+			},
+			nextPositions: [][2]int{{3, 5}, {2, 5}, {1, 5}, {0, 5}, {4, 4}, {4, 3}, {4, 2}, {4, 1}, {4, 0}, {4, 6}},
+		},
+		{
+			pieces: []*Piece{
+				NewJ("r", [2]int{4, 5}, Bottom, ""),
+				NewZ("r", [2]int{4, 6}, Bottom, ""),
+				NewZ("r", [2]int{5, 5}, Bottom, ""),
+			},
+			nextPositions: [][2]int{{3, 5}, {2, 5}, {1, 5}, {0, 5}, {4, 4}, {4, 3}, {4, 2}, {4, 1}, {4, 0}},
+		},
+		{
+			pieces: []*Piece{
+				NewJ("r", [2]int{4, 5}, Bottom, ""),
+				NewZ("r", [2]int{4, 4}, Bottom, ""),
+				NewZ("b", [2]int{5, 5}, Bottom, ""),
+			},
+			nextPositions: [][2]int{{3, 5}, {2, 5}, {1, 5}, {0, 5}, {5, 5}, {4, 6}, {4, 7}, {4, 8}, {4, 9}},
+		},
+		{
+			pieces: []*Piece{
+				NewJ("r", [2]int{4, 5}, Bottom, ""),
+				NewZ("r", [2]int{3, 5}, Bottom, ""),
+			},
+			nextPositions: [][2]int{{5, 5}, {6, 5}, {7, 5}, {8, 5}, {4, 4}, {4, 3}, {4, 2}, {4, 1}, {4, 0}, {4, 6}, {4, 7}, {4, 8}, {4, 9}},
+		},
+		{
+			pieces: []*Piece{
+				NewJ("r", [2]int{4, 5}, Bottom, ""),
+				NewZ("b", [2]int{3, 5}, Bottom, ""),
+				NewZ("b", [2]int{4, 6}, Bottom, ""),
+			},
+			nextPositions: [][2]int{{3, 5}, {5, 5}, {6, 5}, {7, 5}, {8, 5}, {4, 4}, {4, 3}, {4, 2}, {4, 1}, {4, 0}, {4, 6}},
+		},
+	}
+	for i, data := range testData {
+		Convey(fmt.Sprintf("#%d GetNextPositions", i+1), t, func() {
+			board := NewBoard(data.pieces)
+			So(board.GetNextPositions(data.pieces[0]), ShouldResemble, data.nextPositions)
+		})
+	}
 }
 
-func TestJCanMove(t *testing.T) {
-	testData := []CanMoveTestData{
+func TestJ_CanMove(t *testing.T) {
+	testData := []TestDataCanMove{
 		{
 			pieces: []*Piece{
 				NewJ("r", [2]int{0, 0}, Bottom, ""),
@@ -77,10 +144,10 @@ func TestJCanMove(t *testing.T) {
 			expected: true,
 		},
 	}
-	for _, data := range testData {
-		Convey("Given a board, the result must be right.", t, func() {
+	for i, data := range testData {
+		Convey(fmt.Sprintf("#%d CanMove", i+1), t, func() {
 			board := NewBoard(data.pieces)
-			So(data.expected, ShouldEqual, board.CanMove(data.pieces[0], data.pos))
+			So(board.CanMove(data.pieces[0], data.pos), ShouldEqual, data.expected)
 		})
 	}
 }

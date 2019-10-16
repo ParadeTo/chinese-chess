@@ -11,8 +11,49 @@ func (z *Z) isCrossedRiver() bool {
 }
 
 func (z *Z) GetNextPositions(board *Board) [][2]int {
-	var a [][2]int
-	return a
+	var moves [][2]int
+	var positions [][2]int
+	currentX := z.Pos[0]
+	currentY := z.Pos[1]
+
+	if z.Side == "b" {
+		if currentY > 4 {
+			moves = append(moves, [2]int{0, -1})
+		} else {
+			if currentY-1 >= 0 {
+				moves = append(moves, [2]int{0, -1})
+			}
+			if currentX-1 >= 0 {
+				moves = append(moves, [2]int{-1, 0})
+			}
+			if currentX+1 < WIDTH {
+				moves = append(moves, [2]int{1, 0})
+			}
+		}
+	} else {
+		if currentY < 5 {
+			moves = append(moves, [2]int{0, 1})
+		} else {
+			if currentY+1 < HEIGHT {
+				moves = append(moves, [2]int{0, 1})
+			}
+			if currentX-1 >= 0 {
+				moves = append(moves, [2]int{-1, 0})
+			}
+			if currentX+1 < WIDTH {
+				moves = append(moves, [2]int{1, 0})
+			}
+		}
+	}
+
+	for _, move := range moves {
+		dest := [2]int{currentX + move[0], currentY + move[1]}
+		if z.CanMove(dest, board) {
+			positions = append(positions, dest)
+		}
+	}
+
+	return positions
 }
 
 func (z *Z) CanMove(dest [2]int, board *Board) bool {

@@ -52,6 +52,10 @@ func (board *Board) GetPieceByPos(pos [2]int) *Piece {
 	return board.Cells[x][y]
 }
 
+func (board *Board) GetNextPositions(piece *Piece) [][2]int {
+	return piece.GetNextPositions(board)
+}
+
 func (board *Board) CanMove(piece *Piece, pos [2]int) bool {
 	return InBoard(pos) && piece.CanMove(pos, board)
 }
