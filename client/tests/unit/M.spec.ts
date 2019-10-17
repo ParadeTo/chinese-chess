@@ -1,7 +1,7 @@
 import Board from '@/chess/Board'
 import { M, Z } from '@/chess/Piece'
 
-describe('B', () => {
+describe('M', () => {
   it('canMove', () => {
     ;[
       {

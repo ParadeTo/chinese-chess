@@ -32,7 +32,7 @@ func InNinePlace(pos [2]int, side Side) bool {
 func InBoard(pos [2]int) bool {
 	x := pos[0]
 	y := pos[1]
-	return x >= 0 && x <= 8 && y >= 0 && y <= 9
+	return x >= 0 && x < WIDTH && y >= 0 && y < HEIGHT
 }
 
 func InOwnSide(pos [2]int, side Side) bool {
