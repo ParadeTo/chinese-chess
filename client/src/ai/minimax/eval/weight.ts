@@ -1,7 +1,7 @@
 import { IEvalModel } from '.'
 import Board from '@/chess/Board'
 import { Color } from '@/chess/Piece'
-import { Role } from '@/chess/Piece/Piece';
+import { Role } from '@/chess/Piece/Piece'
 
 export default class WeightEvalModel implements IEvalModel {
   eval(board: Board, color: Color): number {

@@ -46,6 +46,24 @@ type Board struct {
 	records []*Record
 }
 
+func (board *Board) isFinish() bool {
+	hasRBoss := false
+	hasBBoss := false
+	for _, piece := range board.Pieces["r"] {
+		if piece.Role == "b" {
+			hasRBoss = true
+			break
+		}
+	}
+	for _, piece := range board.Pieces["b"] {
+		if piece.Role == "b" {
+			hasBBoss = true
+			break
+		}
+	}
+	return !(hasRBoss && hasBBoss)
+}
+
 func (board *Board) GetPieceByPos(pos [2]int) *Piece {
 	x := pos[0]
 	y := pos[1]
@@ -60,6 +78,20 @@ func (board *Board) CanMove(piece *Piece, pos [2]int) bool {
 	return InBoard(pos) && piece.CanMove(pos, board)
 }
 
+func (board *Board) GenerateMoves(color Color) []PieceMoves {
+	pieces := board.Pieces[color]
+	var pieceNodes []PieceMoves
+	for _, p := range pieces {
+		positions := p.GetNextPositions(board)
+		var nodes []Node
+		for _, pos := range positions {
+			nodes = append(nodes, Node{to: pos, value: -INFINITE})
+		}
+		pieceNodes = append(pieceNodes, PieceMoves{from: p.Pos, nodes: nodes})
+	}
+	return pieceNodes
+}
+
 func NewBoard(pieces []*Piece) *Board {
 	board := &Board{Pieces: map[Color][]*Piece{Red: {}, Black: {}}}
 	for _, piece := range pieces {
@@ -70,16 +102,3 @@ func NewBoard(pieces []*Piece) *Board {
 	}
 	return board
 }
-
-//func (board Board)generateMoves(color piece.Color) []PieceMoves {
-//	pieces := board.Pieces[color]
-//	var pieceNodes []PieceMoves
-//	for _, p := range pieces {
-//		positions := p.GetNextPositions(board)
-//		var nodes []Node
-//		for _, pos := range positions {
-//			nodes = append(nodes, Node{to: pos, value: -INFINITE})
-//		}
-//		pieceNodes = append(pieceNodes, PieceMoves{from: p.(piece.BasePiece).Pos, nodes: nodes})
-//	}
-//}

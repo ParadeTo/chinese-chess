@@ -1,8 +1,6 @@
 package chess
 
-type P struct {
-	*Piece
-}
+type P Piece
 
 func (p *P) GetNextPositions(board *Board) [][2]int {
 	currentX := p.Pos[0]
@@ -163,7 +161,7 @@ func (p *P) CanMove(dest [2]int, board *Board) bool {
 
 func NewP(color Color, pos [2]int, side Side, key string) *Piece {
 	piece := NewPiece("p", color, pos, side, key)
-	p := &P{piece}
+	p := (*P)(piece)
 	piece.IPiece = p
 	return piece
 }

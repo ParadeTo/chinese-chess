@@ -1,12 +1,9 @@
 import Board, { UpdatePieceResult } from './Board'
-import { Piece, B, J, M, P, S, X, Z, Color } from './Piece'
-import { IAI } from '@/ai/AI'
+import { Piece, B, J, M, P, S, X, Z } from './Piece'
 import Player from './Player'
-import RandomAI from '@/ai/random'
-import MiniMaxAI from '@/ai/minimax'
 import Bridge from '@/ai/bridge'
-import { ISettingState, IPlayer } from '@/store/types'
-import { pieces2 } from './bugs'
+import { IPlayer } from '../store/types'
+
 export default class Game {
   board: Board
   bPlayer: Player

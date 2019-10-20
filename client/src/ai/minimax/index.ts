@@ -62,11 +62,11 @@ export default class MiniMaxAI implements IAI {
     for (let pieceNodes of piecesNodes) {
       const { from: [x, y], nodes } = pieceNodes
       const piece = board.cells[x][y] as Piece
-      if (!piece) {
-        console.log(piecesNodes, pieceNodes)
-        debugger
-        continue
-      }
+      // if (!piece) {
+      //   console.log(piecesNodes, pieceNodes)
+      //   debugger
+      //   continue
+      // }
       for (let node of nodes) {
         board.updatePiece(piece, node.to)
         const _value = this.search(board, color, depth - 1, !isMax, alpha, beta)

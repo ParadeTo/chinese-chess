@@ -2,9 +2,7 @@ package chess
 
 import "math"
 
-type M struct {
-	*Piece
-}
+type M Piece
 
 func (m *M) GetNextPositions(board *Board) [][2]int {
 	currentX := m.Pos[0]
@@ -38,7 +36,7 @@ func (m *M) CanMove(dest [2]int, board *Board) bool {
 		(destY-origY == -2 && math.Abs(float64(destX-origX)) == 1 && cells[origX][origY-1] == nil) ||
 		(destX-origX == 2 && math.Abs(float64(destY-origY)) == 1 && cells[origX+1][origY] == nil) ||
 		(destX-origX == -2 && math.Abs(float64(destY-origY)) == 1 && cells[origX-1][origY] == nil) {
-		return m.CanPlaceAtDest(dest, board)
+		return (*Piece)(m).CanPlaceAtDest(dest, board)
 	}
 
 	return false
@@ -46,7 +44,7 @@ func (m *M) CanMove(dest [2]int, board *Board) bool {
 
 func NewM(color Color, pos [2]int, side Side, key string) *Piece {
 	piece := NewPiece("m", color, pos, side, key)
-	m := &M{piece}
+	m := (*M)(piece)
 	piece.IPiece = m
 	return piece
 }

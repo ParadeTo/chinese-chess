@@ -1,6 +1,6 @@
 import Game from '@/chess/Game'
-import { Color } from '@/chess/Piece';
-import { PlayerType } from '@/chess/Player';
+import { Color } from '@/chess/Piece'
+import { PlayerType } from '@/chess/Player'
 
 export interface IGameState {
   game: Game | null
