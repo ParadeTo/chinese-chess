@@ -1,5 +1,7 @@
 package chess
 
+import "chinese-chess/server/shared"
+
 type Record struct {
 	from  []int
 	to    []int
@@ -12,8 +14,8 @@ type Node struct {
 }
 
 type PieceMoves struct {
-	from  [2]int
-	nodes []Node
+	From  [2]int
+	Nodes []Node
 }
 
 func InNinePlace(pos [2]int, side Side) bool {
@@ -85,11 +87,26 @@ func (board *Board) GenerateMoves(color Color) []PieceMoves {
 		positions := p.GetNextPositions(board)
 		var nodes []Node
 		for _, pos := range positions {
-			nodes = append(nodes, Node{to: pos, value: -INFINITE})
+			nodes = append(nodes, Node{to: pos, value: -shared.INFINITE})
 		}
-		pieceNodes = append(pieceNodes, PieceMoves{from: p.Pos, nodes: nodes})
+		pieceNodes = append(pieceNodes, PieceMoves{From: p.Pos, Nodes: nodes})
 	}
 	return pieceNodes
+}
+
+func (board *Board) UpdatePiece(piece *Piece, newPos [2]int) (result bool, eatenPiece *Piece) {
+	if !board.CanMove(piece, newPos) {
+		return false, nil
+	}
+
+	//newX := newPos[0]
+	//newY := newPos[1]
+	//eatenPiece := board.Cells[newX][newY]
+
+	//if eatenPiece != nil {
+	//	board.Pieces[eatenPiece.Color] = append(board.Pieces[eatenPiece.Color], )
+	//}
+	return false, nil
 }
 
 func NewBoard(pieces []*Piece) *Board {

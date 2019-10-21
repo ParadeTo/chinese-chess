@@ -1,6 +1,8 @@
 package eval
 
-import "chinese-chess/server/chess"
+import (
+	"chinese-chess/server/chess"
+)
 
 type WeightEvalModel struct{}
 
@@ -58,7 +60,7 @@ var posVal = map[chess.Role][chess.HEIGHT][chess.WIDTH]int{
 		{10, 20, 30, 34, 40, 34, 30, 20, 10},
 		{6, 12, 18, 18, 20, 18, 18, 12, 6},
 		{2, 0, 8, 0, 8, 0, 8, 0, 2},
-		{0, 0, -2, 0, 4, 0, -2, 0, 0, 0},
+		{0, 0, -2, 0, 4, 0, -2, 0, 0},
 		{0, 0, 0, 0, 0, 0, 0, 0, 0},
 		{0, 0, 0, 0, 0, 0, 0, 0, 0},
 		{0, 0, 0, 0, 0, 0, 0, 0, 0},
