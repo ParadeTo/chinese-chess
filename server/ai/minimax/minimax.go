@@ -36,7 +36,7 @@ func (miniMax *MiniMax) GetBestMove(board chess.Board, color chess.Color, pieces
 		nodes := pieceNodes.Nodes
 		piece := board.Cells[x][y]
 		for _, node := range nodes {
-			boards
+			board.UpdatePiece(piece, node.To)
 		}
 	}
 }

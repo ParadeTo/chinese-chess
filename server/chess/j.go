@@ -80,12 +80,12 @@ func (j *J) CanMove(dest [2]int, board *Board) bool {
 
 	if destX == origX {
 		startY := origY + 1
-		endY := destY - 1
+		endY := destY
 		if destY < origY {
 			startY = destY + 1
-			endY = origY - 1
+			endY = origY
 		}
-		for i := startY; i <= endY; i++ {
+		for i := startY; i < endY; i++ {
 			if cells[origX][i] != nil {
 				return false
 			}
@@ -94,12 +94,12 @@ func (j *J) CanMove(dest [2]int, board *Board) bool {
 
 	if destY == origY {
 		startX := origX + 1
-		endX := destX - 1
+		endX := destX
 		if destX < origX {
 			startX = destX + 1
-			endX = origX - 1
+			endX = origX
 		}
-		for i := startX; i <= endX; i++ {
+		for i := startX; i < endX; i++ {
 			if cells[i][origY] != nil {
 				return false
 			}

@@ -3,14 +3,14 @@ package chess
 import "chinese-chess/server/shared"
 
 type Record struct {
-	from  []int
-	to    []int
-	eaten IPiece
+	from  [2]int
+	to    [2]int
+	eaten *Piece
 }
 
 type Node struct {
-	to    [2]int
-	value int
+	To    [2]int
+	Value int
 }
 
 type PieceMoves struct {
@@ -66,6 +66,18 @@ func (board *Board) isFinish() bool {
 	return !(hasRBoss && hasBBoss)
 }
 
+func (board *Board) GetPieceNum() int {
+	num := 0
+	for _, row := range board.Cells {
+		for _, cell := range row {
+			if cell != nil {
+				num++
+			}
+		}
+	}
+	return num
+}
+
 func (board *Board) GetPieceByPos(pos [2]int) *Piece {
 	x := pos[0]
 	y := pos[1]
@@ -87,7 +99,7 @@ func (board *Board) GenerateMoves(color Color) []PieceMoves {
 		positions := p.GetNextPositions(board)
 		var nodes []Node
 		for _, pos := range positions {
-			nodes = append(nodes, Node{to: pos, value: -shared.INFINITE})
+			nodes = append(nodes, Node{To: pos, Value: -shared.INFINITE})
 		}
 		pieceNodes = append(pieceNodes, PieceMoves{From: p.Pos, Nodes: nodes})
 	}
@@ -99,14 +111,44 @@ func (board *Board) UpdatePiece(piece *Piece, newPos [2]int) (result bool, eaten
 		return false, nil
 	}
 
-	//newX := newPos[0]
-	//newY := newPos[1]
-	//eatenPiece := board.Cells[newX][newY]
+	newX := newPos[0]
+	newY := newPos[1]
+	eatenPiece = board.Cells[newX][newY]
 
-	//if eatenPiece != nil {
-	//	board.Pieces[eatenPiece.Color] = append(board.Pieces[eatenPiece.Color], )
-	//}
-	return false, nil
+	if eatenPiece != nil {
+		board.Pieces[eatenPiece.Color] = RemovePiece(board.Pieces[eatenPiece.Color], eatenPiece)
+	}
+
+	origX := piece.Pos[0]
+	origY := piece.Pos[1]
+	board.Cells[origX][origY] = nil
+	board.Cells[newX][newY] = piece
+	piece.Pos = newPos
+
+	board.records = append(board.records, &Record{from: [2]int{origX, origY}, to: newPos, eaten: eatenPiece})
+
+	return true, eatenPiece
+}
+
+func (board *Board) BackMoves(steps int) {
+	for ; steps > 0; steps-- {
+		var lastMove *Record
+		len := len(board.records)
+		lastMove, board.records = board.records[len-1], board.records[:len-1]
+		if lastMove != nil {
+			from := lastMove.from
+			to := lastMove.to
+			eaten := lastMove.eaten
+			piece := board.Cells[to[0]][to[1]]
+			piece.Pos = from
+			board.Cells[from[0]][from[1]] = piece
+			board.Cells[to[0]][to[1]] = eaten
+			if eaten != nil {
+				board.Pieces[eaten.Color] = append(board.Pieces[eaten.Color], eaten)
+				eaten.Pos = to
+			}
+		}
+	}
 }
 
 func NewBoard(pieces []*Piece) *Board {

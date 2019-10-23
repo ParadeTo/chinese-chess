@@ -86,14 +86,14 @@ describe('Board', () => {
         pieces: [
           new Z({ color: 'r', pos: [8, 6], key: 'rz5' }),
           new B({ color: 'r', pos: [4, 9], key: 'rb' }),
-          new B({ color: 'b', pos: [4, 0], key: 'rb' })
+          new B({ color: 'b', pos: [4, 0], key: 'bb' })
         ],
         expected: false
       },
       {
         pieces: [
           new Z({ color: 'r', pos: [8, 6], key: 'rz5' }),
-          new B({ color: 'b', pos: [4, 0], key: 'rb' })
+          new B({ color: 'b', pos: [4, 0], key: 'bb' })
         ],
         expected: true
       }

@@ -20,24 +20,24 @@ export default class J extends Piece {
 
     if (destX === origX) {
       let startY = origY + 1
-      let endY = destY - 1
+      let endY = destY
       if (destY < origY) {
         startY = destY + 1
-        endY = origY - 1
+        endY = origY
       }
-      for (let i = startY; i <= endY; i++) {
+      for (let i = startY; i < endY; i++) {
         if (cells[origX][i]) return false
       }
     }
 
     if (destY === origY) {
       let startX = origX + 1
-      let endX = destX - 1
+      let endX = destX
       if (destX < origX) {
         startX = destX + 1
-        endX = origX - 1
+        endX = origX
       }
-      for (let i = startX; i <= endX; i++) {
+      for (let i = startX; i < endX; i++) {
         if (cells[i][origY]) return false
       }
     }
