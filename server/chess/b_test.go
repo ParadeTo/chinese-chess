@@ -10,50 +10,50 @@ func TestB_GetNextPositions(t *testing.T) {
 	testData := []TestDataGetNextPositions{
 		{
 			pieces: []*Piece{
-				NewB("r", [2]int{5, 9}, Bottom, ""),
+				NewB(Red, [2]int{5, 9}, Bottom, ""),
 			},
 			nextPositions: [][2]int{{4, 9}, {5, 8}},
 		},
 		{
 			pieces: []*Piece{
-				NewB("r", [2]int{5, 9}, Bottom, ""),
-				NewB("b", [2]int{5, 0}, Top, ""),
+				NewB(Red, [2]int{5, 9}, Bottom, ""),
+				NewB(Black, [2]int{5, 0}, Top, ""),
 			},
 			nextPositions: [][2]int{{4, 9}, {5, 8}, {5, 0}},
 		},
 		{
 			pieces: []*Piece{
-				NewB("r", [2]int{5, 9}, Bottom, ""),
-				NewB("b", [2]int{5, 0}, Top, ""),
-				NewJ("b", [2]int{5, 6}, Top, ""),
+				NewB(Red, [2]int{5, 9}, Bottom, ""),
+				NewB(Black, [2]int{5, 0}, Top, ""),
+				NewJ(Black, [2]int{5, 6}, Top, ""),
 			},
 			nextPositions: [][2]int{{4, 9}, {5, 8}},
 		},
 		{
 			pieces: []*Piece{
-				NewB("b", [2]int{5, 0}, Top, ""),
+				NewB(Black, [2]int{5, 0}, Top, ""),
 			},
 			nextPositions: [][2]int{{4, 0}, {5, 1}},
 		},
 		{
 			pieces: []*Piece{
-				NewB("b", [2]int{5, 0}, Top, ""),
-				NewB("r", [2]int{5, 9}, Bottom, ""),
+				NewB(Black, [2]int{5, 0}, Top, ""),
+				NewB(Red, [2]int{5, 9}, Bottom, ""),
 			},
 			nextPositions: [][2]int{{4, 0}, {5, 1}, {5, 9}},
 		},
 		{
 			pieces: []*Piece{
-				NewB("b", [2]int{5, 0}, Top, ""),
-				NewB("r", [2]int{5, 9}, Bottom, ""),
-				NewJ("b", [2]int{5, 6}, Top, ""),
+				NewB(Black, [2]int{5, 0}, Top, ""),
+				NewB(Red, [2]int{5, 9}, Bottom, ""),
+				NewJ(Black, [2]int{5, 6}, Top, ""),
 			},
 			nextPositions: [][2]int{{4, 0}, {5, 1}},
 		},
 		{
 			pieces: []*Piece{
-				NewB("b", [2]int{5, 0}, Top, ""),
-				NewJ("r", [2]int{5, 9}, Bottom, ""),
+				NewB(Black, [2]int{5, 0}, Top, ""),
+				NewJ(Red, [2]int{5, 9}, Bottom, ""),
 			},
 			nextPositions: [][2]int{{4, 0}, {5, 1}},
 		},
@@ -70,87 +70,87 @@ func TestB_CanMove(t *testing.T) {
 	testData := []TestDataCanMove{
 		{
 			pieces: []*Piece{
-				NewB("r", [2]int{5, 9}, Bottom, ""),
+				NewB(Red, [2]int{5, 9}, Bottom, ""),
 			},
 			pos:      [2]int{6, 9},
 			expected: false,
 		},
 		{
 			pieces: []*Piece{
-				NewB("r", [2]int{5, 9}, Bottom, ""),
+				NewB(Red, [2]int{5, 9}, Bottom, ""),
 			},
 			pos:      [2]int{3, 9},
 			expected: false,
 		},
 		{
 			pieces: []*Piece{
-				NewB("r", [2]int{5, 9}, Bottom, ""),
+				NewB(Red, [2]int{5, 9}, Bottom, ""),
 			},
 			pos:      [2]int{4, 9},
 			expected: true,
 		},
 		{
 			pieces: []*Piece{
-				NewB("r", [2]int{3, 9}, Bottom, ""),
+				NewB(Red, [2]int{3, 9}, Bottom, ""),
 			},
 			pos:      [2]int{2, 9},
 			expected: false,
 		},
 		{
 			pieces: []*Piece{
-				NewB("r", [2]int{3, 7}, Bottom, ""),
+				NewB(Red, [2]int{3, 7}, Bottom, ""),
 			},
 			pos:      [2]int{3, 6},
 			expected: false,
 		},
 		{
 			pieces: []*Piece{
-				NewB("r", [2]int{5, 9}, Bottom, ""),
+				NewB(Red, [2]int{5, 9}, Bottom, ""),
 			},
 			pos:      [2]int{6, 9},
 			expected: false,
 		},
 		{
 			pieces: []*Piece{
-				NewB("r", [2]int{5, 9}, Bottom, ""),
+				NewB(Red, [2]int{5, 9}, Bottom, ""),
 			},
 			pos:      [2]int{3, 9},
 			expected: false,
 		},
 		{
 			pieces: []*Piece{
-				NewB("b", [2]int{5, 9}, Bottom, ""),
+				NewB(Black, [2]int{5, 9}, Bottom, ""),
 			},
 			pos:      [2]int{4, 9},
 			expected: true,
 		},
 		{
 			pieces: []*Piece{
-				NewB("r", [2]int{3, 2}, Top, ""),
+				NewB(Red, [2]int{3, 2}, Top, ""),
 			},
 			pos:      [2]int{3, 3},
 			expected: false,
 		},
 		{
 			pieces: []*Piece{
-				NewB("b", [2]int{3, 2}, Top, ""),
-				NewZ("r", [2]int{3, 1}, Top, ""),
+				NewB(Black, [2]int{3, 2}, Top, ""),
+				NewZ(Red, [2]int{3, 1}, Top, ""),
 			},
 			pos:      [2]int{3, 1},
 			expected: true,
 		},
 		{
 			pieces: []*Piece{
-				NewB("b", [2]int{3, 2}, Top, ""),
-				NewZ("b", [2]int{3, 1}, Top, ""),
+				NewB(Black, [2]int{3, 2}, Top, ""),
+				NewZ(Black, [2]int{3, 1}, Top, ""),
 			},
 			pos:      [2]int{3, 1},
 			expected: false,
 		},
 		{
 			pieces: []*Piece{
-				NewB("b", [2]int{3, 2}, Top, ""),
-				NewB("r", [2]int{3, 9}, Bottom, ""),
+				NewB(Black, [2]int{3, 2}, Top, ""),
+				NewB(Red, [2]int{3, 9}, Bottom, ""),
 			},
 			pos:      [2]int{3, 9},
 			expected: true,

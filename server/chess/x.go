@@ -1,5 +1,7 @@
 package chess
 
+import "fmt"
+
 type X Piece
 
 func (x *X) GetNextPositions(board *Board) [][2]int {
@@ -24,6 +26,9 @@ func (x *X) CanMove(dest [2]int, board *Board) bool {
 	origX := x.Pos[0]
 	origY := x.Pos[1]
 	cells := board.Cells
+
+	fmt.Sprintf("origX=%d,origY=%d destX=%d,destY=%d\n", origX, origY, destX, destY)
+	fmt.Sprintf("%+v\n", cells)
 
 	if InOwnSide([2]int{destX, destY}, x.Side) &&
 		((destY-origY == 2 && destX-origX == 2 && cells[origX+1][origY+1] == nil) ||

@@ -1,6 +1,9 @@
 package chess
 
-import "chinese-chess/server/shared"
+import (
+	"chinese-chess/server/shared"
+	"fmt"
+)
 
 type Record struct {
 	from  [2]int
@@ -38,8 +41,12 @@ func InBoard(pos [2]int) bool {
 }
 
 func InOwnSide(pos [2]int, side Side) bool {
+	x := pos[0]
 	y := pos[1]
-	return (y >= 0 && y < 5 && side == "t") || (y > 4 && y < HEIGHT && side == "b")
+	if x < 0 || x >= WIDTH {
+		return false
+	}
+	return (y >= 0 && y < 5 && side == Top) || (y > 4 && y < HEIGHT && side == Bottom)
 }
 
 type Board struct {
@@ -48,17 +55,17 @@ type Board struct {
 	records []*Record
 }
 
-func (board *Board) isFinish() bool {
+func (board *Board) IsFinish() bool {
 	hasRBoss := false
 	hasBBoss := false
-	for _, piece := range board.Pieces["r"] {
-		if piece.Role == "b" {
+	for _, piece := range board.Pieces[Red] {
+		if piece.Role == RB {
 			hasRBoss = true
 			break
 		}
 	}
-	for _, piece := range board.Pieces["b"] {
-		if piece.Role == "b" {
+	for _, piece := range board.Pieces[Black] {
+		if piece.Role == RB {
 			hasBBoss = true
 			break
 		}
@@ -107,6 +114,9 @@ func (board *Board) GenerateMoves(color Color) []PieceMoves {
 }
 
 func (board *Board) UpdatePiece(piece *Piece, newPos [2]int) (result bool, eatenPiece *Piece) {
+	if piece == nil {
+		fmt.Sprint(piece)
+	}
 	if !board.CanMove(piece, newPos) {
 		return false, nil
 	}
@@ -134,6 +144,9 @@ func (board *Board) BackMoves(steps int) {
 	for ; steps > 0; steps-- {
 		var lastMove *Record
 		len := len(board.records)
+		if len == 0 {
+			break
+		}
 		lastMove, board.records = board.records[len-1], board.records[:len-1]
 		if lastMove != nil {
 			from := lastMove.from

@@ -10,49 +10,49 @@ func TestZ_GetNextPositions(t *testing.T) {
 	testData := []TestDataGetNextPositions{
 		{
 			pieces: []*Piece{
-				NewZ("r", [2]int{4, 6}, Bottom, ""),
+				NewZ(Red, [2]int{4, 6}, Bottom, ""),
 			},
 			nextPositions: [][2]int{{4, 5}},
 		},
 		{
 			pieces: []*Piece{
-				NewZ("b", [2]int{4, 6}, Top, ""),
+				NewZ(Black, [2]int{4, 6}, Top, ""),
 			},
 			nextPositions: [][2]int{{4, 7}, {3, 6}, {5, 6}},
 		},
 		{
 			pieces: []*Piece{
-				NewZ("r", [2]int{4, 4}, Bottom, ""),
+				NewZ(Red, [2]int{4, 4}, Bottom, ""),
 			},
 			nextPositions: [][2]int{{4, 3}, {3, 4}, {5, 4}},
 		},
 		{
 			pieces: []*Piece{
-				NewZ("b", [2]int{4, 4}, Top, ""),
+				NewZ(Black, [2]int{4, 4}, Top, ""),
 			},
 			nextPositions: [][2]int{{4, 5}},
 		},
 		{
 			pieces: []*Piece{
-				NewZ("r", [2]int{0, 0}, Bottom, ""),
+				NewZ(Red, [2]int{0, 0}, Bottom, ""),
 			},
 			nextPositions: [][2]int{{1, 0}},
 		},
 		{
 			pieces: []*Piece{
-				NewZ("r", [2]int{8, 0}, Bottom, ""),
+				NewZ(Red, [2]int{8, 0}, Bottom, ""),
 			},
 			nextPositions: [][2]int{{7, 0}},
 		},
 		{
 			pieces: []*Piece{
-				NewZ("b", [2]int{0, 9}, Top, ""),
+				NewZ(Black, [2]int{0, 9}, Top, ""),
 			},
 			nextPositions: [][2]int{{1, 9}},
 		},
 		{
 			pieces: []*Piece{
-				NewZ("b", [2]int{8, 9}, Top, ""),
+				NewZ(Black, [2]int{8, 9}, Top, ""),
 			},
 			nextPositions: [][2]int{{7, 9}},
 		},
@@ -69,63 +69,63 @@ func TestZ_CanMove(t *testing.T) {
 	testData := []TestDataCanMove{
 		{
 			pieces: []*Piece{
-				NewZ("r", [2]int{4, 6}, Bottom, ""),
+				NewZ(Red, [2]int{4, 6}, Bottom, ""),
 			},
 			pos:      [2]int{4, 5},
 			expected: true,
 		},
 		{
 			pieces: []*Piece{
-				NewZ("b", [2]int{4, 6}, Top, ""),
+				NewZ(Black, [2]int{4, 6}, Top, ""),
 			},
 			pos:      [2]int{4, 5},
 			expected: false,
 		},
 		{
 			pieces: []*Piece{
-				NewZ("r", [2]int{4, 6}, Bottom, ""),
+				NewZ(Red, [2]int{4, 6}, Bottom, ""),
 			},
 			pos:      [2]int{4, 7},
 			expected: false,
 		},
 		{
 			pieces: []*Piece{
-				NewZ("b", [2]int{4, 6}, Top, ""),
+				NewZ(Black, [2]int{4, 6}, Top, ""),
 			},
 			pos:      [2]int{4, 7},
 			expected: true,
 		},
 		{
 			pieces: []*Piece{
-				NewZ("r", [2]int{4, 6}, Bottom, ""),
+				NewZ(Red, [2]int{4, 6}, Bottom, ""),
 			},
 			pos:      [2]int{5, 6},
 			expected: false,
 		},
 		{
 			pieces: []*Piece{
-				NewZ("b", [2]int{4, 6}, Top, ""),
+				NewZ(Black, [2]int{4, 6}, Top, ""),
 			},
 			pos:      [2]int{5, 6},
 			expected: true,
 		},
 		{
 			pieces: []*Piece{
-				NewZ("r", [2]int{4, 6}, Bottom, ""),
+				NewZ(Red, [2]int{4, 6}, Bottom, ""),
 			},
 			pos:      [2]int{3, 6},
 			expected: false,
 		},
 		{
 			pieces: []*Piece{
-				NewZ("b", [2]int{4, 6}, Top, ""),
+				NewZ(Black, [2]int{4, 6}, Top, ""),
 			},
 			pos:      [2]int{3, 6},
 			expected: true,
 		},
 		{
 			pieces: []*Piece{
-				NewZ("r", [2]int{4, 3}, Bottom, ""),
+				NewZ(Red, [2]int{4, 3}, Bottom, ""),
 			},
 			pos:      [2]int{3, 3},
 			expected: true,

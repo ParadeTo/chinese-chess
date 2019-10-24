@@ -80,7 +80,7 @@ func evalPosVal(r chess.Role, pos [2]int) int {
 	return 0
 }
 
-func (w *WeightEvalModel) eval(board *chess.Board, color chess.Color) int {
+func (w *WeightEvalModel) Eval(board *chess.Board, color chess.Color) int {
 	selfPieceVal := 0
 	selfPosVal := 0
 	opponentPieceVal := 0
@@ -94,10 +94,10 @@ func (w *WeightEvalModel) eval(board *chess.Board, color chess.Color) int {
 	}
 
 	var opponentColor chess.Color
-	if color == "r" {
-		opponentColor = "b"
+	if color == chess.Red {
+		opponentColor = chess.Black
 	} else {
-		opponentColor = "r"
+		opponentColor = chess.Red
 	}
 	pieces = board.Pieces[opponentColor]
 	for _, piece := range pieces {

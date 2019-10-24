@@ -5,7 +5,7 @@ import "math"
 type Z Piece
 
 func (z *Z) isCrossedRiver() bool {
-	return (z.Side == "b" && z.Pos[1] <= 4) || (z.Side == "t" && z.Pos[1] >= 5)
+	return (z.Side == Bottom && z.Pos[1] <= 4) || (z.Side == Top && z.Pos[1] >= 5)
 }
 
 func (z *Z) GetNextPositions(board *Board) [][2]int {
@@ -14,7 +14,7 @@ func (z *Z) GetNextPositions(board *Board) [][2]int {
 	currentX := z.Pos[0]
 	currentY := z.Pos[1]
 
-	if z.Side == "b" {
+	if z.Side == Bottom {
 		if currentY > 4 {
 			moves = append(moves, [2]int{0, -1})
 		} else {
@@ -60,7 +60,7 @@ func (z *Z) CanMove(dest [2]int, board *Board) bool {
 	origX := z.Pos[0]
 	origY := z.Pos[1]
 
-	if z.Side == "b" && destY == origY-1 ||
+	if z.Side == Bottom && destY == origY-1 ||
 		z.Side == "t" && destY == origY+1 ||
 		z.isCrossedRiver() && math.Abs(float64(destX-origX)) == 1 {
 		return (*Piece)(z).CanPlaceAtDest(dest, board)

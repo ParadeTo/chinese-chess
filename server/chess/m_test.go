@@ -10,7 +10,7 @@ func TestM_GetNextPositions(t *testing.T) {
 	testData := []TestDataGetNextPositions{
 		{
 			pieces: []*Piece{
-				NewM("r", [2]int{1, 9}, Bottom, ""),
+				NewM(Red, [2]int{1, 9}, Bottom, ""),
 			},
 			nextPositions: [][2]int{{3, 8}, {0, 7}, {2, 7}},
 		},
@@ -27,29 +27,29 @@ func TestM_CanMove(t *testing.T) {
 	testData := []TestDataCanMove{
 		{
 			pieces: []*Piece{
-				NewM("r", [2]int{4, 5}, Bottom, ""),
+				NewM(Red, [2]int{4, 5}, Bottom, ""),
 			},
 			pos:      [2]int{6, 4},
 			expected: true,
 		},
 		{
 			pieces: []*Piece{
-				NewM("r", [2]int{4, 5}, Bottom, ""),
+				NewM(Red, [2]int{4, 5}, Bottom, ""),
 			},
 			pos:      [2]int{2, 4},
 			expected: true,
 		},
 		{
 			pieces: []*Piece{
-				NewM("r", [2]int{4, 5}, Bottom, ""),
+				NewM(Red, [2]int{4, 5}, Bottom, ""),
 			},
 			pos:      [2]int{5, 4},
 			expected: false,
 		},
 		{
 			pieces: []*Piece{
-				NewM("r", [2]int{4, 5}, Bottom, ""),
-				NewZ("r", [2]int{5, 5}, Bottom, ""),
+				NewM(Red, [2]int{4, 5}, Bottom, ""),
+				NewZ(Red, [2]int{5, 5}, Bottom, ""),
 			},
 			pos:      [2]int{6, 4},
 			expected: false,

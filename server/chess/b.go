@@ -40,7 +40,7 @@ func (b *B) GetNextPositions(board *Board) [][2]int {
 	if currentY < 3 {
 		for i := 7; i <= 9; i++ {
 			piece := board.Cells[currentX][i]
-			if piece != nil && piece.Role == "b" {
+			if piece != nil && piece.Role == RB {
 				opponentBoss = piece
 			}
 		}
@@ -50,7 +50,7 @@ func (b *B) GetNextPositions(board *Board) [][2]int {
 	} else {
 		for i := 0; i <= 2; i++ {
 			piece := board.Cells[currentX][i]
-			if piece != nil && piece.Role == "b" {
+			if piece != nil && piece.Role == RB {
 				opponentBoss = piece
 			}
 		}
@@ -73,7 +73,7 @@ func (b *B) CanMove(dest [2]int, board *Board) bool {
 	}
 
 	destPiece := board.Cells[destX][destY]
-	if destPiece != nil && destPiece.Role == "b" && destPiece.Color != b.Color && !hasPieceBetweenBosses(board, b, (*B)(destPiece)) {
+	if destPiece != nil && destPiece.Role == RB && destPiece.Color != b.Color && !hasPieceBetweenBosses(board, b, (*B)(destPiece)) {
 		return true
 	}
 
@@ -90,7 +90,7 @@ func (b *B) CanMove(dest [2]int, board *Board) bool {
 }
 
 func NewB(color Color, pos [2]int, side Side, key string) *Piece {
-	piece := NewPiece("b", color, pos, side, key)
+	piece := NewPiece(RB, color, pos, side, key)
 	b := (*B)(piece)
 	piece.IPiece = b
 	return piece

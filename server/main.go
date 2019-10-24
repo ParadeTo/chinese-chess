@@ -2,6 +2,7 @@ package main
 
 import (
 	"chinese-chess/server/chess"
+	"chinese-chess/server/shared"
 	"fmt"
 	"github.com/gin-gonic/gin"
 	"net/http"
@@ -21,19 +22,19 @@ func newBoard(c *gin.Context) *chess.Board {
 		for _, piece := range data.Pieces {
 			var p *chess.Piece
 			switch piece.Role {
-			case "z":
+			case chess.RZ:
 				p = chess.NewZ(piece.Color, piece.Pos, piece.Side, piece.Key)
-			case "j":
+			case chess.RJ:
 				p = chess.NewJ(piece.Color, piece.Pos, piece.Side, piece.Key)
-			case "m":
+			case chess.RM:
 				p = chess.NewM(piece.Color, piece.Pos, piece.Side, piece.Key)
-			case "p":
+			case chess.RP:
 				p = chess.NewP(piece.Color, piece.Pos, piece.Side, piece.Key)
-			case "x":
+			case chess.RX:
 				p = chess.NewX(piece.Color, piece.Pos, piece.Side, piece.Key)
-			case "s":
+			case chess.RS:
 				p = chess.NewS(piece.Color, piece.Pos, piece.Side, piece.Key)
-			case "b":
+			case chess.RB:
 				p = chess.NewB(piece.Color, piece.Pos, piece.Side, piece.Key)
 			}
 			pieces = append(pieces, p)
@@ -56,6 +57,8 @@ func setupRouter() *gin.Engine {
 }
 
 func main() {
-	r := setupRouter()
-	r.Run(":8081")
+	//r := setupRouter()
+	//r.Run(":8081")
+	fmt.Println(shared.INFINITE)
+	fmt.Println(-shared.INFINITE)
 }

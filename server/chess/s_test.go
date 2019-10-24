@@ -10,25 +10,25 @@ func TestS_GetNextPositions(t *testing.T) {
 	testData := []TestDataGetNextPositions{
 		{
 			pieces: []*Piece{
-				NewS("r", [2]int{5, 9}, Bottom, ""),
+				NewS(Red, [2]int{5, 9}, Bottom, ""),
 			},
 			nextPositions: [][2]int{{4, 8}},
 		},
 		{
 			pieces: []*Piece{
-				NewS("r", [2]int{4, 8}, Bottom, ""),
+				NewS(Red, [2]int{4, 8}, Bottom, ""),
 			},
 			nextPositions: [][2]int{{3, 7}, {5, 9}, {3, 9}, {5, 7}},
 		},
 		{
 			pieces: []*Piece{
-				NewS("b", [2]int{4, 1}, Top, ""),
+				NewS(Black, [2]int{4, 1}, Top, ""),
 			},
 			nextPositions: [][2]int{{3, 0}, {5, 2}, {3, 2}, {5, 0}},
 		},
 		{
 			pieces: []*Piece{
-				NewS("b", [2]int{3, 0}, Top, ""),
+				NewS(Black, [2]int{3, 0}, Top, ""),
 			},
 			nextPositions: [][2]int{{4, 1}},
 		},
@@ -45,51 +45,51 @@ func TestS_CanMove(t *testing.T) {
 	testData := []TestDataCanMove{
 		{
 			pieces: []*Piece{
-				NewS("r", [2]int{5, 9}, Bottom, ""),
+				NewS(Red, [2]int{5, 9}, Bottom, ""),
 			},
 			pos:      [2]int{4, 8},
 			expected: true,
 		},
 		{
 			pieces: []*Piece{
-				NewS("r", [2]int{5, 9}, Bottom, ""),
+				NewS(Red, [2]int{5, 9}, Bottom, ""),
 			},
 			pos:      [2]int{5, 8},
 			expected: false,
 		},
 		{
 			pieces: []*Piece{
-				NewS("r", [2]int{5, 9}, Bottom, ""),
+				NewS(Red, [2]int{5, 9}, Bottom, ""),
 			},
 			pos:      [2]int{6, 8},
 			expected: false,
 		},
 		{
 			pieces: []*Piece{
-				NewS("r", [2]int{4, 9}, Bottom, ""),
+				NewS(Red, [2]int{4, 9}, Bottom, ""),
 			},
 			pos:      [2]int{5, 8},
 			expected: false,
 		},
 		{
 			pieces: []*Piece{
-				NewS("r", [2]int{5, 9}, Bottom, ""),
-				NewZ("b", [2]int{4, 8}, Top, ""),
+				NewS(Red, [2]int{5, 9}, Bottom, ""),
+				NewZ(Black, [2]int{4, 8}, Top, ""),
 			},
 			pos:      [2]int{4, 8},
 			expected: true,
 		},
 		{
 			pieces: []*Piece{
-				NewS("r", [2]int{5, 9}, Bottom, ""),
-				NewZ("r", [2]int{4, 8}, Top, ""),
+				NewS(Red, [2]int{5, 9}, Bottom, ""),
+				NewZ(Red, [2]int{4, 8}, Top, ""),
 			},
 			pos:      [2]int{4, 8},
 			expected: false,
 		},
 		{
 			pieces: []*Piece{
-				NewS("b", [2]int{4, 1}, Top, ""),
+				NewS(Black, [2]int{4, 1}, Top, ""),
 			},
 			pos:      [2]int{3, 0},
 			expected: true,

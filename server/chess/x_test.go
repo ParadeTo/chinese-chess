@@ -10,7 +10,7 @@ func TestX_GetNextPositions(t *testing.T) {
 	testData := []TestDataGetNextPositions{
 		{
 			pieces: []*Piece{
-				NewX("r", [2]int{2, 9}, Bottom, ""),
+				NewX(Red, [2]int{2, 9}, Bottom, ""),
 			},
 			nextPositions: [][2]int{{0, 7}, {4, 7}},
 		},
@@ -27,51 +27,51 @@ func TestX_CanMove(t *testing.T) {
 	testData := []TestDataCanMove{
 		{
 			pieces: []*Piece{
-				NewX("r", [2]int{2, 9}, Bottom, ""),
+				NewX(Red, [2]int{2, 9}, Bottom, ""),
 			},
 			pos:      [2]int{4, 7},
 			expected: true,
 		},
 		{
 			pieces: []*Piece{
-				NewX("r", [2]int{2, 9}, Bottom, ""),
-				NewX("r", [2]int{4, 7}, Bottom, ""),
+				NewX(Red, [2]int{2, 9}, Bottom, ""),
+				NewX(Red, [2]int{4, 7}, Bottom, ""),
 			},
 			pos:      [2]int{4, 7},
 			expected: false,
 		},
 		{
 			pieces: []*Piece{
-				NewX("r", [2]int{2, 9}, Bottom, ""),
+				NewX(Red, [2]int{2, 9}, Bottom, ""),
 			},
 			pos:      [2]int{5, 7},
 			expected: false,
 		},
 		{
 			pieces: []*Piece{
-				NewX("r", [2]int{2, 9}, Bottom, ""),
-				NewZ("r", [2]int{3, 8}, Bottom, ""),
+				NewX(Red, [2]int{2, 9}, Bottom, ""),
+				NewZ(Red, [2]int{3, 8}, Bottom, ""),
 			},
 			pos:      [2]int{4, 7},
 			expected: false,
 		},
 		{
 			pieces: []*Piece{
-				NewX("r", [2]int{2, 5}, Bottom, ""),
+				NewX(Red, [2]int{2, 5}, Bottom, ""),
 			},
 			pos:      [2]int{0, 3},
 			expected: false,
 		},
 		{
 			pieces: []*Piece{
-				NewX("b", [2]int{2, 0}, Top, ""),
+				NewX(Black, [2]int{2, 0}, Top, ""),
 			},
 			pos:      [2]int{4, 2},
 			expected: true,
 		},
 		{
 			pieces: []*Piece{
-				NewX("b", [2]int{2, 0}, Top, ""),
+				NewX(Black, [2]int{2, 0}, Top, ""),
 			},
 			pos:      [2]int{0, 2},
 			expected: true,

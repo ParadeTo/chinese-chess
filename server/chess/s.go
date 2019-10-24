@@ -5,8 +5,8 @@ import "math"
 type S Piece
 
 var possiblePos = map[Side][][2]int{
-	"t": {{3, 0}, {5, 0}, {4, 1}, {3, 2}, {5, 2}},
-	"b": {{3, 9}, {5, 9}, {4, 8}, {3, 7}, {5, 7}},
+	Top:    {{3, 0}, {5, 0}, {4, 1}, {3, 2}, {5, 2}},
+	Bottom: {{3, 9}, {5, 9}, {4, 8}, {3, 7}, {5, 7}},
 }
 
 func (s *S) isPossiblePos(dest [2]int) bool {
