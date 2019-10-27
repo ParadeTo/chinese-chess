@@ -10,6 +10,8 @@ function resolve(name) {
 // TODO: not work
 module.exports = {
   chainWebpack: config => {
+    config.devServer.proxy('http://localhost:9090')
+
     config
     // Interact with entry points
       .entry('ai')

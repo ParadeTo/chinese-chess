@@ -9,8 +9,8 @@ import (
 )
 
 type Move struct {
-	From [2]int
-	To   [2]int
+	From [2]int `json:"from"`
+	To   [2]int `json:"to"`
 }
 
 type BestMove struct {

@@ -3,6 +3,7 @@ import { Piece, B, J, M, P, S, X, Z } from './Piece'
 import Player from './Player'
 import Bridge from '@/ai/bridge'
 import { IPlayer } from '../store/types'
+import ProxyAi from '@/ai/proxy'
 
 export default class Game {
   board: Board
@@ -88,7 +89,8 @@ const createPlayer = (player: IPlayer, board?: Board) => {
     return new Player(
       color,
       type,
-      new Bridge({ depth: (level as number) + 2, board: board as Board, color, aiType: 'minimax', workerPath: '/ai.bundle.js' })
+      // new Bridge({ depth: (level as number) + 2, board: board as Board, color, aiType: 'minimax', workerPath: '/ai.bundle.js' })
+      new ProxyAi()
     )
   }
 }
