@@ -2,7 +2,6 @@ package chess
 
 import (
 	"chinese-chess/server/shared"
-	"fmt"
 )
 
 type Record struct {
@@ -114,9 +113,6 @@ func (board *Board) GenerateMoves(color Color) []PieceMoves {
 }
 
 func (board *Board) UpdatePiece(piece *Piece, newPos [2]int) (result bool, eatenPiece *Piece) {
-	if piece == nil {
-		fmt.Sprint(piece)
-	}
 	if !board.CanMove(piece, newPos) {
 		return false, nil
 	}

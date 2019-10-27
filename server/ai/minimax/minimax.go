@@ -47,6 +47,7 @@ func (miniMax *MiniMax) search(board *chess.Board, color chess.Color, depth int,
 	} else {
 		value = shared.INFINITE
 	}
+
 	piecesNodes := board.GenerateMoves(getColor(isMax, color))
 	for _, pieceNodes := range piecesNodes {
 		x := pieceNodes.From[0]

@@ -17,7 +17,7 @@ func (p *P) GetNextPositions(board *Board) [][2]int {
 			for j >= 0 {
 				piece2 := cells[j][currentY]
 				if piece2 != nil {
-					if piece2.Color != piece1.Color {
+					if piece2.Color != p.Color {
 						positions = append(positions, [2]int{j, currentY})
 					}
 					break
@@ -38,7 +38,7 @@ func (p *P) GetNextPositions(board *Board) [][2]int {
 			for j < WIDTH {
 				piece2 := cells[j][currentY]
 				if piece2 != nil {
-					if piece2.Color != piece1.Color {
+					if piece2.Color != p.Color {
 						positions = append(positions, [2]int{j, currentY})
 					}
 					break
@@ -59,7 +59,7 @@ func (p *P) GetNextPositions(board *Board) [][2]int {
 			for j >= 0 {
 				piece2 := cells[currentX][j]
 				if piece2 != nil {
-					if piece2.Color != piece1.Color {
+					if piece2.Color != p.Color {
 						positions = append(positions, [2]int{currentX, j})
 					}
 					break
@@ -80,7 +80,7 @@ func (p *P) GetNextPositions(board *Board) [][2]int {
 			for j < HEIGHT {
 				piece2 := cells[currentX][j]
 				if piece2 != nil {
-					if piece2.Color != piece1.Color {
+					if piece2.Color != p.Color {
 						positions = append(positions, [2]int{currentX, j})
 					}
 					break

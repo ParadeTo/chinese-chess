@@ -70,6 +70,15 @@ func TestP_GetNextPositions(t *testing.T) {
 			},
 			nextPositions: [][2]int{{3, 5}, {2, 5}, {1, 5}, {0, 5}, {5, 5}, {6, 5}, {7, 5}, {8, 5}, {4, 4}, {4, 0}, {4, 6}, {4, 7}, {4, 8}, {4, 9}},
 		},
+		{
+			pieces: []*Piece{
+				NewP(Black, [2]int{0, 2}, Top, "bp1"),
+				NewP(Red, [2]int{1, 2}, Bottom, "rp1"),
+				NewP(Black, [2]int{7, 2}, Top, "bp2"),
+				NewZ(Black, [2]int{0, 3}, Top, "bz1"),
+			},
+			nextPositions: [][2]int{{0, 1}, {0, 0}},
+		},
 	}
 	for i, data := range testData {
 		Convey(fmt.Sprintf("#%d GetNextPositions", i+1), t, func() {
