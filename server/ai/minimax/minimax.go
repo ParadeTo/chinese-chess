@@ -59,7 +59,7 @@ type MiniMax struct {
 	cutOff    bool
 }
 
-const workerNum = 8
+const workerNum = 1
 
 func getColor(isMax bool, color chess.Color) chess.Color {
 	if isMax {
@@ -78,57 +78,103 @@ func (miniMax *MiniMax) search(board *chess.Board, color chess.Color, depth int,
 		return miniMax.evalModel.Eval(board, color)
 	}
 
-	var value int
-	if isMax {
-		value = -shared.INFINITE
-	} else {
-		value = shared.INFINITE
-	}
-
 	piecesNodes := board.GenerateMoves(getColor(isMax, color))
-	for _, pieceNodes := range piecesNodes {
-		x := pieceNodes.From[0]
-		y := pieceNodes.From[1]
-		nodes := pieceNodes.Nodes
-		piece := board.Cells[x][y]
-		for _, node := range nodes {
-			board.UpdatePiece(piece, node.To)
-			_value := miniMax.search(board, color, depth-1, !isMax, alpha, beta)
-			board.BackMoves(1)
+
+	len := len(piecesNodes)
+	n := int(math.Floor(float64(len) / float64(workerNum)))
+	remainder := len - workerNum*n
+
+	valueChannel := make(chan int)
+	lastEnd := 0
+	for i := 0; i < workerNum; i++ {
+		start := lastEnd
+		if start > len-1 {
+			break
+		}
+		offset := n
+		if remainder > 0 {
+			offset += 1
+		}
+		subArr := piecesNodes[start : start+offset]
+		lastEnd = start + offset
+		go func(subPiecesNodes []chess.PieceMoves, board *chess.Board) {
+			var value int
 			if isMax {
-				value = shared.Max(value, _value)
-				if miniMax.cutOff {
-					alpha = shared.Max(alpha, value)
-					if alpha >= beta {
-						return value
-					}
-				}
+				value = -shared.INFINITE
 			} else {
-				value = shared.Min(value, _value)
-				if miniMax.cutOff {
-					beta = shared.Min(beta, value)
-					if alpha >= beta {
-						return value
+				value = shared.INFINITE
+			}
+			isBreak := false
+			for _, pieceNodes := range subPiecesNodes {
+				x := pieceNodes.From[0]
+				y := pieceNodes.From[1]
+				nodes := pieceNodes.Nodes
+				piece := board.Cells[x][y]
+				for _, node := range nodes {
+					board.UpdatePiece(piece, node.To)
+					_value := miniMax.search(board.Clone(), color, depth-1, !isMax, alpha, beta)
+					board.BackMoves(1)
+					if isMax {
+						value = shared.Max(value, _value)
+						if miniMax.cutOff {
+							alpha = shared.Max(alpha, value)
+							if alpha >= beta {
+								valueChannel <- alpha
+								isBreak = true
+								break
+							}
+						}
+					} else {
+						value = shared.Min(value, _value)
+						if miniMax.cutOff {
+							beta = shared.Min(beta, value)
+							if alpha >= beta {
+								valueChannel <- beta
+								isBreak = true
+								break
+							}
+						}
+					}
+					if isBreak {
+						break
 					}
 				}
 			}
+			valueChannel <- value
+		}(subArr, board.Clone())
+	}
+
+	var reducedValue int
+	if isMax {
+		reducedValue = -shared.INFINITE
+		for i := 0; i < workerNum; i++ {
+			value := <-valueChannel
+			if value > reducedValue {
+				reducedValue = value
+			}
+		}
+	} else {
+		reducedValue = shared.INFINITE
+		for i := 0; i < workerNum; i++ {
+			value := <-valueChannel
+			if value < reducedValue {
+				reducedValue = value
+			}
 		}
 	}
-	return value
+
+	return reducedValue
 }
 
 func (miniMax *MiniMax) GetBestMove(board *chess.Board, color chess.Color, piecesMoves []chess.PieceMoves) BestMove {
 	len := len(piecesMoves)
-	n := int(math.Ceil(float64(len / workerNum)))
+	n := int(math.Floor(float64(len) / float64(workerNum)))
 	remainder := len - workerNum*n
-
 	p := worker.New(workerNum)
+
 	maxChannel := make(chan BestMove)
 	lastEnd := 0
 	for i := 0; i < workerNum; i++ {
-		if n*i > len-1 {
-			break
-		}
 		start := lastEnd
 		offset := n
 		if remainder > 0 {

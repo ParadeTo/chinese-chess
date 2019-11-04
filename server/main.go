@@ -62,7 +62,7 @@ func setupRouter() *gin.Engine {
 }
 
 func main() {
-	ai = minimax.NewMiniMax(4, eval.NewWeightEvalModel(), true)
+	ai = minimax.NewMiniMax(3, eval.NewWeightEvalModel(), true)
 	r := setupRouter()
 	r.Run(":9090")
 }
