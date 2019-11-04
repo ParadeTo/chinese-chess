@@ -60,11 +60,11 @@ export default class Bridge implements IAI {
     return new Promise<{ from: number[]; to: number[] }>((resolve, reject) => {
       const piecesMoves = board.generateMoves(color)
       const n = Math.ceil(piecesMoves.length / this.workers.length)
-      let partionNum = 0
+      let partitionNum = 0
       this.workers.forEach((worker, idx) => {
         const moves = piecesMoves.slice(idx * n, (idx + 1) * n)
         if (moves.length > 0) {
-          partionNum++
+          partitionNum++
           worker.postMessage({
             type: Msg.GET_BEST_MOVE,
             data: { board, color, piecesMoves: moves }
@@ -80,7 +80,7 @@ export default class Bridge implements IAI {
           bestMove = data.bestMove
         }
         i++
-        if (i === partionNum) {
+        if (i === partitionNum) {
           resolve(bestMove)
         }
       })

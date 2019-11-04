@@ -159,6 +159,10 @@ func (p *P) CanMove(dest [2]int, board *Board) bool {
 	return false
 }
 
+func (p *P) Clone() *Piece {
+	return NewP(p.Color, p.Pos, p.Side, p.Key)
+}
+
 func NewP(color Color, pos [2]int, side Side, key string) *Piece {
 	piece := NewPiece("p", color, pos, side, key)
 	p := (*P)(piece)

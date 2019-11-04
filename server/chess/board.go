@@ -72,6 +72,18 @@ func (board *Board) IsFinish() bool {
 	return !(hasRBoss && hasBBoss)
 }
 
+func (board *Board) Clone() *Board {
+	var pieces []*Piece
+	for _, piece := range board.GetPieces() {
+		pieces = append(pieces, piece.Clone())
+	}
+	return NewBoard(pieces)
+}
+
+func (board *Board) GetPieces() []*Piece {
+	return append(board.Pieces[Red], board.Pieces[Black]...)
+}
+
 func (board *Board) GetPieceNum() int {
 	num := 0
 	for _, row := range board.Cells {

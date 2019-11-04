@@ -41,6 +41,10 @@ func (x *X) CanMove(dest [2]int, board *Board) bool {
 	return false
 }
 
+func (x *X) Clone() *Piece {
+	return NewX(x.Color, x.Pos, x.Side, x.Key)
+}
+
 func NewX(color Color, pos [2]int, side Side, key string) *Piece {
 	piece := NewPiece("x", color, pos, side, key)
 	x := (*X)(piece)
