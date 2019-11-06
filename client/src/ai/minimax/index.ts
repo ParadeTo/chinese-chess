@@ -1,6 +1,6 @@
 import { IAI, INextMove } from '../AI'
 import { Piece, Color, J } from '@/chess/Piece'
-import Board, { IPieceMoves } from '@/chess/Board'
+import Board, { IMove } from '@/chess/Board'
 import { IEvalModel } from './eval'
 import WeightEvalModel from './eval/weight'
 
@@ -58,34 +58,27 @@ export default class MiniMaxAI implements IAI {
     }
 
     let value = isMax ? -Infinity : Infinity
-    const piecesNodes = board.generateMoves(isMax ? color : MiniMaxAI.getOpponentColor(color))
-    for (let pieceNodes of piecesNodes) {
-      const { from: [x, y], nodes } = pieceNodes
+    const moves = board.generateMoves(isMax ? color : MiniMaxAI.getOpponentColor(color))
+    for (let move of moves) {
+      const { from: [x, y], to } = move
       const piece = board.cells[x][y] as Piece
-      // if (!piece) {
-      //   console.log(piecesNodes, pieceNodes)
-      //   debugger
-      //   continue
-      // }
-      for (let node of nodes) {
-        board.updatePiece(piece, node.to)
-        const _value = this.search(board, color, depth - 1, !isMax, alpha, beta)
-        board.backMoves()
-        if (isMax) {
-          value = Math.max(value, _value)
-          if (this.cutOff) {
-            alpha = Math.max(alpha, value)
-            if (alpha >= beta) {
-              return value
-            }
+      board.updatePiece(piece, to)
+      const _value = this.search(board, color, depth - 1, !isMax, alpha, beta)
+      board.backMoves()
+      if (isMax) {
+        value = Math.max(value, _value)
+        if (this.cutOff) {
+          alpha = Math.max(alpha, value)
+          if (alpha >= beta) {
+            return alpha
           }
-        } else {
-          value = Math.min(value, _value)
-          if (this.cutOff) {
-            beta = Math.min(beta, value)
-            if (alpha >= beta) {
-              return value
-            }
+        }
+      } else {
+        value = Math.min(value, _value)
+        if (this.cutOff) {
+          beta = Math.min(beta, value)
+          if (alpha >= beta) {
+            return beta
           }
         }
       }
@@ -93,22 +86,19 @@ export default class MiniMaxAI implements IAI {
     return value
   }
 
-  getBestMove(board: Board, color: Color, piecesMoves: IPieceMoves[]): Promise<{ bestMove: INextMove, value: number}> {
+  getBestMove(board: Board, color: Color, moves: IMove[]): Promise<{ bestMove: INextMove, value: number}> {
     let max = -Infinity
     let bestMove: INextMove | null = null
     console.time('getBestMove')
-    for (let pieceNodes of piecesMoves) {
-      const { from: [x, y], nodes } = pieceNodes
+    for (let move of moves) {
+      const { from: [x, y], to } = move
       const piece = board.cells[x][y] as Piece
-      for (let node of nodes) {
-        board.updatePiece(piece, node.to)
-        const value = this.search(board, color, this.depth - 1, false, -Infinity, Infinity)
-        board.backMoves()
-        if (value > max) {
-          // bestMovePiece = piece
-          max = value
-          bestMove = { from: piece.pos, to: node.to }
-        }
+      board.updatePiece(piece, to)
+      const value = this.search(board, color, this.depth - 1, false, -Infinity, Infinity)
+      board.backMoves()
+      if (value > max) {
+        max = value
+        bestMove = move
       }
     }
     console.timeEnd('getBestMove')

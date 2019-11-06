@@ -8,12 +8,9 @@ export interface IRecord {
   eaten: Piece | null
 }
 
-export interface IPieceMoves {
+export interface IMove {
   from: number[]
-  nodes: {
-    to: number[]
-    value: number
-  }[]
+  to: number[]
 }
 
 export default class Board {
@@ -61,14 +58,14 @@ export default class Board {
 
   generateMoves(color: Color) {
     const pieces = this.pieces[color]
-    const piecesNodes: IPieceMoves[] = []
+    const piecesNodes: IMove[] = []
     for (let piece of pieces) {
-      const nodes = piece.getNextPositions(this).map(pos => ({
+      const moves = piece.getNextPositions(this).map(pos => ({
+        from: piece.pos,
         to: pos,
         value: -Infinity
       }))
-      const pieceNodes = { from: piece.pos, nodes }
-      piecesNodes.push(pieceNodes)
+      piecesNodes.push(...moves)
     }
     return piecesNodes
   }

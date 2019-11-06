@@ -1,23 +1,14 @@
 package chess
 
-import (
-	"chinese-chess/server/shared"
-)
-
 type Record struct {
 	from  [2]int
 	to    [2]int
 	eaten *Piece
 }
 
-type Node struct {
-	To    [2]int
-	Value int
-}
-
-type PieceMoves struct {
-	From  [2]int
-	Nodes []Node
+type Move struct {
+	From [2]int `json:"from"`
+	To   [2]int `json:"to"`
 }
 
 func InNinePlace(pos [2]int, side Side) bool {
@@ -110,16 +101,14 @@ func (board *Board) CanMove(piece *Piece, pos [2]int) bool {
 	return InBoard(pos) && piece.CanMove(pos, board)
 }
 
-func (board *Board) GenerateMoves(color Color) []PieceMoves {
+func (board *Board) GenerateMoves(color Color) []Move {
 	pieces := board.Pieces[color]
-	var pieceNodes []PieceMoves
+	var pieceNodes []Move
 	for _, p := range pieces {
 		positions := p.GetNextPositions(board)
-		var nodes []Node
 		for _, pos := range positions {
-			nodes = append(nodes, Node{To: pos, Value: -shared.INFINITE})
+			pieceNodes = append(pieceNodes, Move{To: pos, From: p.Pos})
 		}
-		pieceNodes = append(pieceNodes, PieceMoves{From: p.Pos, Nodes: nodes})
 	}
 	return pieceNodes
 }

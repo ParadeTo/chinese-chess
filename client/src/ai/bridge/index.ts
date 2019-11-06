@@ -3,7 +3,7 @@ import Event from '@/event'
 import Board from '@/chess/Board'
 import Msg from '@/const'
 import { AiType } from '..'
-import { Piece, Color } from '@/chess/Piece'
+import { Color } from '@/chess/Piece'
 
 /**
  * Let the Bridge implements IAI is to use it as AI
@@ -13,7 +13,7 @@ export default class Bridge implements IAI {
   event: Event
   constructor({
     depth = 1,
-    workerNum = 8,
+    workerNum = 32,
     board,
     color,
     aiType,
@@ -58,19 +58,28 @@ export default class Bridge implements IAI {
 
   getNextMove(board: Board, color: Color): Promise<INextMove> {
     return new Promise<{ from: number[]; to: number[] }>((resolve, reject) => {
-      const piecesMoves = board.generateMoves(color)
-      const n = Math.ceil(piecesMoves.length / this.workers.length)
-      let partitionNum = 0
-      this.workers.forEach((worker, idx) => {
-        const moves = piecesMoves.slice(idx * n, (idx + 1) * n)
-        if (moves.length > 0) {
-          partitionNum++
-          worker.postMessage({
-            type: Msg.GET_BEST_MOVE,
-            data: { board, color, piecesMoves: moves }
-          })
+      const moves = board.generateMoves(color)
+      const len = moves.length
+      const workerNum = this.workers.length > len ? len : this.workers.length
+      const n = Math.floor(len / workerNum)
+      let remainder = len - workerNum * n
+
+      let lastEnd = 0
+      for (let i = 0; i < workerNum; i++) {
+        let start = lastEnd
+        if (start > len - 1) break
+        let offset = n
+        if (remainder-- > 0) {
+          offset += 1
         }
-      })
+        const subMoves = moves.slice(start, start + offset)
+        lastEnd = start + offset
+        this.workers[i].postMessage({
+          type: Msg.GET_BEST_MOVE,
+          data: { board, color, piecesMoves: subMoves }
+        })
+      }
+
       let i = 0
       let max = -Infinity
       let bestMove: INextMove
@@ -80,7 +89,7 @@ export default class Bridge implements IAI {
           bestMove = data.bestMove
         }
         i++
-        if (i === partitionNum) {
+        if (i === workerNum) {
           resolve(bestMove)
         }
       })

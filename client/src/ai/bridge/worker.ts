@@ -1,7 +1,7 @@
 import Msg from '../../const'
 import { AiType, createAi } from '..'
 import { IAI } from '../AI'
-import Board, { IPieceMoves } from '@/chess/Board'
+import Board, { IMove } from '@/chess/Board'
 import { B, J, M, P, S, Z, X, Piece, Color } from '@/chess/Piece'
 import { Role } from '@/chess/Piece/Piece'
 import MiniMaxAI from '../minimax'
@@ -51,7 +51,7 @@ self.onmessage = async (e: { data: { type: string; data: any } }) => {
       break
     case Msg.GET_BEST_MOVE:
       {
-        let { board: rawBoard, color, piecesMoves } = data as { board: Board; color: Color; piecesMoves: IPieceMoves[] }
+        let { board: rawBoard, color, piecesMoves } = data as { board: Board; color: Color; piecesMoves: IMove[] }
         // the board from message is the pure data without prototype
         const board = recoverBoard(rawBoard)
         const { bestMove, value } = await (ai as MiniMaxAI).getBestMove(board, color, piecesMoves)

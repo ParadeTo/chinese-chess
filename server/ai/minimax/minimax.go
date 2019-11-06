@@ -10,45 +10,42 @@ import (
 	"time"
 )
 
-type Move struct {
-	From [2]int `json:"from"`
-	To   [2]int `json:"to"`
-}
-
 type BestMove struct {
-	move  Move
+	move  chess.Move
 	value int
 }
 
 type BestMoveWorker struct {
 	board         *chess.Board
-	piecesMoves   []chess.PieceMoves
+	moves         []chess.Move
 	resultChannel chan BestMove
 	search        func(board *chess.Board) int
 }
 
 func (bmw *BestMoveWorker) Task() {
+	len := len(bmw.moves)
+
+	fmt.Printf("BestMoveWorker Task (%d) start: %d\n", len, time.Now().Unix())
+
 	bestMove := BestMove{
-		move:  Move{},
+		move:  chess.Move{},
 		value: -shared.INFINITE,
 	}
 
-	for _, pieceNodes := range bmw.piecesMoves {
-		x := pieceNodes.From[0]
-		y := pieceNodes.From[1]
-		nodes := pieceNodes.Nodes
+	for _, move := range bmw.moves {
+		x := move.From[0]
+		y := move.From[1]
 		piece := bmw.board.Cells[x][y]
-		for _, node := range nodes {
-			bmw.board.UpdatePiece(piece, node.To)
-			value := bmw.search(bmw.board)
-			bmw.board.BackMoves(1)
-			if value > bestMove.value {
-				bestMove.value = value
-				bestMove.move.From = piece.Pos
-				bestMove.move.To = node.To
-			}
+		bmw.board.UpdatePiece(piece, move.To)
+		value := bmw.search(bmw.board)
+		bmw.board.BackMoves(1)
+		if value > bestMove.value {
+			bestMove.value = value
+			bestMove.move.From = piece.Pos
+			bestMove.move.To = move.To
 		}
 	}
+	fmt.Printf("BestMoveWorker Task (%d) end: %d\n", len, time.Now().Unix())
 
 	bmw.resultChannel <- bestMove
 }
@@ -59,7 +56,7 @@ type MiniMax struct {
 	cutOff    bool
 }
 
-const workerNum = 8
+const WORKER_NUM = 1600
 
 func getColor(isMax bool, color chess.Color) chess.Color {
 	if isMax {
@@ -85,31 +82,28 @@ func (miniMax *MiniMax) search(board *chess.Board, color chess.Color, depth int,
 		value = shared.INFINITE
 	}
 
-	piecesNodes := board.GenerateMoves(getColor(isMax, color))
-	for _, pieceNodes := range piecesNodes {
-		x := pieceNodes.From[0]
-		y := pieceNodes.From[1]
-		nodes := pieceNodes.Nodes
+	moves := board.GenerateMoves(getColor(isMax, color))
+	for _, move := range moves {
+		x := move.From[0]
+		y := move.From[1]
 		piece := board.Cells[x][y]
-		for _, node := range nodes {
-			board.UpdatePiece(piece, node.To)
-			_value := miniMax.search(board, color, depth-1, !isMax, alpha, beta)
-			board.BackMoves(1)
-			if isMax {
-				value = shared.Max(value, _value)
-				if miniMax.cutOff {
-					alpha = shared.Max(alpha, value)
-					if alpha >= beta {
-						return value
-					}
+		board.UpdatePiece(piece, move.To)
+		_value := miniMax.search(board, color, depth-1, !isMax, alpha, beta)
+		board.BackMoves(1)
+		if isMax {
+			value = shared.Max(value, _value)
+			if miniMax.cutOff {
+				alpha = shared.Max(alpha, value)
+				if alpha >= beta {
+					return alpha
 				}
-			} else {
-				value = shared.Min(value, _value)
-				if miniMax.cutOff {
-					beta = shared.Min(beta, value)
-					if alpha >= beta {
-						return value
-					}
+			}
+		} else {
+			value = shared.Min(value, _value)
+			if miniMax.cutOff {
+				beta = shared.Min(beta, value)
+				if alpha >= beta {
+					return beta
 				}
 			}
 		}
@@ -117,32 +111,37 @@ func (miniMax *MiniMax) search(board *chess.Board, color chess.Color, depth int,
 	return value
 }
 
-func (miniMax *MiniMax) GetBestMove(board *chess.Board, color chess.Color, piecesMoves []chess.PieceMoves) BestMove {
-	len := len(piecesMoves)
-	n := int(math.Ceil(float64(len / workerNum)))
+func (miniMax *MiniMax) GetBestMove(board *chess.Board, color chess.Color, moves []chess.Move) BestMove {
+	len := len(moves)
+	workerNum := WORKER_NUM
+	if workerNum > len {
+		workerNum = len
+	}
+	n := int(math.Floor(float64(len) / float64(workerNum)))
 	remainder := len - workerNum*n
 
 	p := worker.New(workerNum)
 	maxChannel := make(chan BestMove)
 	lastEnd := 0
 	for i := 0; i < workerNum; i++ {
-		if n*i > len-1 {
+		start := lastEnd
+		if start > len-1 {
 			break
 		}
-		start := lastEnd
 		offset := n
 		if remainder > 0 {
 			offset += 1
 		}
-		subArr := piecesMoves[start : start+offset]
+		remainder -= 1
+		subArr := moves[start : start+offset]
 		lastEnd = start + offset
-		p.Run(&BestMoveWorker{board: board.Clone(), piecesMoves: subArr, search: func(board *chess.Board) int {
+		p.Run(&BestMoveWorker{board: board.Clone(), moves: subArr, search: func(board *chess.Board) int {
 			return miniMax.search(board, color, miniMax.depth-1, false, -shared.INFINITE, shared.INFINITE)
 		}, resultChannel: maxChannel})
 	}
 
 	bestMove := BestMove{
-		move:  Move{},
+		move:  chess.Move{},
 		value: -shared.INFINITE,
 	}
 	for i := 0; i < workerNum; i++ {
@@ -156,11 +155,11 @@ func (miniMax *MiniMax) GetBestMove(board *chess.Board, color chess.Color, piece
 	return bestMove
 }
 
-func (miniMax *MiniMax) GetNextMove(board *chess.Board, color chess.Color) Move {
-	fmt.Sprintf("GetNextMove start: %d\n", time.Now().Unix())
+func (miniMax *MiniMax) GetNextMove(board *chess.Board, color chess.Color) chess.Move {
+	fmt.Printf("GetNextMove start: %d\n", time.Now().Unix())
 	piecesMoves := board.GenerateMoves(color)
 	bestMove := miniMax.GetBestMove(board, color, piecesMoves)
-	fmt.Sprintf("GetNextMove end: %d\n", time.Now().Unix())
+	fmt.Printf("GetNextMove end: %d\n", time.Now().Unix())
 	return bestMove.move
 }
 

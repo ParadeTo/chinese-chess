@@ -89,8 +89,8 @@ const createPlayer = (player: IPlayer, board?: Board) => {
     return new Player(
       color,
       type,
-      // new Bridge({ depth: (level as number) + 2, board: board as Board, color, aiType: 'minimax', workerPath: '/ai.bundle.js' })
-      new ProxyAi()
+      new Bridge({ depth: (level as number) + 2, board: board as Board, color, aiType: 'minimax', workerPath: '/ai.bundle.js' })
+      // new ProxyAi()
     )
   }
 }
