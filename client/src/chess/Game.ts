@@ -82,6 +82,11 @@ export const createBoard = () => {
   return board
 }
 
+let workerPath = '/ai.bundle.js'
+if (process.env.VUE_APP_ENV === 'blog') {
+  workerPath = '/js/chinese-chess/ai.bundle.js'
+}
+
 const createPlayer = (player: IPlayer, board?: Board) => {
   const { color, type, level } = player
   if (type === 'human') return new Player(color, type)
@@ -89,7 +94,7 @@ const createPlayer = (player: IPlayer, board?: Board) => {
     return new Player(
       color,
       type,
-      new Bridge({ depth: (level as number) + 2, board: board as Board, color, aiType: 'minimax', workerPath: '/ai.bundle.js' })
+      new Bridge({ depth: (level as number) + 2, board: board as Board, color, aiType: 'minimax', workerPath })
       // new ProxyAi()
     )
   }

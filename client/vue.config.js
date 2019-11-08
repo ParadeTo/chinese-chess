@@ -21,9 +21,24 @@ module.exports = {
       .output
       .path(resolve('dist'))
       .filename('[name].bundle.js')
-      .globalObject('this') //https://github.com/webpack/webpack/issues/6642
+      .globalObject('this') // https://github.com/webpack/webpack/issues/6642
 
     config.devtool(false)
+    if (process.env.VUE_APP_ENV === 'blog') {
+      const images = config.module.rule('images')
+      images.uses.clear()
+      images.use('url-loader')
+        .loader(require.resolve('url-loader'))
+        .options({
+          limit: 4096,
+          fallback: {
+            loader: 'file-loader',
+            options: {
+              name: 'images/chinese-chess/[name].[hash:8].[ext]'
+            }
+          }
+        })
+    }
 
     // exclude ai.js
     config
