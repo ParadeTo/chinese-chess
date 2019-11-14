@@ -36,7 +36,7 @@ const startY = 2
 const xInterval = 9.8
 const yInterval = 9.6
 const pieceWidth = 9
-const buff = 0.2
+const buff = 0.4
 
 @Component({})
 export default class ChineseChess extends Vue {

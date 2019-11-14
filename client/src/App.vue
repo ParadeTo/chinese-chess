@@ -53,7 +53,9 @@
   }
 }
 .weui-tabbar {
-  position: fixed!important;
+  position: fixed !important;
+  width: 100%;
+  max-width: 480px;
 }
 </style>
 
