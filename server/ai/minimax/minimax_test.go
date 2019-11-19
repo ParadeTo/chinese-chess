@@ -47,7 +47,7 @@ func TestMiniMax_GetNextMove(t *testing.T) {
 		rj1, rj2, rm1, rm2, rx1, rx2, rs1, rs2, rb, rz1, rz2, rz3, rz4, rz5, rp1, rp2,
 	})
 
-	miniMax := NewMiniMax(5, eval.NewWeightEvalModel(), true)
+	miniMax := NewMiniMax(4, eval.NewWeightEvalModel(), true)
 	move := miniMax.GetNextMove(board, Red)
 	fmt.Sprintf("%v+", move)
 }
