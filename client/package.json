@@ -37,6 +37,7 @@
     "eslint-plugin-prettier": "3.0.1",
     "eslint-plugin-vue": "^5.0.0",
     "html-webpack-exclude-assets-plugin": "0.0.7",
+    "html-webpack-externals-plugin": "^3.8.0",
     "less": "^3.0.4",
     "less-loader": "^4.1.0",
     "ts-jest": "^23.0.0",

@@ -84,7 +84,7 @@ export const createBoard = () => {
 
 let workerPath = '/ai.bundle.js'
 if (process.env.VUE_APP_ENV === 'blog') {
-  workerPath = '/js/chinese-chess/ai.bundle.js'
+  workerPath = '/js/vue-chinese-chess/ai.bundle.js'
 }
 
 const createPlayer = (player: IPlayer, board?: Board) => {

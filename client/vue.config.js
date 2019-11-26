@@ -2,6 +2,7 @@ var path = require('path')
 var merge = require('webpack-merge')
 var HtmlWebpackExcludeAssetsPlugin = require('html-webpack-exclude-assets-plugin')
 var htmlWebpackPlugin = require('html-webpack-plugin')
+const HtmlWebpackExternalsPlugin = require('html-webpack-externals-plugin')
 
 function resolve(name) {
   return path.join(__dirname, name)
@@ -34,7 +35,7 @@ module.exports = {
           fallback: {
             loader: 'file-loader',
             options: {
-              name: 'images/chinese-chess/[name].[hash:8].[ext]'
+              name: 'images/vue-chinese-chess/[name].[hash:8].[ext]'
             }
           }
         })
@@ -47,6 +48,18 @@ module.exports = {
         args[0].excludeAssets = [/ai.*.js/]
         return args
       })
+
+    config
+      .plugin('externals')
+      .use(HtmlWebpackExternalsPlugin, [{
+        externals: [
+          {
+            module: 'vue',
+            entry: '//cdn.bootcss.com/vue/2.1.1/vue.min.js',
+            global: 'Vue'
+          }
+        ]
+      }])
 
     config.plugin('assets')
       .use(HtmlWebpackExcludeAssetsPlugin)

@@ -1,5 +1,5 @@
 # Demo
-[Demo](http://www.paradeto.com/chinese-chess/#/)
+[Demo](http://www.paradeto.com/vue-chinese-chess/#/)
 
 # 系列文章
 [如何写一个象棋 AI （一）](https://juejin.im/post/5dcc19c7e51d45106556b02e)
