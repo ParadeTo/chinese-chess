@@ -87,6 +87,34 @@ func (board *Board) GetPieceNum() int {
 	return num
 }
 
+func (board *Board) Sum(data []int) int {
+	s := 0
+	l := len(data)
+	const N = 5
+	seg := l / N
+	var chs [N]<-chan int
+	for i := 0; i < N; i++ {
+		chs[i] = worker(data[i*seg : (i+1)*seg])
+	}
+	for i := 0; i < N; i++ {
+		s += <-chs[i]
+	}
+	return s
+}
+
+func worker(s []int) <-chan int {
+	out := make(chan int)
+	go func() {
+		length := len(s)
+		sum := 0
+		for i := 0; i < length; i++ {
+			sum += s[i]
+		}
+		out <- sum
+	}()
+	return out
+}
+
 func (board *Board) GetPieceByPos(pos [2]int) *Piece {
 	x := pos[0]
 	y := pos[1]

@@ -76,7 +76,7 @@ export const createBoard = () => {
     new Z({ color: 'r', pos: [2, 6], key: 'rz2' }),
     new Z({ color: 'r', pos: [4, 6], key: 'rz3' }),
     new Z({ color: 'r', pos: [6, 6], key: 'rz4' }),
-    new Z({ color: 'r', pos: [8, 6], key: 'rz5' })
+    new Z({ color: 'r', pos: [8, 6], key: 'rz5' }),
   ]
   const board = new Board(pieces)
   return board
@@ -94,8 +94,8 @@ const createPlayer = (player: IPlayer, board?: Board) => {
     return new Player(
       color,
       type,
-      new Bridge({ depth: (level as number) + 2, board: board as Board, color, aiType: 'minimax', workerPath })
-      // new ProxyAi()
+      // new Bridge({ depth: (level as number) + 2, board: board as Board, color, aiType: 'minimax', workerPath })
+      new ProxyAi()
     )
   }
 }

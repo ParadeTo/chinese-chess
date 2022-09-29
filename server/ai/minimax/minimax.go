@@ -112,6 +112,10 @@ func (miniMax *MiniMax) search(board *chess.Board, color chess.Color, depth int,
 }
 
 func (miniMax *MiniMax) GetBestMove(board *chess.Board, color chess.Color, moves []chess.Move) BestMove {
+	// // 单线程
+	// return miniMax.search(board, color, miniMax.depth-1, false, -shared.INFINITE, shared.INFINITE)
+
+	// 多线程
 	len := len(moves)
 	workerNum := WORKER_NUM
 	if workerNum > len {
