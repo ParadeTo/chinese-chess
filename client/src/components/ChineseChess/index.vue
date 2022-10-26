@@ -187,7 +187,7 @@ export default class ChineseChess extends Vue {
     height: 32px;
     border-radius: 16px;
     background-color: white;
-    box-shadow: 1px 1px 1px 1px #333;
+    box-shadow: 1px 1px 2px 1px #333;
   }
 }
 </style>
