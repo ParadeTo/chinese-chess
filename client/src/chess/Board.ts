@@ -19,9 +19,7 @@ export default class Board {
 
   public currentPlayer: Color = 'r'
   public readonly cells: (Piece | null)[][] = []
-  public readonly pieces: {
-    [key in Color]: Piece[]
-  } = {
+  public readonly pieces: { [key in Color]: Piece[] } = {
     r: [],
     b: []
   }
@@ -56,6 +54,20 @@ export default class Board {
     return (y >= 0 && y < 5 && side === 't') || (y > 4 && y < Board.HEIGHT && side === 'b')
   }
 
+  findBoss(color: Color) {
+    return this.pieces[color].find(p => p.role === 'b')!
+  }
+
+  canBossBeEaten(color: Color) {
+    const bossPos = this.findBoss(color).pos
+    let opponentColor: Color = color === 'r' ? 'b' : 'r'
+    const opponentPieces = this.pieces[opponentColor]
+    for (let piece of opponentPieces) {
+      if (piece.canMove(bossPos, this)) return true
+    }
+    return false
+  }
+
   generateMoves(color: Color) {
     const pieces = this.pieces[color]
     const piecesNodes: IMove[] = []
@@ -70,8 +82,11 @@ export default class Board {
     return piecesNodes
   }
 
-  isFinish () {
-    return !(this.pieces.r.find(piece => piece.role === 'b') && this.pieces.b.find(piece => piece.role === 'b'))
+  isFinish() {
+    return !(
+      this.pieces.r.find(piece => piece.role === 'b') &&
+      this.pieces.b.find(piece => piece.role === 'b')
+    )
   }
 
   getAllPieces() {

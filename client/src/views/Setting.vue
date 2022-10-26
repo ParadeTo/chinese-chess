@@ -2,9 +2,9 @@
   <div class="setting">
     <div class="weui-cells">
       <template v-for="(player, i) in tmpPlayers">
-        <div :key="i+'r'" class="weui-cell weui-cell_select weui-cell_select-after level1">
+        <div :key="i + 'r'" class="weui-cell weui-cell_select weui-cell_select-after level1">
           <div class="weui-cell__hd">
-            <label for class="weui-label">{{'玩家' + (i+1)}}</label>
+            <label for class="weui-label">{{ '玩家' + (i + 1) }}</label>
           </div>
           <div class="weui-cell__bd">
             <select class="weui-select" :value="player.type" @change="e => onChange(i, 'type', e)">
@@ -13,7 +13,7 @@
             </select>
           </div>
         </div>
-        <div :key="i+'c'" class="weui-cell weui-cell_select weui-cell_select-after level2">
+        <div :key="i + 'c'" class="weui-cell weui-cell_select weui-cell_select-after level2">
           <div class="weui-cell__hd">
             <label for class="weui-label">颜色</label>
           </div>
@@ -29,7 +29,7 @@
           </div>
         </div>
         <div
-          :key="i+'l'"
+          :key="i + 'l'"
           class="weui-cell weui-cell_select weui-cell_select-after level2"
           v-if="player.type !== 'human'"
         >
@@ -37,17 +37,32 @@
             <label for class="weui-label">等级</label>
           </div>
           <div class="weui-cell__bd">
-            <select class="weui-select" :value="player.level" @change="e => onChange(i, 'level', e)">
+            <select
+              class="weui-select"
+              :value="player.level"
+              @change="e => onChange(i, 'level', e)"
+            >
               <option value="1">初级</option>
               <option value="2">中级</option>
-              <option value="3">高级</option>
+              <option value="3">高级（有些慢）</option>
             </select>
           </div>
         </div>
       </template>
     </div>
-    <a @click="onSave" href="javascript:;" class="weui-btn weui-btn_block weui-btn_primary btn" :class="{'weui-btn_disabled': !changed}">保存设置</a>
-    <Dialog :show="showDialog" content="保存后会丢失当前游戏，确定吗？" @cancel="showDialog = false" @ok="onOk" />
+    <a
+      @click="onSave"
+      href="javascript:;"
+      class="weui-btn weui-btn_block weui-btn_primary btn"
+      :class="{ 'weui-btn_disabled': !changed }"
+      >保存设置</a
+    >
+    <Dialog
+      :show="showDialog"
+      content="保存后会丢失当前游戏，确定吗？"
+      @cancel="showDialog = false"
+      @ok="onOk"
+    />
   </div>
 </template>
 
@@ -120,7 +135,7 @@ export default class SettingView extends Vue {
 }
 </script>
 
-<style scoped lang='less'>
+<style scoped lang="less">
 .weui-cells {
   text-align: left;
   &:first-of-type {

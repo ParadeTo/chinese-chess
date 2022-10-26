@@ -27,7 +27,7 @@
             </svg>
           </div>
         </span>
-        <p class="weui-tabbar__label">Game</p>
+        <p class="weui-tabbar__label">象棋</p>
       </router-link>
       <router-link to="/setting" class="weui-tabbar__item">
         <span style="display: inline-block;position: relative;">
@@ -35,7 +35,7 @@
             <i class="iconfont icon-setting"></i>
           </div>
         </span>
-        <p class="weui-tabbar__label">Setting</p>
+        <p class="weui-tabbar__label">设置</p>
       </router-link>
 
       <!-- <router-link to="/about" class="weui-tabbar__item">

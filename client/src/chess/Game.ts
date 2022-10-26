@@ -1,5 +1,5 @@
 import Board, { UpdatePieceResult } from './Board'
-import { Piece, B, J, M, P, S, X, Z } from './Piece'
+import { Piece, B, J, M, P, S, X, Z, Color } from './Piece'
 import Player from './Player'
 import Bridge from '@/ai/bridge'
 import { IPlayer } from '../store/types'
@@ -39,6 +39,10 @@ export default class Game {
       }
     }
     throw new Error('Only ai can execute autoMove!')
+  }
+
+  isFinish() {
+    return this.board.canBossBeEaten(this.currentPlayer.color)
   }
 }
 

@@ -13,6 +13,7 @@
       <div class="weui-dialog__bd">{{ content }}</div>
       <div class="weui-dialog__ft">
         <a
+          :if="hasCancel"
           href="javascript:;"
           class="weui-dialog__btn weui-dialog__btn_default"
           @click="onCancel"
@@ -45,6 +46,9 @@ export default class SettingView extends Vue {
 
   @Prop({ default: false })
   show!: boolean
+
+  @Prop({ default: true })
+  hasCancel!: boolean
 
   onCancel() {
     this.$emit('cancel')

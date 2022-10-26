@@ -1,8 +1,9 @@
 <template>
-  <div class="board" @click="onBoardClick" ref="board">
-    <img src="./img/board.png" class="bg" ref="bg" />
-    <template :if="pieces.length">
-      <!-- <img
+  <div>
+    <div class="board" @click="onBoardClick" ref="board">
+      <img src="./img/board.png" class="bg" ref="bg" />
+      <template :if="pieces.length">
+        <!-- <img
         :key="`${piece.key}${piece.pos[0]}${piece.pos[1]}`"
         :src="getImg(piece)"
         :style="`${getPiecePos(piece)}`"
@@ -11,16 +12,19 @@
         class="piece"
         v-for="piece in pieces"
       />-->
-      <img
-        :key="`${piece.key}`"
-        :src="getImg(piece)"
-        :style="`${getPiecePos(piece)}`"
-        :class="piece.selected && 'selected'"
-        @click.stop="onPieceClick(piece)"
-        class="piece"
-        v-for="piece in pieces"
-      />
-    </template>
+        <img
+          :key="`${piece.key}`"
+          :src="getImg(piece)"
+          :style="`${getPiecePos(piece)}`"
+          :class="piece.selected && 'selected'"
+          @click.stop="onPieceClick(piece)"
+          class="piece"
+          v-for="piece in pieces"
+        />
+      </template>
+    </div>
+    <Loading :isLoading="isLoading" />
+    <Dialog :show="showDialog" :content="content" :hasCancel="false" @ok="showDialog = false" />
   </div>
 </template>
 
@@ -30,6 +34,8 @@ import Game from '@/chess/Game'
 import Board, { UpdatePieceResult } from '@/chess/Board'
 import { Piece } from '@/chess/Piece'
 import Player from '@/chess/Player'
+import { CancelablePromise } from '@/utils'
+import Loading from '../Loading'
 
 const startX = 7
 const startY = 2
@@ -38,7 +44,11 @@ const yInterval = 9.6
 const pieceWidth = 9
 const buff = 0.4
 
-@Component({})
+@Component({
+  components: {
+    Loading
+  }
+})
 export default class ChineseChess extends Vue {
   @Prop() private game!: Game
 
@@ -46,6 +56,9 @@ export default class ChineseChess extends Vue {
   height: number = 0
   gameOver: boolean = false
   selectedPiece!: Piece | null
+  isLoading: boolean = false
+  showDialog: boolean = false
+  content: string = ''
 
   mounted() {
     const { width } = (this.$refs.board as Element).getBoundingClientRect()
@@ -125,31 +138,47 @@ export default class ChineseChess extends Vue {
 
   moveStepForHuman(piece: Piece, dest: number[]) {
     const { result, eatenPiece } = this.game.updatePiece(piece, dest)
+
+    if (this.game.isFinish()) {
+      return this.overGame()
+    }
+
     if (result) {
-      if (eatenPiece && eatenPiece.role === 'b') return this.overGame(eatenPiece)
       this.game.switchPlayer()
       if (this.selectedPiece) this.selectedPiece = null
     }
   }
 
-  async moveStepForAi() {
-    const { result: autoMoveResult, eatenPiece: autoMoveEatenPiece } = await this.autoMove()
-    if (autoMoveResult) {
-      this.game.switchPlayer()
-      if (autoMoveEatenPiece && autoMoveEatenPiece.role === 'b')
-        return this.overGame(autoMoveEatenPiece)
-    }
+  setLoading() {
+    let abortController = new AbortController()
+    let tId
+    // eslint-disable-next-line
+    new CancelablePromise<void>((resolve, reject) => {
+      tId = setTimeout(() => {
+        this.isLoading = true
+        resolve()
+      }, 2000)
+    }, abortController.signal).catch(() => clearTimeout(tId))
+    return abortController
   }
 
-  overGame(eatenPiece: Piece) {
-    setTimeout(() => {
-      window.alert(`${eatenPiece.color === 'r' ? 'Black' : 'Red'} side win!`)
-    }, 1000)
+  async moveStepForAi() {
+    const abortController = this.setLoading()
+    const { result: autoMoveResult, eatenPiece: autoMoveEatenPiece } = await this.autoMove()
+    this.isLoading = false
+    abortController.abort()
+    if (this.game.isFinish()) return this.overGame()
+    this.game.switchPlayer()
+  }
+
+  overGame() {
+    this.showDialog = true
+    this.content = this.game.currentPlayer.color === 'r' ? '黑' : '红' + '方胜！'
     this.gameOver = true
   }
 
-  async autoMove(): Promise<UpdatePieceResult> {
-    return Promise.resolve(await this.game.autoMove())
+  autoMove(): Promise<UpdatePieceResult> {
+    return this.game.autoMove()
   }
 
   get pieces() {
