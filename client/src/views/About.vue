@@ -6,7 +6,9 @@
         <a href="https://github.com/lihongxun945/myblog/issues/11">五子棋AI教程第二版</a>
       </li>
       <li>
-        <a href="https://github.com/geeeeeeeeek/IntelligentChineseChessSystem">IntelligentChineseChessSystem</a>
+        <a href="https://github.com/geeeeeeeeek/IntelligentChineseChessSystem"
+          >IntelligentChineseChessSystem</a
+        >
       </li>
     </div>
 
@@ -22,7 +24,7 @@
   </div>
 </template>
 
-<style scoped lang='less'>
+<style scoped lang="less">
 .section {
   text-align: left;
   padding: 10px;

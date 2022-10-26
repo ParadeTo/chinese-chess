@@ -14,13 +14,12 @@ module.exports = {
     config.devServer.proxy('http://localhost:9090')
 
     config
-    // Interact with entry points
+      // Interact with entry points
       .entry('ai')
       .add(resolve('src/ai/bridge/worker.ts'))
       .end()
-    // Modify output settings
-      .output
-      .path(resolve('dist'))
+      // Modify output settings
+      .output.path(resolve('dist'))
       .filename('[name].bundle.js')
       .globalObject('this') // https://github.com/webpack/webpack/issues/6642
 
@@ -28,10 +27,11 @@ module.exports = {
     if (process.env.VUE_APP_ENV === 'blog') {
       const images = config.module.rule('images')
       images.uses.clear()
-      images.use('url-loader')
+      images
+        .use('url-loader')
         .loader(require.resolve('url-loader'))
         .options({
-          limit: 4096,
+          limit: 133120,
           fallback: {
             loader: 'file-loader',
             options: {
@@ -42,29 +42,25 @@ module.exports = {
     }
 
     // exclude ai.js
-    config
-      .plugin('html')
-      .tap(args => {
-        args[0].excludeAssets = [/ai.*.js/]
-        return args
-      })
+    config.plugin('html').tap(args => {
+      args[0].excludeAssets = [/ai.*.js/]
+      return args
+    })
 
-    config
-      .plugin('externals')
-      .use(HtmlWebpackExternalsPlugin, [{
-        externals: [
-          {
-            module: 'vue',
-            entry: '//cdn.bootcss.com/vue/2.1.1/vue.min.js',
-            global: 'Vue'
-          }
-        ]
-      }])
+    // config
+    //   .plugin('externals')
+    //   .use(HtmlWebpackExternalsPlugin, [{
+    //     externals: [
+    //       {
+    //         module: 'vue',
+    //         entry: '//cdn.bootcss.com/vue/2.1.1/vue.min.js',
+    //         global: 'Vue'
+    //       }
+    //     ]
+    //   }])
 
-    config.plugin('assets')
-      .use(HtmlWebpackExcludeAssetsPlugin)
+    config.plugin('assets').use(HtmlWebpackExcludeAssetsPlugin)
 
-    config.optimization
-      .splitChunks(false) // will cause webworker not work if enable this
+    config.optimization.splitChunks(false) // will cause webworker not work if enable this
   }
 }

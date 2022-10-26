@@ -24,7 +24,7 @@
   </div>
 </template>
 
-<script lang='ts'>
+<script lang="ts">
 import { Component, Prop, Vue, Watch } from 'vue-property-decorator'
 import Game from '@/chess/Game'
 import Board, { UpdatePieceResult } from '@/chess/Board'
@@ -136,7 +136,8 @@ export default class ChineseChess extends Vue {
     const { result: autoMoveResult, eatenPiece: autoMoveEatenPiece } = await this.autoMove()
     if (autoMoveResult) {
       this.game.switchPlayer()
-      if (autoMoveEatenPiece && autoMoveEatenPiece.role === 'b') return this.overGame(autoMoveEatenPiece)
+      if (autoMoveEatenPiece && autoMoveEatenPiece.role === 'b')
+        return this.overGame(autoMoveEatenPiece)
     }
   }
 
@@ -151,7 +152,7 @@ export default class ChineseChess extends Vue {
     return Promise.resolve(await this.game.autoMove())
   }
 
-  get pieces () {
+  get pieces() {
     return this.game && this.game.board && this.game.board.getAllPieces()
   }
 
@@ -165,7 +166,7 @@ export default class ChineseChess extends Vue {
 </script>
 
 <!-- Add 'scoped' attribute to limit CSS to this component only -->
-<style scoped lang='less'>
+<style scoped lang="less">
 .board {
   width: 100%;
   font-size: 0;
@@ -182,6 +183,11 @@ export default class ChineseChess extends Vue {
     &.selected {
       box-shadow: 0px 0px 4px 2px #fff700;
     }
+    width: 32px;
+    height: 32px;
+    border-radius: 16px;
+    background-color: white;
+    box-shadow: 1px 1px 1px 1px #333;
   }
 }
 </style>
