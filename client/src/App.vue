@@ -18,19 +18,6 @@
               height="120"
               viewBox="0 0 120 120"
             >
-              <!-- <metadata>
-                <?xpacket begin="﻿" id="W5M0MpCehiHzreSzNTczkc9d"?>
-                <x:xmpmeta
-                  xmlns:x="adobe:ns:meta/"
-                  x:xmptk="Adobe XMP Core 5.6-c140 79.160451, 2017/05/06-01:08:21        "
-                >
-                  <rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
-                    <rdf:Description rdf:about="" />
-                  </rdf:RDF>
-                </x:xmpmeta>
-
-                <?xpacket end="w"?>
-              </metadata> -->
               <image
                 id="象"
                 x="19"
