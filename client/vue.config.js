@@ -24,7 +24,7 @@ module.exports = {
       .globalObject('this') // https://github.com/webpack/webpack/issues/6642
 
     config.devtool(false)
-    if (process.env.VUE_APP_ENV === 'blog') {
+    if (process.env.VUE_APP_ENV === 'blog' || process.env.VUE_APP_ENV === 'jj') {
       const images = config.module.rule('images')
       images.uses.clear()
       images
