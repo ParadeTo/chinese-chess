@@ -5,7 +5,7 @@ import Board from '../Board'
  * 卒 兵
  */
 export default class Z extends Piece {
-  constructor(params: { color: Color, pos: number[], side?: Side, key?: string }) {
+  constructor(params: { color: Color; pos: number[]; side?: Side; key?: string }) {
     super({ role: 'z', ...params })
   }
 
@@ -20,9 +20,9 @@ export default class Z extends Piece {
     const [destX, destY] = dest
 
     if (
-      (this.side === 'b' && destY === origY - 1) ||
-      (this.side === 't' && destY === origY + 1) ||
-      (this.isCrossedRiver() && Math.abs(destX - origX) === 1)
+      (this.side === 'b' && destY === origY - 1 && origX === destX) ||
+      (this.side === 't' && destY === origY + 1 && origX === destX) ||
+      (this.isCrossedRiver() && Math.abs(destX - origX) === 1 && origY === destY)
     ) {
       return this.canPlaceAtDest(dest, board)
     }

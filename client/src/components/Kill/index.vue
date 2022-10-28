@@ -1,9 +1,8 @@
 <template>
   <div id="loadingToast" :class="{ show: isLoading, hide: !isLoading }">
     <div class="weui-mask_transparent"></div>
-    <div class="weui-toast">
-      <i class="weui-loading weui-icon_toast"></i>
-      <p class="weui-toast__content">电脑思考中</p>
+    <div class="weui-toast toast">
+      <img src="./kill.png" alt="" />
     </div>
   </div>
 </template>
@@ -18,7 +17,7 @@ export default class SettingView extends Vue {
 }
 </script>
 
-<style scoped>
+<style scoped lang="less">
 .show {
   opacity: 1;
   display: block;
@@ -26,5 +25,15 @@ export default class SettingView extends Vue {
 .hide {
   opacity: 0;
   display: none;
+}
+.toast {
+  background-color: transparent;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  img {
+    width: 80px;
+    height: 80px;
+  }
 }
 </style>

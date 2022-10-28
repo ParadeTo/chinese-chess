@@ -58,14 +58,32 @@ export default class Board {
     return this.pieces[color].find(p => p.role === 'b')!
   }
 
-  canBossBeEaten(color: Color) {
+  willBossBeEatenInNextStep(color: Color) {
     const bossPos = this.findBoss(color).pos
     let opponentColor: Color = color === 'r' ? 'b' : 'r'
     const opponentPieces = this.pieces[opponentColor]
     for (let piece of opponentPieces) {
-      if (piece.canMove(bossPos, this)) return true
+      if (piece.canMove(bossPos, this)) {
+        return true
+      }
     }
     return false
+  }
+
+  willDie(color: Color) {
+    const pieces = this.pieces[color]
+    for (let piece of pieces) {
+      const positions = piece.getNextPositions(this)
+      for (let pos of positions) {
+        this.updatePiece(piece, pos)
+        if (!this.willBossBeEatenInNextStep(color)) {
+          this.backMoves()
+          return false
+        }
+        this.backMoves()
+      }
+    }
+    return true
   }
 
   generateMoves(color: Color) {

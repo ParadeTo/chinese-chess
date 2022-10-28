@@ -8,7 +8,7 @@
     "build:blog": "VUE_APP_ENV=blog vue-cli-service build",
     "lint": "vue-cli-service lint",
     "test:unit": "vue-cli-service test:unit --watch",
-    "test:coverage": "vue-cli-service test:unit --coverage --watch"
+    "test:coverage": "vue-cli-service test:unit --coverage"
   },
   "dependencies": {
     "core-js": "^2.6.5",

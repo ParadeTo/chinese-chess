@@ -90,6 +90,6 @@
   margin: 20px 10px;
   font-size: 16px;
   font-weight: 700;
-  color: #fff;
+  // color: #fff;
 }
 </style>

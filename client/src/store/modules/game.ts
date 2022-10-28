@@ -14,13 +14,16 @@ const getters: GetterTree<IGameState, IRootState> = {
 }
 
 const mutations: MutationTree<IGameState> = {
-  initGame (state: IGameState, players: Player[]) {
+  initGame(state: IGameState, players: Player[]) {
     state.game = createGame(players)
+  },
+  overGame(state: IGameState, players: Player[]) {
+    state.game = null
   }
 }
 
 const actions: ActionTree<IGameState, IRootState> = {
-  initGame ({ state, rootState, commit }) {
+  initGame({ state, rootState, commit }) {
     const players = rootState.setting.players
     commit('initGame', players)
   }

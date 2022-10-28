@@ -24,7 +24,8 @@
       </template>
     </div>
     <Loading :isLoading="isLoading" />
-    <Dialog :show="showDialog" :content="content" :hasCancel="false" @ok="showDialog = false" />
+    <Dialog :show="showDialog" :content="content" :hasCancel="false" @ok="onOK" />
+    <Kill :isLoading="showKill" />
   </div>
 </template>
 
@@ -35,7 +36,9 @@ import Board, { UpdatePieceResult } from '@/chess/Board'
 import { Piece } from '@/chess/Piece'
 import Player from '@/chess/Player'
 import { CancelablePromise } from '@/utils'
-import Loading from '../Loading'
+import Loading from '../Loading/index.vue'
+import Dialog from '../Dialog/index.vue'
+import Kill from '../Kill/index.vue'
 
 const startX = 7
 const startY = 2
@@ -46,7 +49,9 @@ const buff = 0.4
 
 @Component({
   components: {
-    Loading
+    Loading,
+    Dialog,
+    Kill
   }
 })
 export default class ChineseChess extends Vue {
@@ -57,6 +62,7 @@ export default class ChineseChess extends Vue {
   gameOver: boolean = false
   selectedPiece!: Piece | null
   isLoading: boolean = false
+  showKill: boolean = false
   showDialog: boolean = false
   content: string = ''
 
@@ -95,11 +101,11 @@ export default class ChineseChess extends Vue {
     if (yHigh - buff < y) boardY = yHigh
     if (boardY < 0 || boardY >= Board.HEIGHT) boardY = -1
 
-    return [boardX, boardY]
+    return [Math.abs(boardX), Math.abs(boardY)]
   }
 
   onPieceClick(piece: Piece) {
-    if (this.gameOver) return
+    // if (this.gameOver) return
 
     if (this.selectedPiece && this.selectedPiece.color !== piece.color) {
       this.moveStepForHuman(this.selectedPiece, piece.pos)
@@ -138,14 +144,27 @@ export default class ChineseChess extends Vue {
 
   moveStepForHuman(piece: Piece, dest: number[]) {
     const { result, eatenPiece } = this.game.updatePiece(piece, dest)
+    if (this.game.isSuicide()) {
+      return this.game.board.backMoves()
+    }
 
-    if (this.game.isFinish()) {
+    if (this.game.isGameOver()) {
       return this.overGame()
+    }
+
+    if (this.game.wantToKill()) {
+      this.showKill = true
+      setTimeout(() => {
+        this.showKill = false
+      }, 800)
     }
 
     if (result) {
       this.game.switchPlayer()
-      if (this.selectedPiece) this.selectedPiece = null
+      if (this.selectedPiece) {
+        this.selectedPiece = null
+        piece.selected = false
+      }
     }
   }
 
@@ -157,24 +176,43 @@ export default class ChineseChess extends Vue {
       tId = setTimeout(() => {
         this.isLoading = true
         resolve()
-      }, 2000)
+      }, 1000)
     }, abortController.signal).catch(() => clearTimeout(tId))
     return abortController
   }
 
   async moveStepForAi() {
     const abortController = this.setLoading()
-    const { result: autoMoveResult, eatenPiece: autoMoveEatenPiece } = await this.autoMove()
+    await this.autoMove()
     this.isLoading = false
     abortController.abort()
-    if (this.game.isFinish()) return this.overGame()
+
+    if (this.game.isGameOver()) {
+      return this.overGame()
+    }
+
+    if (this.game.wantToKill()) {
+      this.showKill = true
+      setTimeout(() => {
+        this.showKill = false
+      }, 800)
+    }
+
     this.game.switchPlayer()
   }
 
   overGame() {
-    this.showDialog = true
-    this.content = this.game.currentPlayer.color === 'r' ? '黑' : '红' + '方胜！'
-    this.gameOver = true
+    console.log(this.game.currentPlayer)
+    this.content = (this.game.currentPlayer.color === 'r' ? '红' : '黑') + '方胜！'
+
+    setTimeout(() => {
+      this.showDialog = true
+    }, 500)
+  }
+
+  onOK() {
+    this.showDialog = false
+    this.$emit('gameOver')
   }
 
   autoMove(): Promise<UpdatePieceResult> {
@@ -187,6 +225,7 @@ export default class ChineseChess extends Vue {
 
   @Watch('game.currentPlayer', { deep: true })
   onChange() {
+    if (!this.game) return
     if (this.game.currentPlayer.type === 'ai') {
       this.moveStepForAi()
     }
@@ -210,7 +249,7 @@ export default class ChineseChess extends Vue {
     left: 0;
     transition: 0.3s left, 0.3s top;
     &.selected {
-      box-shadow: 0px 0px 4px 2px #fff700;
+      box-shadow: 0px 0px 3px 1px #fff700;
     }
     width: 32px;
     height: 32px;

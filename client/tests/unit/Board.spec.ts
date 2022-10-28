@@ -102,4 +102,88 @@ describe('Board', () => {
       expect(board.isFinish()).toBe(expected)
     })
   })
+
+  it('willDie', () => {
+    ;[
+      {
+        pieces: [
+          new J({ color: 'b', pos: [1, 0], key: 'bj1' }),
+          new M({ color: 'b', pos: [2, 2], key: 'bm1' }),
+          new X({ color: 'b', pos: [2, 0], key: 'bx1' }),
+          new S({ color: 'b', pos: [3, 0], key: 'bs1' }),
+          new B({ color: 'b', pos: [4, 0], key: 'bb' }),
+          new S({ color: 'b', pos: [4, 1], key: 'bs2' }),
+          // new X({ color: 'b', pos: [6, 0], key: 'bx2' }),
+          new M({ color: 'b', pos: [8, 1], key: 'bm2' }),
+          new J({ color: 'b', pos: [8, 0], key: 'bj2' }),
+          new P({ color: 'b', pos: [4, 5], key: 'bp1' }),
+          // new P({ color: 'b', pos: [7, 2], key: 'bp2' }),
+          new Z({ color: 'b', pos: [0, 3], key: 'bz1' }),
+          new Z({ color: 'b', pos: [2, 3], key: 'bz2' }),
+          new Z({ color: 'b', pos: [4, 3], key: 'bz3' }),
+          // new Z({ color: 'b', pos: [6, 3], key: 'bz4' }),
+          // new Z({ color: 'b', pos: [8, 3], key: 'bz5' }),
+
+          new J({ color: 'r', pos: [0, 9], key: 'rj1' }),
+          new M({ color: 'r', pos: [2, 7], key: 'rm1' }),
+          new X({ color: 'r', pos: [2, 9], key: 'rx1' }),
+          new S({ color: 'r', pos: [4, 8], key: 'rs1' }),
+          new B({ color: 'r', pos: [4, 9], key: 'rb' }),
+          new S({ color: 'r', pos: [5, 9], key: 'rs2' }),
+          new X({ color: 'r', pos: [6, 9], key: 'rx2' }),
+          // new M({ color: 'r', pos: [7, 9], key: 'rm2' }),
+          new J({ color: 'r', pos: [8, 3], key: 'rj2' }),
+          new P({ color: 'r', pos: [4, 7], key: 'rp1' }),
+          new P({ color: 'r', pos: [6, 0], key: 'rp2' }),
+          new Z({ color: 'r', pos: [0, 6], key: 'rz1' }),
+          new Z({ color: 'r', pos: [2, 6], key: 'rz2' }),
+          // new Z({ color: 'r', pos: [4, 6], key: 'rz3' }),
+          new Z({ color: 'r', pos: [6, 1], key: 'rz4' }),
+          new Z({ color: 'r', pos: [8, 6], key: 'rz5' })
+        ],
+        color: 'b',
+        expected: false
+      },
+      {
+        pieces: [
+          new M({ color: 'b', pos: [2, 2], key: 'bm1' }),
+          new X({ color: 'b', pos: [2, 0], key: 'bx1' }),
+          new S({ color: 'b', pos: [4, 2], key: 'bs1' }),
+          new B({ color: 'b', pos: [4, 0], key: 'bb' }),
+          new S({ color: 'b', pos: [4, 1], key: 'bs2' }),
+          // new X({ color: 'b', pos: [6, 0], key: 'bx2' }),
+          new M({ color: 'b', pos: [6, 0], key: 'bm2' }),
+          new P({ color: 'b', pos: [4, 5], key: 'bp1' }),
+          // new P({ color: 'b', pos: [7, 2], key: 'bp2' }),
+          new Z({ color: 'b', pos: [0, 3], key: 'bz1' }),
+          new Z({ color: 'b', pos: [2, 3], key: 'bz2' }),
+          new Z({ color: 'b', pos: [4, 3], key: 'bz3' }),
+          // new Z({ color: 'b', pos: [6, 3], key: 'bz4' }),
+          // new Z({ color: 'b', pos: [8, 3], key: 'bz5' }),
+
+          // new J({ color: 'r', pos: [0, 9], key: 'rj1' }),
+          new M({ color: 'r', pos: [2, 7], key: 'rm1' }),
+          new X({ color: 'r', pos: [0, 7], key: 'rx1' }),
+          new S({ color: 'r', pos: [4, 8], key: 'rs1' }),
+          new B({ color: 'r', pos: [4, 9], key: 'rb' }),
+          new S({ color: 'r', pos: [5, 9], key: 'rs2' }),
+          new X({ color: 'r', pos: [6, 9], key: 'rx2' }),
+          // new M({ color: 'r', pos: [7, 9], key: 'rm2' }),
+          new J({ color: 'r', pos: [8, 0], key: 'rj2' }),
+          new P({ color: 'r', pos: [4, 7], key: 'rp1' }),
+          // new P({ color: 'r', pos: [6, 0], key: 'rp2' }),
+          new Z({ color: 'r', pos: [0, 6], key: 'rz1' }),
+          new Z({ color: 'r', pos: [2, 6], key: 'rz2' }),
+          // new Z({ color: 'r', pos: [4, 6], key: 'rz3' }),
+          new Z({ color: 'r', pos: [5, 1], key: 'rz4' }),
+          new Z({ color: 'r', pos: [8, 6], key: 'rz5' })
+        ],
+        color: 'b',
+        expected: false
+      }
+    ].forEach(({ pieces, expected, color }) => {
+      const board = new Board(pieces)
+      expect(board.willDie(color as Color)).toBe(expected)
+    })
+  })
 })
