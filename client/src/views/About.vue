@@ -1,24 +1,10 @@
 <template>
-  <div class="about">
+  <div>
     <div class="section">
-      <h2>参考资料</h2>
-      <li>
-        <a href="https://github.com/lihongxun945/myblog/issues/11">五子棋AI教程第二版</a>
-      </li>
-      <li>
-        <a href="https://github.com/geeeeeeeeek/IntelligentChineseChessSystem"
-          >IntelligentChineseChessSystem</a
-        >
-      </li>
-    </div>
-
-    <div class="section">
-      <h2>版本说明</h2>
-      <h3>0.1.0</h3>
+      <h2>功能说明</h2>
       <ul>
-        <li>最大最小值搜索算法</li>
-        <li>alpha-beta 剪枝</li>
-        <li>webworker 并行搜索（仅限一层）</li>
+        <li>最大最小值搜索 + alpha-beta 剪枝算法实现 AI</li>
+        <li>使用 Web Worker 并行搜索（仅限一层）</li>
       </ul>
     </div>
   </div>

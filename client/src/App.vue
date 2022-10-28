@@ -6,6 +6,14 @@
     </div> -->
     <router-view />
     <div class="weui-tabbar">
+      <router-link to="/setting" class="weui-tabbar__item">
+        <span style="display: inline-block;position: relative;">
+          <div alt="" class="weui-tabbar__icon icon">
+            <i class="iconfont icon-setting"></i>
+          </div>
+        </span>
+        <p class="weui-tabbar__label">设置</p>
+      </router-link>
       <router-link to="/" class="weui-tabbar__item">
         <span style="display: inline-block;position: relative;">
           <div alt="" class="weui-tabbar__icon icon">
@@ -29,23 +37,14 @@
         </span>
         <p class="weui-tabbar__label">象棋</p>
       </router-link>
-      <router-link to="/setting" class="weui-tabbar__item">
+      <router-link to="/about" class="weui-tabbar__item">
         <span style="display: inline-block;position: relative;">
           <div alt="" class="weui-tabbar__icon icon">
-            <i class="iconfont icon-setting"></i>
-          </div>
-        </span>
-        <p class="weui-tabbar__label">设置</p>
-      </router-link>
-
-      <!-- <router-link to="/about" class="weui-tabbar__item">
-        <span style="display: inline-block;position: relative;">
-          <div alt="" class="weui-tabbar__icon">
             <i class="iconfont icon-about"></i>
           </div>
         </span>
-        <p class="weui-tabbar__label">About</p>
-      </router-link> -->
+        <p class="weui-tabbar__label">关于</p>
+      </router-link>
     </div>
   </div>
 </template>
