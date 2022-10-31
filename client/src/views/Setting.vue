@@ -82,6 +82,7 @@ import Event from '../event'
 const SettingMutation = namespace('setting', Mutation)
 const SettingGetter = namespace('setting', Getter)
 const GameAction = namespace('game', Action)
+const GameMutation = namespace('game', Mutation)
 
 @Component({
   components: {
@@ -91,6 +92,7 @@ const GameAction = namespace('game', Action)
     ...mapState('setting', ['players', 'tmpPlayers'])
   },
   methods: {
+    ...mapMutations('game', { overGame: 'overGame' }),
     ...mapMutations('setting', ['savePlayers', 'editPlayers']),
     ...mapActions('game', { initGame: 'initGame' })
   }
@@ -108,6 +110,7 @@ export default class SettingView extends Vue {
   }) => ISettingState
 
   @GameAction initGame!: () => IGameState
+  @GameMutation overGame!: () => IGameState
 
   onStart() {
     this.initGame()
@@ -125,7 +128,7 @@ export default class SettingView extends Vue {
 
   onOk() {
     this.savePlayers()
-    this.initGame()
+    this.overGame()
     this.showDialog = false
   }
 
