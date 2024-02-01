@@ -1,7 +1,10 @@
+use wasm_bindgen::prelude::wasm_bindgen;
+
 pub const WIDTH: u32 = 9;
 pub const HEIGHT: u32 = 10;
 
-#[derive(Default, Debug, PartialEq, Eq, Hash, Clone)]
+#[wasm_bindgen]
+#[derive(Default, Debug, PartialEq, Eq, Hash, Clone, Copy)]
 pub struct Pos(pub i32, pub i32);
 
 #[derive(Default, Debug, PartialEq, Eq, Hash)]

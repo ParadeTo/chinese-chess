@@ -9,9 +9,9 @@ module.exports = {
     '@vue/standard',
     '@vue/typescript'
   ],
-  plugins: ["prettier"],
+  plugins: ['prettier'],
   rules: {
-    "space-before-function-paren": 'off',
+    'space-before-function-paren': 'off',
     'no-console': process.env.NODE_ENV === 'production' ? 'error' : 'off',
     'no-debugger': process.env.NODE_ENV === 'production' ? 'error' : 'off'
   },

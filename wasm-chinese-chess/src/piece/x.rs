@@ -76,9 +76,9 @@ impl IPiece for X {
 mod tests {
 
     use crate::{
-        board::{self, Board},
+        board::Board,
         shared::{Color, Pos, Side},
-        test_utils::{self, TestDataGetNextPositions},
+        test_utils::TestDataGetNextPositions,
     };
 
     use super::*;

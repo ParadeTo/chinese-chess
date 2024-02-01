@@ -1,7 +1,6 @@
-use std::collections::HashMap;
-
-use crate::piece::{IPiece, Piece};
+use crate::piece::IPiece;
 use crate::shared::{Color, Pos, HEIGHT, WIDTH};
+use std::collections::HashMap;
 
 #[derive(Default, Debug)]
 pub struct Record<T: IPiece> {
