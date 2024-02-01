@@ -1,6 +1,9 @@
 pub const WIDTH: u32 = 9;
 pub const HEIGHT: u32 = 10;
 
+#[derive(Default, Debug, PartialEq, Eq, Hash, Clone)]
+pub struct Pos(pub i32, pub i32);
+
 #[derive(Default, Debug, PartialEq, Eq, Hash)]
 pub enum Color {
     #[default]
@@ -43,7 +46,7 @@ impl Role {
     }
 }
 
-#[derive(Default, Debug)]
+#[derive(Default, Debug, PartialEq)]
 pub enum Side {
     #[default]
     Top,
@@ -57,4 +60,13 @@ impl Side {
             Side::Bottom => "b",
         }
     }
+}
+
+pub fn in_own_side(pos: &Pos, side: &Side) -> bool {
+    let Pos(x, y) = *pos;
+    if x < 0 || x >= WIDTH as i32 {
+        return false;
+    }
+    return (y >= 0 && y < 5 && *side == Side::Top)
+        || (y > 4 && y < HEIGHT as i32 && *side == Side::Bottom);
 }

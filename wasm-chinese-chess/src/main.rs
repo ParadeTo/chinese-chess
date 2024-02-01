@@ -1,17 +1,22 @@
 use std::collections::HashMap;
 
-use crate::piece::{IPiece, Piece};
+use crate::{
+    piece::{IPiece, Piece},
+    shared::Pos,
+};
 mod board;
 mod piece;
 mod shared;
+mod test_utils;
 fn main() {
     let mut piece = Vec::new();
-    piece.push(piece::x::X::new(
+    let x = piece::x::X::new(
         shared::Color::Red,
-        (0, 0),
+        Pos(0, 0),
         shared::Side::Top,
         "rx1".to_string(),
-    ));
+    );
+    piece.push(&x);
     let board = board::Board::<piece::x::X>::new(&mut piece);
     println!("{:?}", board)
 }
