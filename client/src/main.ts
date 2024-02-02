@@ -11,8 +11,8 @@ import './index.less'
 // eslint-disable-next-line
 
 import('wasm-chinese-chess').then(({ Ai }) => {
-  Ai.new()
-
+  const ai = Ai.new()
+  console.log(ai)
   Vue.config.productionTip = false
   Vue.config.devtools = true
 

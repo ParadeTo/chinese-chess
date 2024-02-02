@@ -1,13 +1,13 @@
 use wasm_bindgen::prelude::wasm_bindgen;
 
-pub const WIDTH: u32 = 9;
-pub const HEIGHT: u32 = 10;
+pub const WIDTH: usize = 9;
+pub const HEIGHT: usize = 10;
 
 #[wasm_bindgen]
 #[derive(Default, Debug, PartialEq, Eq, Hash, Clone, Copy)]
 pub struct Pos(pub i32, pub i32);
 
-#[derive(Default, Debug, PartialEq, Eq, Hash)]
+#[derive(Default, Debug, PartialEq, Eq, Hash, Copy, Clone)]
 pub enum Color {
     #[default]
     Red,
@@ -23,7 +23,7 @@ impl Color {
     }
 }
 
-#[derive(Default, Debug)]
+#[derive(Default, Debug, Copy, Clone)]
 pub enum Role {
     #[default]
     RJ,
@@ -49,7 +49,7 @@ impl Role {
     }
 }
 
-#[derive(Default, Debug, PartialEq)]
+#[derive(Default, Debug, PartialEq, Clone, Copy)]
 pub enum Side {
     #[default]
     Top,

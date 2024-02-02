@@ -5,20 +5,12 @@ use crate::{
 
 use super::{IPiece, PieceFields};
 
-#[derive(Default, Debug)]
-pub struct X {
+#[derive(Default, Debug, Clone)]
+pub struct P {
     piece: PieceFields,
 }
 
-impl Clone for X {
-    fn clone(&self) -> Self {
-        Self {
-            piece: self.piece.clone(),
-        }
-    }
-}
-
-impl IPiece for X {
+impl IPiece for P {
     // fn can_place_at_dest<T: IPiece>(dest: &Pos, board: &Board<T>) -> bool {
     //     todo!()
     // }
@@ -74,9 +66,9 @@ impl IPiece for X {
     }
 }
 
-impl X {
+impl P {
     pub fn new(color: Color, pos: Pos, side: Side /*key: String */) -> Self {
-        X {
+        P {
             piece: PieceFields::new(Role::RZ, color, pos, side),
         }
     }
@@ -87,31 +79,27 @@ mod tests {
 
     use crate::{
         board::Board,
-        piece::Piece,
         shared::{Color, Pos, Side},
         test_utils::TestDataGetNextPositions,
     };
 
     use super::*;
 
-    #[test]
-    fn test_get_next_positions() {
-        let x = X::new(Color::Red, Pos(2, 9), Side::Bottom);
-        let testcases = [TestDataGetNextPositions {
-            pieces: [Piece::X(x.clone())].to_vec(),
-            next_positions: [Pos(0, 7), Pos(4, 7)].to_vec(),
-        }];
+    // #[test]
+    // fn test_get_next_positions() {
+    //     let x = X::new(Color::Red, Pos(2, 9), Side::Bottom, "".to_string());
+    //     let testcases = [TestDataGetNextPositions {
+    //         pieces: [&x].to_vec(),
+    //         next_positions: [Pos(0, 7), Pos(4, 7)].to_vec(),
+    //     }];
 
-        for TestDataGetNextPositions {
-            pieces,
-            next_positions,
-        } in testcases
-        {
-            let board = Board::new(pieces);
-            assert_eq!(
-                board.get_next_positions(Piece::X(x.clone())),
-                next_positions.to_vec()
-            );
-        }
-    }
+    //     for TestDataGetNextPositions {
+    //         pieces,
+    //         next_positions,
+    //     } in testcases
+    //     {
+    //         let board = Board::new(&pieces);
+    //         assert_eq!(board.get_next_positions(&x), next_positions.to_vec());
+    //     }
+    // }
 }

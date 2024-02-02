@@ -1,12 +1,15 @@
-use crate::{piece::IPiece, shared::Pos};
+use crate::{
+    piece::{IPiece, Piece},
+    shared::Pos,
+};
 
-pub struct TestDataCanMove<'a, T: IPiece> {
-    pub pieces: Vec<&'a T>,
+pub struct TestDataCanMove {
+    pub pieces: Vec<Piece>,
     pub pos: Pos,
     pub expected: bool,
 }
 
-pub struct TestDataGetNextPositions<'a, T: IPiece> {
-    pub pieces: Vec<&'a T>,
+pub struct TestDataGetNextPositions {
+    pub pieces: Vec<Piece>,
     pub next_positions: Vec<Pos>,
 }

@@ -1,34 +1,38 @@
-use crate::piece::IPiece;
+use crate::piece::{IPiece, Piece};
 use crate::shared::{Color, Pos, HEIGHT, WIDTH};
+use ndarray::{Array2, Axis};
 use std::collections::HashMap;
 
 #[derive(Default, Debug)]
-pub struct Record<T: IPiece> {
+pub struct Record<Piece> {
     from: Pos,
     to: Pos,
-    eaten: T,
+    eaten: Piece,
 }
 
-#[derive(Default, Debug)]
-pub struct Board<'a, T: IPiece> {
-    pub cells: [[Option<&'a T>; HEIGHT as usize]; WIDTH as usize],
-    pieces: HashMap<Color, Vec<&'a T>>,
-    records: Vec<Record<T>>,
-}
+const NONE: Option<Piece> = Option::None;
 
-impl<'a, T: IPiece> Board<'a, T> {
-    pub fn new(_pieces: &'a Vec<&T>) -> Board<'a, T> {
-        let mut cells: [[Option<&T>; HEIGHT as usize]; WIDTH as usize] =
-            [[Option::<&T>::None; HEIGHT as usize]; WIDTH as usize];
+#[derive(Debug, Default)]
+struct OneHeight([Option<Piece>; HEIGHT as usize]);
+
+#[derive(Debug)]
+pub struct Board {
+    pub cells: Array2<Option<Piece>>,
+    pieces: HashMap<Color, Vec<Piece>>,
+    records: Vec<Record<Piece>>,
+}
+impl Board {
+    pub fn new(_pieces: Vec<Piece>) -> Board {
+        let mut cells: Array2<Option<Piece>> = Array2::<Option<Piece>>::default((WIDTH, HEIGHT));
         let mut piecesMap = HashMap::new();
         let mut rVec = Vec::new();
         let mut bVec = Vec::new();
         for piece in _pieces.iter() {
             let Pos(x, y) = *piece.get_pos();
-            cells[x as usize][y as usize] = Option::<&T>::Some(piece);
+            cells[[x as usize, y as usize]] = Option::<Piece>::Some(piece.clone());
             match piece.get_color() {
-                Color::Red => rVec.push(*piece),
-                Color::Black => bVec.push(*piece),
+                Color::Red => rVec.push(piece.clone()),
+                Color::Black => bVec.push(piece.clone()),
             }
         }
         piecesMap.insert(Color::Black, bVec);
@@ -52,12 +56,12 @@ impl<'a, T: IPiece> Board<'a, T> {
         // })
     }
 
-    pub fn get_piece_by_pos(&self, pos: &Pos) -> Option<&T> {
+    pub fn get_piece_by_pos(&self, pos: &Pos) -> Option<Piece> {
         let Pos(x, y) = *pos;
-        self.cells[x as usize][y as usize]
+        self.cells[[x as usize, y as usize]].clone()
     }
 
-    pub fn get_next_positions(&self, piece: &T) -> Vec<Pos> {
-        piece.get_next_positions(&self)
+    pub fn get_next_positions(&self, piece: Piece) -> Vec<Pos> {
+        piece.get_next_positions(self)
     }
 }

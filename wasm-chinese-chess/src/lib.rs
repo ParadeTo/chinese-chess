@@ -9,6 +9,8 @@ use piece::{x::X, IPiece};
 use shared::{Color, Pos, Side};
 use wasm_bindgen::prelude::*;
 
+use crate::piece::Piece;
+
 #[wasm_bindgen]
 extern "C" {
     fn alert(s: &str);
@@ -22,16 +24,15 @@ struct Ai {
 #[wasm_bindgen]
 impl Ai {
     pub fn new() -> Ai {
-        let mut piece = Vec::new();
+        let mut piece: Vec<Piece> = Vec::new();
         let x = piece::x::X::new(
             shared::Color::Red,
             Pos(0, 0),
             shared::Side::Top,
-            "rx1".to_string(),
+            // "rx1".to_string(),
         );
-        piece.push(&x);
-        let board = board::Board::<piece::x::X>::new(&mut piece);
-        let next_positions = board.get_next_positions(&x);
-        Ai {}
+        piece.push(Piece::X(x));
+        let board = board::Board::new(piece);
+        Ai { board }
     }
 }
