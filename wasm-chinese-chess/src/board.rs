@@ -2,6 +2,7 @@ use crate::piece::{IPiece, Piece};
 use crate::shared::{Color, Pos, HEIGHT, WIDTH};
 use ndarray::{Array2, Axis};
 use std::collections::HashMap;
+use std::convert::TryInto;
 
 #[derive(Default, Debug)]
 pub struct Record<Piece> {
@@ -37,23 +38,11 @@ impl Board {
         }
         piecesMap.insert(Color::Black, bVec);
         piecesMap.insert(Color::Red, rVec);
-        // Box::new(
         Board {
             cells,
             pieces: piecesMap,
             records: Vec::new(),
         }
-        // )
-        // board
-        // Box::new(board)
-        // Board::<'a, T>::default()
-        // piecesMap.insert(Color::Black, bVec);
-        // piecesMap.insert(Color::Red, rVec);
-        // Box::new(Board {
-        //     cells,
-        //     pieces: piecesMap,
-        //     records: Vec::new(),
-        // })
     }
 
     pub fn get_piece_by_pos(&self, pos: &Pos) -> Option<Piece> {
@@ -63,5 +52,14 @@ impl Board {
 
     pub fn get_next_positions(&self, piece: Piece) -> Vec<Pos> {
         piece.get_next_positions(self)
+    }
+
+    pub fn can_move(&self, piece: Piece, pos: &Pos) -> bool {
+        return self.in_board(pos) && piece.can_move(pos, self);
+    }
+
+    fn in_board(&self, pos: &Pos) -> bool {
+        let Pos(x, y) = *pos;
+        return x >= 0 && x < WIDTH.try_into().unwrap() && y >= 0 && y < HEIGHT.try_into().unwrap();
     }
 }

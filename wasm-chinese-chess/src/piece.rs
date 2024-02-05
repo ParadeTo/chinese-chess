@@ -1,16 +1,17 @@
+pub mod b;
 pub mod p;
 pub mod x;
-
-use std::default;
+pub mod z;
 
 use crate::{
-    board::{self, Board},
+    board::Board,
     shared::{Color, Pos, Role, Side},
 };
 
-use self::{p::P, x::X};
+use self::{p::P, x::X, z::Z};
 
 pub trait IPiece {
+    fn get_role(&self) -> &Role;
     // fn can_place_at_dest<T: IPiece>(dest: &Pos, board: &Board<T>) -> bool;
     fn get_next_positions(&self, board: &Board) -> Vec<Pos>;
     fn can_move(&self, dest: &Pos, board: &Board) -> bool;
@@ -24,6 +25,7 @@ pub trait IPiece {
 pub enum Piece {
     X(X),
     P(P),
+    Z(Z),
 }
 
 impl Clone for Piece {
@@ -31,50 +33,32 @@ impl Clone for Piece {
         match self {
             Self::X(arg0) => Self::X(arg0.clone()),
             Self::P(arg0) => Self::P(arg0.clone()),
+            Self::Z(arg0) => Self::Z(arg0.clone()),
         }
     }
 }
 
 impl IPiece for Piece {
     fn get_next_positions(&self, board: &Board) -> Vec<Pos> {
-        let p = match self {
-            Piece::X(x) => x.get_next_positions(board),
-            Piece::P(p) => p.get_next_positions(board),
-        };
-        p
+        self.to_owned().get_next_positions(board)
     }
 
     fn can_move(&self, dest: &Pos, board: &Board) -> bool {
-        todo!()
+        self.to_owned().can_move(dest, board)
     }
 
     fn get_pos(&self) -> &Pos {
-        let p = match self {
-            Piece::X(x) => x.get_pos(),
-            Piece::P(p) => p.get_pos(),
-        };
-        p
+        self.to_owned().get_pos()
     }
 
     fn get_color(&self) -> &Color {
-        match self {
-            Piece::X(x) => x.get_color(),
-            Piece::P(p) => p.get_color(),
-        }
+        self.to_owned().get_color()
+    }
+
+    fn get_role(&self) -> &Role {
+        self.to_owned().get_role()
     }
 }
-
-// impl Piece {
-//     fn get_payload<T: IPiece>(self) -> T {
-//         let x = match self {
-//             Piece::X(x) => x,
-//             Piece::X(x) => x,
-//             Piece::X(x) => x,
-//             Piece::X(x) => x,
-//         };
-//         return x;
-//     }
-// }
 
 #[derive(Default, Debug, Copy, Clone)]
 pub struct PieceFields {
