@@ -9,7 +9,7 @@ use crate::{
 
 use super::{IPiece, Piece, PieceFields};
 
-#[derive(Default, Debug, Clone)]
+#[derive(Default, Debug, Clone, PartialEq)]
 pub struct M {
     piece: PieceFields,
 }
@@ -77,12 +77,16 @@ impl IPiece for M {
     fn get_role(&self) -> &Role {
         todo!()
     }
+
+    fn set_pos(&mut self, pos: Pos) {
+        self.piece.pos = pos;
+    }
 }
 
 impl M {
     pub fn new(color: Color, pos: Pos, side: Side /*key: String */) -> Self {
         M {
-            piece: PieceFields::new(Role::RZ, color, pos, side),
+            piece: PieceFields::new(Role::RM, color, pos, side),
         }
     }
 }
@@ -142,7 +146,7 @@ mod tests {
         } in testcases
         {
             let board = Board::new(pieces);
-            assert_eq!(board.can_move(piece, &pos), expected);
+            assert_eq!(board.can_move(&piece, &pos), expected);
         }
     }
 }

@@ -5,7 +5,7 @@ use crate::{
 
 use super::{IPiece, PieceFields};
 
-#[derive(Default, Debug)]
+#[derive(Default, Debug, PartialEq)]
 pub struct X {
     piece: PieceFields,
 }
@@ -69,6 +69,10 @@ impl IPiece for X {
         &self.piece.pos
     }
 
+    fn set_pos(&mut self, pos: Pos) {
+        self.piece.pos = pos;
+    }
+
     fn get_color(&self) -> &crate::shared::Color {
         &self.piece.color
     }
@@ -81,7 +85,7 @@ impl IPiece for X {
 impl X {
     pub fn new(color: Color, pos: Pos, side: Side /*key: String */) -> Self {
         X {
-            piece: PieceFields::new(Role::RZ, color, pos, side),
+            piece: PieceFields::new(Role::RX, color, pos, side),
         }
     }
 }
@@ -124,44 +128,44 @@ mod tests {
         let pieces = [Piece::X(x.clone())].to_vec();
         let board = Board::new(pieces);
         let pos = &Pos(4, 7);
-        assert_eq!(board.can_move(Piece::X(x.clone()), pos), true);
+        assert_eq!(board.can_move(&Piece::X(x.clone()), pos), true);
 
         let x1 = X::new(Color::Red, Pos(2, 9), Side::Bottom);
         let x2 = X::new(Color::Red, Pos(4, 7), Side::Bottom);
         let pieces = [Piece::X(x1.clone()), Piece::X(x2.clone())].to_vec();
         let board = Board::new(pieces);
         let pos = &Pos(4, 7);
-        assert_eq!(board.can_move(Piece::X(x1.clone()), pos), false);
+        assert_eq!(board.can_move(&Piece::X(x1.clone()), pos), false);
 
         let x = X::new(Color::Red, Pos(2, 9), Side::Bottom);
         let pieces = [Piece::X(x.clone())].to_vec();
         let board = Board::new(pieces);
         let pos = &Pos(5, 7);
-        assert_eq!(board.can_move(Piece::X(x.clone()), pos), false);
+        assert_eq!(board.can_move(&Piece::X(x.clone()), pos), false);
 
         let x1 = X::new(Color::Red, Pos(2, 9), Side::Bottom);
         let x2 = X::new(Color::Red, Pos(3, 8), Side::Bottom);
         let pieces = [Piece::X(x1.clone()), Piece::X(x2.clone())].to_vec();
         let board = Board::new(pieces);
         let pos = &Pos(4, 7);
-        assert_eq!(board.can_move(Piece::X(x1.clone()), pos), false);
+        assert_eq!(board.can_move(&Piece::X(x1.clone()), pos), false);
 
         let x = X::new(Color::Red, Pos(2, 5), Side::Bottom);
         let pieces = [Piece::X(x.clone())].to_vec();
         let board = Board::new(pieces);
         let pos = &Pos(0, 3);
-        assert_eq!(board.can_move(Piece::X(x.clone()), pos), false);
+        assert_eq!(board.can_move(&Piece::X(x.clone()), pos), false);
 
         let x = X::new(Color::Black, Pos(2, 0), Side::Top);
         let pieces = [Piece::X(x.clone())].to_vec();
         let board = Board::new(pieces);
         let pos = &Pos(4, 2);
-        assert_eq!(board.can_move(Piece::X(x.clone()), pos), true);
+        assert_eq!(board.can_move(&Piece::X(x.clone()), pos), true);
 
         let x = X::new(Color::Black, Pos(2, 0), Side::Top);
         let pieces = [Piece::X(x.clone())].to_vec();
         let board = Board::new(pieces);
         let pos = &Pos(0, 2);
-        assert_eq!(board.can_move(Piece::X(x.clone()), pos), true);
+        assert_eq!(board.can_move(&Piece::X(x.clone()), pos), true);
     }
 }

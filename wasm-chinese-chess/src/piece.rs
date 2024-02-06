@@ -20,11 +20,12 @@ pub trait IPiece {
     fn can_move(&self, dest: &Pos, board: &Board) -> bool;
     // fn clone<T: IPiece>() -> &T;
     fn get_pos(&self) -> &Pos;
+    fn set_pos(&mut self, pos: Pos);
     fn get_color(&self) -> &Color;
     // fn new(color: Color, pos: Pos, side: Side, key: String) -> Self;
 }
 
-#[derive(Debug)]
+#[derive(Debug, Default, PartialEq)]
 pub enum Piece {
     X(X),
     P(P),
@@ -33,6 +34,8 @@ pub enum Piece {
     J(J),
     M(M),
     S(S),
+    #[default]
+    None,
 }
 
 impl Clone for Piece {
@@ -45,6 +48,7 @@ impl Clone for Piece {
             Self::J(arg0) => Self::J(arg0.clone()),
             Self::M(arg0) => Self::M(arg0.clone()),
             Self::S(arg0) => Self::S(arg0.clone()),
+            Self::None => Self::None,
         }
     }
 }
@@ -59,6 +63,7 @@ impl IPiece for Piece {
             Piece::J(p) => p.get_next_positions(board),
             Piece::M(p) => p.get_next_positions(board),
             Piece::S(p) => p.get_next_positions(board),
+            Piece::None => panic!("None"),
         }
     }
 
@@ -71,6 +76,7 @@ impl IPiece for Piece {
             Piece::J(p) => p.can_move(dest, board),
             Piece::M(p) => p.can_move(dest, board),
             Piece::S(p) => p.can_move(dest, board),
+            Piece::None => panic!("None"),
         }
     }
 
@@ -83,6 +89,20 @@ impl IPiece for Piece {
             Piece::J(p) => p.get_pos(),
             Piece::M(p) => p.get_pos(),
             Piece::S(p) => p.get_pos(),
+            Piece::None => panic!("None"),
+        }
+    }
+
+    fn set_pos(&mut self, pos: Pos) {
+        match self {
+            Piece::X(p) => p.set_pos(pos),
+            Piece::P(p) => p.set_pos(pos),
+            Piece::Z(p) => p.set_pos(pos),
+            Piece::B(p) => p.set_pos(pos),
+            Piece::J(p) => p.set_pos(pos),
+            Piece::M(p) => p.set_pos(pos),
+            Piece::S(p) => p.set_pos(pos),
+            Piece::None => panic!("None"),
         }
     }
 
@@ -95,6 +115,7 @@ impl IPiece for Piece {
             Piece::J(p) => p.get_color(),
             Piece::M(p) => p.get_color(),
             Piece::S(p) => p.get_color(),
+            Piece::None => panic!("None"),
         }
     }
 
@@ -107,11 +128,12 @@ impl IPiece for Piece {
             Piece::J(p) => p.get_role(),
             Piece::M(p) => p.get_role(),
             Piece::S(p) => p.get_role(),
+            Piece::None => panic!("None"),
         }
     }
 }
 
-#[derive(Default, Debug, Copy, Clone)]
+#[derive(Default, Debug, Copy, Clone, PartialEq)]
 pub struct PieceFields {
     // key: String,
     color: Color,

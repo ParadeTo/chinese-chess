@@ -9,7 +9,7 @@ use std::{cell, convert::TryInto};
 use super::{IPiece, Piece, PieceFields};
 use lazy_static::lazy_static;
 
-#[derive(Default, Debug, Clone)]
+#[derive(Default, Debug, Clone, PartialEq)]
 pub struct S {
     piece: PieceFields,
 }
@@ -54,6 +54,10 @@ impl IPiece for S {
     fn get_role(&self) -> &Role {
         todo!()
     }
+
+    fn set_pos(&mut self, pos: Pos) {
+        self.piece.pos = pos;
+    }
 }
 
 lazy_static! {
@@ -73,7 +77,7 @@ lazy_static! {
 impl S {
     pub fn new(color: Color, pos: Pos, side: Side /*key: String */) -> Self {
         S {
-            piece: PieceFields::new(Role::RZ, color, pos, side),
+            piece: PieceFields::new(Role::RS, color, pos, side),
         }
     }
 
@@ -144,7 +148,7 @@ mod tests {
         } in testcases
         {
             let board = Board::new(pieces);
-            assert_eq!(board.can_move(piece, &pos), expected);
+            assert_eq!(board.can_move(&piece, &pos), expected);
         }
     }
 }
