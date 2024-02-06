@@ -75,7 +75,7 @@ impl IPiece for M {
     }
 
     fn get_role(&self) -> &Role {
-        todo!()
+        &self.piece.role
     }
 
     fn set_pos(&mut self, pos: Pos) {

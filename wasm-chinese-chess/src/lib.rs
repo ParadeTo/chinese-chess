@@ -1,4 +1,5 @@
 mod board;
+mod minimax;
 mod piece;
 mod shared;
 mod test_utils;
@@ -19,6 +20,7 @@ extern "C" {
 #[wasm_bindgen]
 struct Ai {
     board: Board,
+    // algo: Minimax,
 }
 
 #[wasm_bindgen]

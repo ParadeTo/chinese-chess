@@ -25,7 +25,7 @@ impl Color {
     }
 }
 
-#[derive(Default, Debug, Copy, Clone, PartialEq, Eq)]
+#[derive(Default, Debug, Copy, Clone, PartialEq, Eq, Hash)]
 pub enum Role {
     #[default]
     RJ,

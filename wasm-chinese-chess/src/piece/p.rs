@@ -25,12 +25,18 @@ impl IPiece for P {
         let mut i = current_x - 1;
         while i >= 0 {
             if cells[[i, current_y]].is_some() {
+                if i == 0 {
+                    break;
+                }
                 let mut j = i - 1;
                 while j >= 0 {
                     if let Some(piece2) = &cells[[j, current_y]] {
                         if piece2.get_color() != self.get_color() {
                             positions.push(Pos(j as isize, current_y as isize));
                         }
+                        break;
+                    }
+                    if j == 0 {
                         break;
                     }
                     j -= 1;
@@ -66,6 +72,9 @@ impl IPiece for P {
         let mut i = current_y - 1;
         while i >= 0 {
             if cells[[current_x, i]].is_some() {
+                if i == 0 {
+                    break;
+                }
                 let mut j = i - 1;
                 while j >= 0 {
                     if let Some(piece2) = &cells[[current_x, j]] {

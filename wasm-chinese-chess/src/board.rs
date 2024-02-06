@@ -3,11 +3,12 @@ use crate::shared::{Color, Pos, Role, HEIGHT, WIDTH};
 use ndarray::Array2;
 use std::collections::HashMap;
 use std::convert::TryInto;
+use std::fmt::{self, Display};
 
 #[derive(Default, Debug, Clone)]
-struct Move {
-    from: Pos,
-    to: Pos,
+pub struct Move {
+    pub from: Pos,
+    pub to: Pos,
 }
 #[derive(Default, Debug, Clone)]
 pub struct Record {
@@ -15,10 +16,9 @@ pub struct Record {
     eaten: Option<Piece>,
 }
 
-#[derive(Debug)]
 pub struct Board {
     pub cells: Array2<Option<Piece>>,
-    pieces: HashMap<Color, Vec<Piece>>,
+    pub pieces: HashMap<Color, Vec<Piece>>,
     records: Vec<Record>,
 }
 impl Board {
@@ -46,6 +46,9 @@ impl Board {
 
     pub fn update_piece(&mut self, pos: &Pos, new_pos: &Pos) -> (bool, Option<Piece>) {
         let mut cells = self.cells.clone();
+        if cells[[pos.0 as usize, pos.1 as usize]].is_none() {
+            println!("{:?}, {:?}", self, pos);
+        }
         let piece = cells[[pos.0 as usize, pos.1 as usize]].as_mut().unwrap();
         if !self.can_move(&piece, new_pos) {
             return (false, Option::None);
@@ -146,6 +149,44 @@ impl Board {
     fn in_board(&self, pos: &Pos) -> bool {
         let Pos(x, y) = *pos;
         return x >= 0 && x < WIDTH.try_into().unwrap() && y >= 0 && y < HEIGHT.try_into().unwrap();
+    }
+
+    pub fn back_moves(&mut self, steps: u32) {
+        for _ in 0..steps {
+            if self.records.len() == 0 {
+                break;
+            }
+
+            if let Some(last_move) = self.records.pop() {
+                let from = last_move.m.from;
+                let to = last_move.m.to;
+                // let option_piece = self.cells[[to.0 as usize, to.1 as usize]];
+                let option_eaten = last_move.eaten;
+                self.cells[[from.0 as usize, from.1 as usize]] =
+                    self.cells[[to.0 as usize, to.1 as usize]].clone();
+                if let Some(mut eaten) = option_eaten {
+                    eaten.set_pos(to);
+                    self.pieces
+                        .get_mut(eaten.get_color())
+                        .unwrap()
+                        .push(eaten.clone());
+
+                    self.cells[[to.0 as usize, to.1 as usize]] = Some(eaten.clone());
+                } else {
+                    self.cells[[to.0 as usize, to.1 as usize]] = None;
+                }
+            }
+        }
+    }
+}
+
+impl Display for Board {
+    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
+        for row in 0..HEIGHT {
+            for col in 0..WIDTH {
+                write!(f, "({}, {})", self.x, self.y)
+            }
+        }
     }
 }
 
