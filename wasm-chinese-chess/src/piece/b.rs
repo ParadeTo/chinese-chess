@@ -21,7 +21,7 @@ impl IPiece for B {
         let mut positions: Vec<Pos> = Vec::new();
 
         for (delta_x, delta_y) in moves.iter() {
-            let pos = Pos(current_x + *delta_x, current_y + *delta_y);
+            let pos: Pos = Pos(current_x + *delta_x, current_y + *delta_y);
             if self.can_move(&pos, board) {
                 positions.push(pos)
             }
@@ -68,12 +68,13 @@ impl IPiece for B {
             return false;
         }
 
-        let dest_piece = cells[[dest_x as usize, dest_y as usize]].clone().unwrap();
-        if *dest_piece.get_role() == Role::RB
-            && dest_piece.get_color() != self.get_color()
-            && !self.has_piece_between_bosses(board, &dest_piece)
-        {
-            return true;
+        if let Some(dest_piece) = cells[[dest_x as usize, dest_y as usize]].clone() {
+            if *dest_piece.get_role() == Role::RB
+                && dest_piece.get_color() != self.get_color()
+                && !self.has_piece_between_bosses(board, &dest_piece)
+            {
+                return true;
+            }
         }
 
         if !in_nine_place(dest, &self.piece.side) {
@@ -143,34 +144,15 @@ mod tests {
 
     #[test]
     fn test_get_next_positions() {
-        let p1 = P::new(Color::Red, Pos(4, 5), Side::Bottom);
-        let p2 = P::new(Color::Red, Pos(3, 5), Side::Bottom);
-        let p3 = P::new(Color::Red, Pos(5, 5), Side::Bottom);
+        let p1 = B::new(Color::Red, Pos(5, 9), Side::Bottom);
+        let p2 = B::new(Color::Red, Pos(3, 5), Side::Bottom);
+        let p3 = B::new(Color::Red, Pos(5, 5), Side::Bottom);
         // let
 
         let testcases = [TestDataGetNextPositions {
-            pieces: [Piece::P(p1.clone())].to_vec(),
-            piece: Piece::P(p1.clone()),
-            next_positions: [
-                Pos(3, 5),
-                Pos(2, 5),
-                Pos(1, 5),
-                Pos(0, 5),
-                Pos(5, 5),
-                Pos(6, 5),
-                Pos(7, 5),
-                Pos(8, 5),
-                Pos(4, 4),
-                Pos(4, 3),
-                Pos(4, 2),
-                Pos(4, 1),
-                Pos(4, 0),
-                Pos(4, 6),
-                Pos(4, 7),
-                Pos(4, 8),
-                Pos(4, 9),
-            ]
-            .to_vec(),
+            pieces: [Piece::B(p1.clone())].to_vec(),
+            piece: Piece::B(p1.clone()),
+            next_positions: [Pos(4, 9), Pos(5, 8)].to_vec(),
         }];
 
         for TestDataGetNextPositions {
@@ -186,14 +168,28 @@ mod tests {
 
     #[test]
     fn test_can_move() {
-        let p1 = P::new(Color::Red, Pos(1, 7), Side::Bottom);
+        let p1 = B::new(Color::Red, Pos(5, 9), Side::Bottom);
 
-        let testcases = [TestDataCanMove {
-            pieces: [Piece::P(p1.clone())].to_vec(),
-            piece: Piece::P(p1.clone()),
-            pos: Pos(1, 7),
-            expected: false,
-        }];
+        let testcases = [
+            TestDataCanMove {
+                pieces: [Piece::B(p1.clone())].to_vec(),
+                piece: Piece::B(p1.clone()),
+                pos: Pos(6, 9),
+                expected: false,
+            },
+            TestDataCanMove {
+                pieces: [Piece::B(p1.clone())].to_vec(),
+                piece: Piece::B(p1.clone()),
+                pos: Pos(3, 9),
+                expected: false,
+            },
+            TestDataCanMove {
+                pieces: [Piece::B(p1.clone())].to_vec(),
+                piece: Piece::B(p1.clone()),
+                pos: Pos(4, 9),
+                expected: true,
+            },
+        ];
 
         for TestDataCanMove {
             pieces,

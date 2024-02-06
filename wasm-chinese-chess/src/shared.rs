@@ -51,7 +51,7 @@ impl Role {
     }
 }
 
-#[derive(Default, Debug, PartialEq, Clone, Copy)]
+#[derive(Default, Debug, PartialEq, Eq, Clone, Copy, Hash)]
 pub enum Side {
     #[default]
     Top,
