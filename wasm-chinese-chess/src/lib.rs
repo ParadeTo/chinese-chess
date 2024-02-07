@@ -36,8 +36,9 @@ impl Ai {
         }
     }
 
-    pub fn update_board(&mut self, from: Pos, to: Pos) {
-        self.board.update_piece(&from, &to);
+    pub fn update_board(&mut self, from: Vec<isize>, to: Vec<isize>) {
+        self.board
+            .update_piece(&Pos(from[0], from[1]), &Pos(to[0], to[1]));
     }
 
     pub fn get_next_move(&mut self, color: Color) -> Move {

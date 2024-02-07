@@ -9,7 +9,8 @@ const defaultPlayers: IPlayer[] = [
   {
     type: 'ai',
     color: 'b',
-    level: 1
+    level: 1,
+    useWasm: true
   },
   {
     type: 'human',
@@ -31,7 +32,10 @@ const mutations: MutationTree<ISettingState> = {
     state.players = deepClone(state.tmpPlayers)
   },
 
-  editPlayers(state: ISettingState, { i, field, value }: { i: number; field: keyof IPlayer; value: any }) {
+  editPlayers(
+    state: ISettingState,
+    { i, field, value }: { i: number; field: keyof IPlayer; value: any }
+  ) {
     const players = deepClone(state.tmpPlayers)
     players[i][field] = value
     if (field === 'level') players[i][field] = +value

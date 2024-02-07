@@ -4,7 +4,6 @@ use wasm_bindgen::prelude::wasm_bindgen;
 
 pub const WIDTH: usize = 9;
 pub const HEIGHT: usize = 10;
-
 #[wasm_bindgen]
 #[derive(Default, Debug, PartialEq, Eq, Hash, Clone, Copy)]
 pub struct Pos(pub isize, pub isize);

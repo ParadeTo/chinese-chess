@@ -26,6 +26,7 @@ export default class Game {
   updatePiece(piece: Piece, newPos: number[], _piece?: any): UpdatePieceResult {
     if (piece.color === this.currentPlayer.color) {
       if (this.currentPlayer.ai) {
+        debugger
         this.currentPlayer.ai.updatePiece(piece, newPos)
       }
       return this.board.updatePiece(piece, newPos)
@@ -34,6 +35,7 @@ export default class Game {
   }
 
   async autoMove() {
+    debugger
     let nextMove
     if (this.currentPlayer.ai) {
       nextMove = await this.currentPlayer.ai.getNextMove(this.board, this.currentPlayer.color)
@@ -108,6 +110,7 @@ const createPlayer = (player: IPlayer, board?: Board) => {
             board: board as Board,
             color,
             aiType: 'minimax',
+            // eslint-disable-next-line comma-dangle
             workerPath,
           }),
       // new ProxyAi()
