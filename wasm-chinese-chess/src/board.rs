@@ -1,10 +1,15 @@
+use crate::piece::b::B;
+use crate::piece::z::Z;
+use crate::piece::{j::J, m::M, p::P, s::S, x::X};
 use crate::piece::{IPiece, Piece};
-use crate::shared::{Color, Pos, Role, HEIGHT, WIDTH};
+use crate::shared::{Color, Pos, Role, Side, HEIGHT, WIDTH};
 use ndarray::Array2;
 use std::collections::HashMap;
 use std::convert::TryInto;
 use std::fmt::{self, Display};
+use wasm_bindgen::prelude::wasm_bindgen;
 
+#[wasm_bindgen]
 #[derive(Default, Debug, Clone)]
 pub struct Move {
     pub from: Pos,
@@ -18,7 +23,7 @@ pub struct Record {
 
 pub struct Board {
     pub cells: Array2<Option<Piece>>,
-    pub pieces: HashMap<Color, Vec<Piece>>,
+    // pub pieces: HashMap<Color, Vec<Piece>>,
     records: Vec<Record>,
 }
 impl Board {
@@ -33,22 +38,96 @@ impl Board {
             match piece.get_color() {
                 Color::Red => rVec.push(piece.clone()),
                 Color::Black => bVec.push(piece.clone()),
-            }
+            };
         }
         piecesMap.insert(Color::Black, bVec);
         piecesMap.insert(Color::Red, rVec);
         Board {
             cells,
-            pieces: piecesMap,
+            // pieces: piecesMap,
             records: Vec::new(),
         }
     }
 
+    pub fn default() -> Board {
+        let bj1 = J::new(Color::Black, Pos(0, 0), Side::Top);
+        let bm1 = M::new(Color::Black, Pos(1, 0), Side::Top);
+        let bx1 = X::new(Color::Black, Pos(2, 0), Side::Top);
+        let bs1 = S::new(Color::Black, Pos(3, 0), Side::Top);
+        let bb = B::new(Color::Black, Pos(4, 0), Side::Top);
+        let bs2 = S::new(Color::Black, Pos(5, 0), Side::Top);
+        let bx2 = X::new(Color::Black, Pos(6, 0), Side::Top);
+        let bm2 = M::new(Color::Black, Pos(7, 0), Side::Top);
+        let bj2 = J::new(Color::Black, Pos(8, 0), Side::Top);
+        let bp1 = P::new(Color::Black, Pos(1, 2), Side::Top);
+        let bp2 = P::new(Color::Black, Pos(7, 2), Side::Top);
+        let bz1 = Z::new(Color::Black, Pos(0, 3), Side::Top);
+        let bz2 = Z::new(Color::Black, Pos(2, 3), Side::Top);
+        let bz3 = Z::new(Color::Black, Pos(4, 3), Side::Top);
+        let bz4 = Z::new(Color::Black, Pos(6, 3), Side::Top);
+        let bz5 = Z::new(Color::Black, Pos(8, 3), Side::Top);
+
+        let rj1 = J::new(Color::Red, Pos(0, 9), Side::Bottom);
+        let rm1 = M::new(Color::Red, Pos(1, 9), Side::Bottom);
+        let rx1 = X::new(Color::Red, Pos(2, 9), Side::Bottom);
+        let rs1 = S::new(Color::Red, Pos(3, 9), Side::Bottom);
+        let rb = B::new(Color::Red, Pos(4, 9), Side::Bottom);
+        let rs2 = S::new(Color::Red, Pos(5, 9), Side::Bottom);
+        let rx2 = X::new(Color::Red, Pos(6, 9), Side::Bottom);
+        let rm2 = M::new(Color::Red, Pos(7, 9), Side::Bottom);
+        let rj2 = J::new(Color::Red, Pos(8, 9), Side::Bottom);
+        let rp1 = P::new(Color::Red, Pos(1, 7), Side::Bottom);
+        let rp2 = P::new(Color::Red, Pos(7, 7), Side::Bottom);
+        let rz1 = Z::new(Color::Red, Pos(0, 6), Side::Bottom);
+        let rz2 = Z::new(Color::Red, Pos(2, 6), Side::Bottom);
+        let rz3 = Z::new(Color::Red, Pos(4, 6), Side::Bottom);
+        let rz4 = Z::new(Color::Red, Pos(6, 6), Side::Bottom);
+        let rz5 = Z::new(Color::Red, Pos(8, 6), Side::Bottom);
+
+        Board::new(
+            [
+                Piece::J(bj1),
+                Piece::M(bm1),
+                Piece::X(bx1),
+                Piece::S(bs1),
+                Piece::B(bb),
+                Piece::S(bs2),
+                Piece::X(bx2),
+                Piece::M(bm2),
+                Piece::J(bj2),
+                Piece::P(bp1),
+                Piece::P(bp2),
+                Piece::Z(bz1),
+                Piece::Z(bz2),
+                Piece::Z(bz3),
+                Piece::Z(bz4),
+                Piece::Z(bz5),
+                Piece::J(rj1),
+                Piece::M(rm1),
+                Piece::X(rx1),
+                Piece::S(rs1),
+                Piece::B(rb),
+                Piece::S(rs2),
+                Piece::X(rx2),
+                Piece::M(rm2),
+                Piece::J(rj2),
+                Piece::P(rp1),
+                Piece::P(rp2),
+                Piece::Z(rz1),
+                Piece::Z(rz2),
+                Piece::Z(rz3),
+                Piece::Z(rz4),
+                Piece::Z(rz5),
+            ]
+            .to_vec(),
+        )
+    }
+
     pub fn update_piece(&mut self, pos: &Pos, new_pos: &Pos) -> (bool, Option<Piece>) {
         let mut cells = self.cells.clone();
-        if cells[[pos.0 as usize, pos.1 as usize]].is_none() {
-            println!("{:?}, {:?}", self, pos);
-        }
+        // if cells[[pos.0 as usize, pos.1 as usize]].is_none() {
+        //     println!("{:}, {:?}", self, pos);
+        // }
         let piece = cells[[pos.0 as usize, pos.1 as usize]].as_mut().unwrap();
         if !self.can_move(&piece, new_pos) {
             return (false, Option::None);
@@ -59,24 +138,22 @@ impl Board {
         let mut hasEaten = false;
         if self.cells[[new_x as usize, new_y as usize]].is_some() {
             hasEaten = true;
-            let eaten_piece = self.cells[[new_x as usize, new_y as usize]]
-                .as_ref()
-                .unwrap();
+            // eaten_piece = self.cells[[new_x as usize, new_y as usize]].unwrap();
+            // let eaten_piece = self.cells[[new_x as usize, new_y as usize]]
+            //     .as_ref()
+            //     .unwrap();
 
-            let mut pieces = self.pieces.get_mut(eaten_piece.get_color()).unwrap();
-            if let Some(index) = pieces.iter().position(|value| value == eaten_piece) {
-                (*pieces).swap_remove(index);
-            }
+            // let mut pieces = self.pieces.get_mut(eaten_piece.get_color()).unwrap();
+            // if let Some(index) = pieces.iter().position(|value| value == eaten_piece) {
+            //     (*pieces).swap_remove(index);
+            // }
         }
 
         let Pos(orig_x, orig_y) = *piece.get_pos();
-        self.cells[[orig_x as usize, orig_y as usize]] = Option::None;
-        self.cells[[new_x as usize, new_y as usize]] = Option::Some(piece.clone());
-        piece.set_pos(*new_pos);
 
         let record = Record {
             m: Move {
-                from: *piece.get_pos(),
+                from: Pos(orig_x, orig_y),
                 to: *new_pos,
             },
             eaten: if hasEaten {
@@ -90,19 +167,37 @@ impl Board {
             },
         };
         self.records.push(record.clone());
+
+        piece.set_pos(*new_pos);
+        self.cells[[orig_x as usize, orig_y as usize]] = Option::None;
+        self.cells[[new_x as usize, new_y as usize]] = Option::Some(piece.clone());
+
         (true, record.eaten)
     }
 
     pub fn generate_moves(&self, color: &Color) -> Vec<Move> {
-        let pieces = self.pieces.get(color).unwrap();
         let mut moves = Vec::new();
-        for p in pieces.iter() {
-            let positions = p.get_next_positions(self);
-            for pos in positions {
-                moves.push(Move {
-                    from: *p.get_pos(),
-                    to: pos,
-                })
+
+        for col in 0..WIDTH {
+            for row in 0..HEIGHT {
+                if let Some(p) = &self.cells[[col, row]] {
+                    if p.get_color() != color {
+                        continue;
+                    }
+                    let positions = p.get_next_positions(self);
+                    for pos in positions {
+                        // if p.get_pos().0 == 1 && p.get_pos().1 == 7 && pos.0 == 3 && pos.1 == 6 {
+                        //     println!("{:}", self);
+                        //     println!("{:?}", p);
+                        //     println!("{:?}", self.cells[[1, 0]].as_ref().unwrap());
+                        //     print!("");
+                        // };
+                        moves.push(Move {
+                            from: *p.get_pos(),
+                            to: pos,
+                        })
+                    }
+                }
             }
         }
         moves
@@ -112,17 +207,18 @@ impl Board {
         let mut hasRBoss = false;
         let mut hasBBoss = false;
 
-        for piece in self.pieces.get(&Color::Red).unwrap().iter() {
-            if *piece.get_role() == Role::RB {
-                hasRBoss = true;
-                break;
-            }
-        }
-
-        for piece in self.pieces.get(&Color::Black).unwrap().iter() {
-            if *piece.get_role() == Role::RB {
-                hasBBoss = true;
-                break;
+        for col in 0..WIDTH {
+            for row in 0..HEIGHT {
+                if let Some(p) = &self.cells[[col, row]] {
+                    if *p.get_role() == Role::RB {
+                        if *p.get_color() == Color::Red {
+                            hasRBoss = true;
+                        }
+                        if *p.get_color() == Color::Black {
+                            hasBBoss = true;
+                        }
+                    }
+                }
             }
         }
 
@@ -130,7 +226,15 @@ impl Board {
     }
 
     pub fn get_piece_num(&self) -> usize {
-        self.pieces.get(&Color::Red).unwrap().len() + self.pieces.get(&Color::Black).unwrap().len()
+        let mut num = 0;
+        for col in 0..WIDTH {
+            for row in 0..HEIGHT {
+                if let Some(_) = &self.cells[[col, row]] {
+                    num += 1;
+                }
+            }
+        }
+        num
     }
 
     pub fn get_piece_by_pos(&self, pos: &Pos) -> Option<Piece> {
@@ -160,17 +264,11 @@ impl Board {
             if let Some(last_move) = self.records.pop() {
                 let from = last_move.m.from;
                 let to = last_move.m.to;
-                // let option_piece = self.cells[[to.0 as usize, to.1 as usize]];
+                let piece = self.cells[[to.0 as usize, to.1 as usize]].as_mut().unwrap();
                 let option_eaten = last_move.eaten;
-                self.cells[[from.0 as usize, from.1 as usize]] =
-                    self.cells[[to.0 as usize, to.1 as usize]].clone();
+                piece.set_pos(from);
+                self.cells[[from.0 as usize, from.1 as usize]] = Some(piece.clone());
                 if let Some(mut eaten) = option_eaten {
-                    eaten.set_pos(to);
-                    self.pieces
-                        .get_mut(eaten.get_color())
-                        .unwrap()
-                        .push(eaten.clone());
-
                     self.cells[[to.0 as usize, to.1 as usize]] = Some(eaten.clone());
                 } else {
                     self.cells[[to.0 as usize, to.1 as usize]] = None;
@@ -184,9 +282,22 @@ impl Display for Board {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
         for row in 0..HEIGHT {
             for col in 0..WIDTH {
-                write!(f, "({}, {})", self.x, self.y)
+                write!(
+                    f,
+                    "{}",
+                    match &self.cells[[col, row]] {
+                        Some(p) => {
+                            let color = p.get_color().as_str();
+                            let role = p.get_role().as_str();
+                            format!("{color}{role} ")
+                        }
+                        None => "** ".to_string(),
+                    }
+                );
             }
+            writeln!(f, "");
         }
+        write!(f, "")
     }
 }
 

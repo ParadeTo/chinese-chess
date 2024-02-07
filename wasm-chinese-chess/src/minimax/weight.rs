@@ -111,28 +111,24 @@ impl WeightEvalModel {
         let mut opponent_piece_val = 0;
         let mut opponent_pos_val = 0;
 
-        let pieces = board.pieces.get(color).unwrap();
-        for p in pieces.iter() {
-            self_piece_val += WeightEvalModel::eval_piece_val(p.get_role());
-            let Pos(x, y) = *p.get_pos();
-            let reversed_pos = &Pos(
-                (WIDTH - x as usize - 1).try_into().unwrap(),
-                (HEIGHT - y as usize - 1).try_into().unwrap(),
-            );
-            self_pos_val += WeightEvalModel::eval_pos_val(p.get_role(), reversed_pos);
-        }
-
-        let mut opponent_color: Color;
-        if *color == Color::Red {
-            opponent_color = Color::Black;
-        } else {
-            opponent_color = Color::Red;
-        }
-
-        let pieces = board.pieces.get(&opponent_color).unwrap();
-        for p in pieces.iter() {
-            opponent_piece_val += WeightEvalModel::eval_piece_val(p.get_role());
-            opponent_pos_val += WeightEvalModel::eval_pos_val(p.get_role(), p.get_pos());
+        for col in 0..WIDTH {
+            for row in 0..HEIGHT {
+                if let Some(p) = &board.cells[[col, row]] {
+                    if p.get_color() == color {
+                        self_piece_val += WeightEvalModel::eval_piece_val(p.get_role());
+                        let Pos(x, y) = *p.get_pos();
+                        let reversed_pos = &Pos(
+                            (WIDTH - x as usize - 1).try_into().unwrap(),
+                            (HEIGHT - y as usize - 1).try_into().unwrap(),
+                        );
+                        self_pos_val += WeightEvalModel::eval_pos_val(p.get_role(), reversed_pos);
+                    } else {
+                        opponent_piece_val += WeightEvalModel::eval_piece_val(p.get_role());
+                        opponent_pos_val +=
+                            WeightEvalModel::eval_pos_val(p.get_role(), p.get_pos());
+                    }
+                }
+            }
         }
 
         self_piece_val + self_pos_val - opponent_piece_val - opponent_pos_val

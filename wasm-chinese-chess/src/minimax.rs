@@ -58,8 +58,12 @@ impl MiniMax {
 
         for m in moves.iter() {
             board.update_piece(&m.from, &m.to);
-            let _value = self.search(board, color, depth, is_max, alpha, beta);
+            // println!("move: {:?}, {:?}", m.from, m.to);
+            // println!("{:}", board);
+            let _value = self.search(board, color, depth - 1, !is_max, alpha, beta);
             board.back_moves(1);
+            // println!("back_move:");
+            // println!("{:}", board);
             if is_max {
                 value = max(value, _value);
                 if self.cutOff {
@@ -90,6 +94,7 @@ impl MiniMax {
             },
         };
         for m in moves.iter() {
+            board.update_piece(&m.from, &m.to);
             let value = self.search(
                 board,
                 color,
@@ -99,6 +104,9 @@ impl MiniMax {
                 &mut INFINITE,
             );
 
+            board.back_moves(1);
+            // println!("back_move:");
+            // println!("{:}", board);
             if best_move.value < value {
                 best_move.m = m.clone();
                 best_move.value = value
@@ -111,6 +119,7 @@ impl MiniMax {
     pub fn get_next_move(&self, board: &mut Board, color: &Color) -> Move {
         let pieces_moves = board.generate_moves(color);
         let best_move = self.get_best_move(board, color, pieces_moves);
+        println!("{}", best_move.value);
         best_move.m
     }
 

@@ -22,32 +22,34 @@ impl IPiece for P {
         let mut positions: Vec<Pos> = Vec::new();
         let cells = &board.cells;
 
-        let mut i = current_x - 1;
-        while i >= 0 {
-            if cells[[i, current_y]].is_some() {
+        if current_x > 0 {
+            let mut i = current_x - 1;
+            while i >= 0 {
+                if cells[[i, current_y]].is_some() {
+                    if i == 0 {
+                        break;
+                    }
+                    let mut j = i - 1;
+                    while j >= 0 {
+                        if let Some(piece2) = &cells[[j, current_y]] {
+                            if piece2.get_color() != self.get_color() {
+                                positions.push(Pos(j as isize, current_y as isize));
+                            }
+                            break;
+                        }
+                        if j == 0 {
+                            break;
+                        }
+                        j -= 1;
+                    }
+                    break;
+                }
+                positions.push(Pos(i as isize, current_y as isize));
                 if i == 0 {
                     break;
                 }
-                let mut j = i - 1;
-                while j >= 0 {
-                    if let Some(piece2) = &cells[[j, current_y]] {
-                        if piece2.get_color() != self.get_color() {
-                            positions.push(Pos(j as isize, current_y as isize));
-                        }
-                        break;
-                    }
-                    if j == 0 {
-                        break;
-                    }
-                    j -= 1;
-                }
-                break;
+                i -= 1;
             }
-            positions.push(Pos(i as isize, current_y as isize));
-            if i == 0 {
-                break;
-            }
-            i -= 1;
         }
 
         let mut i = current_x + 1;
@@ -69,29 +71,34 @@ impl IPiece for P {
             i += 1;
         }
 
-        let mut i = current_y - 1;
-        while i >= 0 {
-            if cells[[current_x, i]].is_some() {
+        if current_y > 0 {
+            let mut i = current_y - 1;
+            while i >= 0 {
+                if cells[[current_x, i]].is_some() {
+                    if i == 0 {
+                        break;
+                    }
+                    let mut j = i - 1;
+                    while j >= 0 {
+                        if let Some(piece2) = &cells[[current_x, j]] {
+                            if piece2.get_color() != self.get_color() {
+                                positions.push(Pos(current_x as isize, j as isize));
+                            }
+                            break;
+                        }
+                        if j == 0 {
+                            break;
+                        }
+                        j -= 1;
+                    }
+                    break;
+                }
+                positions.push(Pos(current_x as isize, i as isize));
                 if i == 0 {
                     break;
                 }
-                let mut j = i - 1;
-                while j >= 0 {
-                    if let Some(piece2) = &cells[[current_x, j]] {
-                        if piece2.get_color() != self.get_color() {
-                            positions.push(Pos(current_x as isize, j as isize));
-                        }
-                        break;
-                    }
-                    j -= 1;
-                }
-                break;
+                i -= 1;
             }
-            positions.push(Pos(current_x as isize, i as isize));
-            if i == 0 {
-                break;
-            }
-            i -= 1;
         }
 
         let mut i = current_y + 1;

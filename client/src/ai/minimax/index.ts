@@ -11,7 +11,7 @@ export default class MiniMaxAI implements IAI {
   constructor({
     depth,
     evalModel = new WeightEvalModel(),
-    cutOff = true
+    cutOff = true,
   }: {
     depth: number
     evalModel?: IEvalModel
@@ -20,6 +20,9 @@ export default class MiniMaxAI implements IAI {
     this.depth = depth
     this.evalModel = evalModel
     this.cutOff = cutOff
+  }
+  updatePiece(piece: Piece, newPos: number[]): void {
+    throw new Error('Method not implemented.')
   }
 
   // negamax
@@ -51,7 +54,14 @@ export default class MiniMaxAI implements IAI {
   }
 
   // minimax
-  search(board: Board, color: Color, depth: number, isMax: boolean, alpha: number, beta: number): number {
+  search(
+    board: Board,
+    color: Color,
+    depth: number,
+    isMax: boolean,
+    alpha: number,
+    beta: number,
+  ): number {
     if (depth === 0 || board.isFinish()) {
       // 从 ai 的角度来评估局势
       return this.evalModel.eval(board, color)
@@ -60,7 +70,10 @@ export default class MiniMaxAI implements IAI {
     let value = isMax ? -Infinity : Infinity
     const moves = board.generateMoves(isMax ? color : MiniMaxAI.getOpponentColor(color))
     for (let move of moves) {
-      const { from: [x, y], to } = move
+      const {
+        from: [x, y],
+        to,
+      } = move
       const piece = board.cells[x][y] as Piece
       board.updatePiece(piece, to)
       const _value = this.search(board, color, depth - 1, !isMax, alpha, beta)
@@ -86,12 +99,19 @@ export default class MiniMaxAI implements IAI {
     return value
   }
 
-  getBestMove(board: Board, color: Color, moves: IMove[]): Promise<{ bestMove: INextMove, value: number}> {
+  getBestMove(
+    board: Board,
+    color: Color,
+    moves: IMove[],
+  ): Promise<{ bestMove: INextMove; value: number }> {
     let max = -Infinity
     let bestMove: INextMove | null = null
     console.time('getBestMove')
     for (let move of moves) {
-      const { from: [x, y], to } = move
+      const {
+        from: [x, y],
+        to,
+      } = move
       const piece = board.cells[x][y] as Piece
       board.updatePiece(piece, to)
       const value = this.search(board, color, this.depth - 1, false, -Infinity, Infinity)

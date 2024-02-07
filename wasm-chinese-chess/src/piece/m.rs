@@ -130,13 +130,34 @@ mod tests {
     #[test]
     fn test_can_move() {
         let p1 = M::new(Color::Red, Pos(4, 5), Side::Bottom);
+        let p2 = M::new(Color::Red, Pos(5, 5), Side::Bottom);
 
-        let testcases = [TestDataCanMove {
-            pieces: [Piece::M(p1.clone())].to_vec(),
-            piece: Piece::M(p1.clone()),
-            pos: Pos(6, 4),
-            expected: true,
-        }];
+        let testcases = [
+            TestDataCanMove {
+                pieces: [Piece::M(p1.clone())].to_vec(),
+                piece: Piece::M(p1.clone()),
+                pos: Pos(6, 4),
+                expected: true,
+            },
+            TestDataCanMove {
+                pieces: [Piece::M(p1.clone())].to_vec(),
+                piece: Piece::M(p1.clone()),
+                pos: Pos(2, 4),
+                expected: true,
+            },
+            TestDataCanMove {
+                pieces: [Piece::M(p1.clone())].to_vec(),
+                piece: Piece::M(p1.clone()),
+                pos: Pos(5, 4),
+                expected: false,
+            },
+            TestDataCanMove {
+                pieces: [Piece::M(p1.clone()), Piece::M(p2.clone())].to_vec(),
+                piece: Piece::M(p1.clone()),
+                pos: Pos(6, 4),
+                expected: false,
+            },
+        ];
 
         for TestDataCanMove {
             pieces,

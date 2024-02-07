@@ -87,8 +87,26 @@ fn main() {
         .to_vec(),
     );
 
-    let mini_max = MiniMax::new(4, true);
-    let m = mini_max.get_next_move(&mut board, &Color::Red);
-
-    println!("{:?}", m)
+    let mini_max = MiniMax::new(3, true);
+    let mut color = Color::Red;
+    let m = mini_max.get_next_move(&mut board, &color);
+    println!("{:?}", m);
+    // while !board.is_finish() {
+    //     println!(
+    //         "{:}:",
+    //         if color == Color::Red {
+    //             "Red Side"
+    //         } else {
+    //             "Black Side"
+    //         }
+    //     );
+    //     let m = mini_max.get_next_move(&mut board, &color);
+    //     board.update_piece(&m.from, &m.to);
+    //     println!("{:}", board);
+    //     if color == Color::Red {
+    //         color = Color::Black;
+    //     } else {
+    //         color = Color::Red;
+    //     }
+    // }
 }

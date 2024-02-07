@@ -9,6 +9,7 @@ pub const HEIGHT: usize = 10;
 #[derive(Default, Debug, PartialEq, Eq, Hash, Clone, Copy)]
 pub struct Pos(pub isize, pub isize);
 
+#[wasm_bindgen]
 #[derive(Default, Debug, PartialEq, Eq, Hash, Copy, Clone)]
 pub enum Color {
     #[default]
@@ -17,7 +18,7 @@ pub enum Color {
 }
 
 impl Color {
-    fn as_str(&self) -> &'static str {
+    pub fn as_str(&self) -> &'static str {
         match self {
             Color::Red => "r",
             Color::Black => "b",
@@ -38,7 +39,7 @@ pub enum Role {
 }
 
 impl Role {
-    fn as_str(&self) -> &'static str {
+    pub fn as_str(&self) -> &'static str {
         match self {
             Role::RJ => "j",
             Role::RM => "m",

@@ -10,6 +10,7 @@ export interface IPlayer {
   type: PlayerType
   color: Color
   level?: number // 1-3：初中高
+  useWasm?: boolean
 }
 
 export interface ISettingState {

@@ -5,12 +5,16 @@ mod shared;
 mod test_utils;
 mod utils;
 
-use board::Board;
-use piece::{x::X, IPiece};
-use shared::{Color, Pos, Side};
-use wasm_bindgen::prelude::*;
-
+use crate::board::Move;
 use crate::piece::Piece;
+use crate::{
+    minimax::MiniMax,
+    piece::{j::J, m::M, p::P, s::S, x::X, IPiece},
+    shared::Pos,
+};
+use board::Board;
+use shared::{Color, Side};
+use wasm_bindgen::prelude::*;
 
 #[wasm_bindgen]
 extern "C" {
@@ -20,21 +24,23 @@ extern "C" {
 #[wasm_bindgen]
 struct Ai {
     board: Board,
-    // algo: Minimax,
+    algo: MiniMax,
 }
 
 #[wasm_bindgen]
 impl Ai {
     pub fn new() -> Ai {
-        let mut piece: Vec<Piece> = Vec::new();
-        let x = piece::x::X::new(
-            shared::Color::Red,
-            Pos(0, 0),
-            shared::Side::Top,
-            // "rx1".to_string(),
-        );
-        piece.push(Piece::X(x));
-        let board = board::Board::new(piece);
-        Ai { board }
+        Ai {
+            board: Board::default(),
+            algo: MiniMax::new(3, true),
+        }
+    }
+
+    pub fn update_board(&mut self, from: Pos, to: Pos) {
+        self.board.update_piece(&from, &to);
+    }
+
+    pub fn get_next_move(&mut self, color: Color) -> Move {
+        self.algo.get_next_move(&mut self.board, &color)
     }
 }

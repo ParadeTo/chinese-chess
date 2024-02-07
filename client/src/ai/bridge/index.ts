@@ -3,7 +3,7 @@ import Event from '@/event'
 import Board from '@/chess/Board'
 import Msg from '@/const'
 import { AiType } from '..'
-import { Color } from '@/chess/Piece'
+import { Color, Piece } from '@/chess/Piece'
 
 /**
  * Let the Bridge implements IAI is to use it as AI
@@ -17,7 +17,7 @@ export default class Bridge implements IAI {
     board,
     color,
     aiType,
-    workerPath
+    workerPath,
   }: {
     board: Board
     color: Color
@@ -33,10 +33,11 @@ export default class Bridge implements IAI {
     }
     this.initAI({ aiType, depth })
   }
+  updatePiece(piece: Piece, newPos: number[]): void {}
 
   onMessage(e: MessageEvent) {
     const {
-      data: { type, data }
+      data: { type, data },
     } = e
     switch (type) {
       case Msg.RETURN_NEXT_MOVE:
@@ -51,7 +52,7 @@ export default class Bridge implements IAI {
   }
 
   initAI(data: { depth?: number; aiType: AiType }) {
-    this.workers.forEach(worker => {
+    this.workers.forEach((worker) => {
       worker.postMessage({ type: Msg.INIT_AI, data })
     })
   }
@@ -76,14 +77,14 @@ export default class Bridge implements IAI {
         lastEnd = start + offset
         this.workers[i].postMessage({
           type: Msg.GET_BEST_MOVE,
-          data: { board, color, piecesMoves: subMoves }
+          data: { board, color, piecesMoves: subMoves },
         })
       }
 
       let i = 0
       let max = -Infinity
       let bestMove: INextMove
-      this.event.on(Msg.RETURN_BEST_MOVE, data => {
+      this.event.on(Msg.RETURN_BEST_MOVE, (data) => {
         if (data.value > max) {
           max = data.value
           bestMove = data.bestMove
