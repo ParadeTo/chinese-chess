@@ -134,3 +134,30 @@ impl WeightEvalModel {
         self_piece_val + self_pos_val - opponent_piece_val - opponent_pos_val
     }
 }
+
+#[cfg(test)]
+mod tests {
+
+    use crate::{
+        board::{self, Board},
+        piece::{b::B, j::J, Piece},
+        shared::{Color, Pos, Side},
+        test_utils::{TestDataCanMove, TestDataGetNextPositions},
+    };
+
+    use super::*;
+
+    #[test]
+    fn test_eval() {
+        let pieces = [
+            Piece::J(J::new(Color::Black, Pos(1, 0), Side::Top)),
+            Piece::B(B::new(Color::Black, Pos(4, 0), Side::Top)),
+            Piece::J(J::new(Color::Red, Pos(8, 9), Side::Bottom)),
+            Piece::B(B::new(Color::Red, Pos(4, 9), Side::Bottom)),
+        ]
+        .to_vec();
+        let board = Board::new(pieces);
+        let score = WeightEvalModel::eval(&board, &Color::Black);
+        assert_eq!(score, 12);
+    }
+}

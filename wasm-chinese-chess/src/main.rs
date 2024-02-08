@@ -14,6 +14,7 @@ mod minimax;
 mod piece;
 mod shared;
 mod test_utils;
+
 fn main() {
     let bj1 = J::new(Color::Black, Pos(0, 0), Side::Top);
     let bm1 = M::new(Color::Black, Pos(1, 0), Side::Top);
@@ -87,9 +88,10 @@ fn main() {
         .to_vec(),
     );
 
-    let mini_max = MiniMax::new(3, true);
+    let mini_max = MiniMax::new(4, true);
     let mut color = Color::Red;
-    let m = mini_max.get_next_move(&mut board, &color);
+    board.update_piece(&Pos(7, 7), &Pos(4, 7));
+    let m = mini_max.get_next_move(&mut board, &Color::Black);
     println!("{:?}", m);
     // while !board.is_finish() {
     //     println!(

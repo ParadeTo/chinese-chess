@@ -3,6 +3,9 @@ import { Piece, Color } from '@/chess/Piece'
 import Board from '@/chess/Board'
 
 export default class RandomAI implements IAI {
+  needUpdateBoard(): boolean {
+    return false
+  }
   updatePiece(piece: Piece, newPos: number[]): void {}
   static generateRandomNum(n: number): number {
     return Math.floor(Math.random() * n)
@@ -21,7 +24,7 @@ export default class RandomAI implements IAI {
     const nextPosition = moves[RandomAI.generateRandomNum(moves.length)]
     return Promise.resolve({
       from: piece.pos,
-      to: nextPosition,
+      to: nextPosition
     })
   }
 }

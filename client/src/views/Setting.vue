@@ -44,6 +44,21 @@
             </select>
           </div>
         </div>
+        <div
+          :key="i+'ai'"
+          class="weui-cell weui-cell_select weui-cell_select-after level2"
+          v-if="player.type !== 'human'"
+        >
+          <div class="weui-cell__hd">
+            <label for class="weui-label">AI 类型</label>
+          </div>
+          <div class="weui-cell__bd">
+            <select class="weui-select" :value="player.aiType" @change="e => onChange(i, 'aiType', e)">
+              <option value="js">JS</option>
+              <option value="wasm">WASM</option>
+            </select>
+          </div>
+        </div>
       </template>
     </div>
     <a @click="onSave" href="javascript:;" class="weui-btn weui-btn_block weui-btn_primary btn" :class="{'weui-btn_disabled': !changed}">保存设置</a>

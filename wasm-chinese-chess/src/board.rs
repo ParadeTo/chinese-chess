@@ -304,12 +304,16 @@ impl Display for Board {
 #[cfg(test)]
 mod tests {
 
+    use std::collections::HashMap;
+
     use crate::{
         board::Board,
-        piece::{b::B, j::J, z::Z, IPiece, Piece},
+        piece::{self, b::B, j::J, z::Z, IPiece, Piece},
         shared::{Color, Pos, Role, Side},
         test_utils::{TestDataCanMove, TestDataGetNextPositions},
     };
+
+    use super::Move;
 
     struct TestDataUpdatePiece {
         pieces: Vec<Piece>,
@@ -390,5 +394,41 @@ mod tests {
                 }
             }
         }
+    }
+
+    #[test]
+
+    fn test_generate_moves() {
+        let board = Board::default();
+        let mut expected = HashMap::new();
+        expected.insert("j", 4);
+        expected.insert("m", 4);
+        expected.insert("x", 4);
+        expected.insert("s", 2);
+        expected.insert("b", 1);
+        expected.insert("p", 24);
+        expected.insert("z", 5);
+        let mut real = HashMap::new();
+        real.insert("j", 0);
+        real.insert("m", 0);
+        real.insert("x", 0);
+        real.insert("s", 0);
+        real.insert("b", 0);
+        real.insert("p", 0);
+        real.insert("z", 0);
+        let moves = board.generate_moves(&Color::Red);
+        for Move {
+            from: Pos(x, y),
+            to,
+        } in moves.iter()
+        {
+            let piece = board.cells[[*x as usize, *y as usize]].as_ref().unwrap();
+            if let Some(n) = real.get_mut(piece.get_role().as_str()) {
+                *n += 1;
+            }
+        }
+        println!("{:?}", expected);
+        println!("{:?}", real);
+        assert_eq!(expected, real);
     }
 }

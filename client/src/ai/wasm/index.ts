@@ -1,21 +1,25 @@
 import Board from '@/chess/Board'
 import { Color, Piece } from '@/chess/Piece'
 import { IAI, INextMove } from '../AI'
-import { Pos } from 'wasm-chinese-chess'
 
 export default class WasmAi implements IAI {
-  private wasmAi: any
+  private ai: any
 
-  constructor(wasmAi: any) {
-    this.wasmAi = wasmAi
+  constructor(depth: number) {
+    this.ai = window.wasmAi.new(depth)
+  }
+  needUpdateBoard(): boolean {
+    return true
   }
 
   async getNextMove(board: Board, color: Color): Promise<INextMove | null> {
-    const nextMove = this.wasmAi.get_next_move(color === 'r' ? 0 : 1)
-    debugger
-    return { from: [nextMove.from[0], nextMove.from[1]], to: [nextMove.to[0], nextMove.to[1]] }
+    const nextMove = this.ai.get_next_move(color === 'r' ? 0 : 1)
+    const from = [nextMove.from[0], nextMove.from[1]]
+    const to = [nextMove.to[0], nextMove.to[1]]
+    this.ai.update_board(Int32Array.from(from), Int32Array.from(to))
+    return { from, to }
   }
   updatePiece(piece: Piece, newPos: number[]): void {
-    this.wasmAi.update_board(Int32Array.from(piece.pos), Int32Array.from(newPos))
+    this.ai.update_board(Int32Array.from(piece.pos), Int32Array.from(newPos))
   }
 }

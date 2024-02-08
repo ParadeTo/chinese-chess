@@ -10,7 +10,7 @@ export interface IPlayer {
   type: PlayerType
   color: Color
   level?: number // 1-3：初中高
-  useWasm?: boolean
+  aiType?: 'js' | 'wasm'
 }
 
 export interface ISettingState {

@@ -29,10 +29,10 @@ struct Ai {
 
 #[wasm_bindgen]
 impl Ai {
-    pub fn new() -> Ai {
+    pub fn new(depth: i32) -> Ai {
         Ai {
             board: Board::default(),
-            algo: MiniMax::new(3, true),
+            algo: MiniMax::new(depth, true),
         }
     }
 

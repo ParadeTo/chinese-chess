@@ -11,7 +11,7 @@ export default class MiniMaxAI implements IAI {
   constructor({
     depth,
     evalModel = new WeightEvalModel(),
-    cutOff = true,
+    cutOff = true
   }: {
     depth: number
     evalModel?: IEvalModel
@@ -21,8 +21,11 @@ export default class MiniMaxAI implements IAI {
     this.evalModel = evalModel
     this.cutOff = cutOff
   }
+  needUpdateBoard(): boolean {
+    return false
+  }
   updatePiece(piece: Piece, newPos: number[]): void {
-    throw new Error('Method not implemented.')
+    // throw new Error('Method not implemented.')
   }
 
   // negamax
@@ -60,7 +63,7 @@ export default class MiniMaxAI implements IAI {
     depth: number,
     isMax: boolean,
     alpha: number,
-    beta: number,
+    beta: number
   ): number {
     if (depth === 0 || board.isFinish()) {
       // 从 ai 的角度来评估局势
@@ -72,7 +75,7 @@ export default class MiniMaxAI implements IAI {
     for (let move of moves) {
       const {
         from: [x, y],
-        to,
+        to
       } = move
       const piece = board.cells[x][y] as Piece
       board.updatePiece(piece, to)
@@ -102,20 +105,22 @@ export default class MiniMaxAI implements IAI {
   getBestMove(
     board: Board,
     color: Color,
-    moves: IMove[],
+    moves: IMove[]
   ): Promise<{ bestMove: INextMove; value: number }> {
     let max = -Infinity
     let bestMove: INextMove | null = null
     console.time('getBestMove')
+    debugger
     for (let move of moves) {
       const {
         from: [x, y],
-        to,
+        to
       } = move
       const piece = board.cells[x][y] as Piece
       board.updatePiece(piece, to)
       const value = this.search(board, color, this.depth - 1, false, -Infinity, Infinity)
       board.backMoves()
+      debugger
       if (value > max) {
         max = value
         bestMove = move

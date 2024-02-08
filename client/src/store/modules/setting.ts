@@ -10,12 +10,18 @@ const defaultPlayers: IPlayer[] = [
     type: 'ai',
     color: 'b',
     level: 1,
-    useWasm: true
+    aiType: 'js'
   },
   {
-    type: 'human',
-    color: 'r'
+    type: 'ai',
+    color: 'r',
+    level: 1,
+    aiType: 'wasm'
   }
+  // {
+  //   type: 'human',
+  //   color: 'r'
+  // }
 ]
 const state: ISettingState = {
   players: defaultPlayers,

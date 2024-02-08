@@ -3,6 +3,9 @@ import Board, { UpdatePieceResult } from '@/chess/Board'
 import { Color, Piece } from '@/chess/Piece'
 
 export default class ProxyAi implements IAI {
+  needUpdateBoard(): boolean {
+    return false
+  }
   updatePiece(piece: Piece, newPos: number[]) {}
   static async getNextMove(color: Color, pieces: Piece[]): Promise<INextMove | null> {
     try {
@@ -10,9 +13,9 @@ export default class ProxyAi implements IAI {
         method: 'POST',
         headers: {
           Accept: 'application/json',
-          'Content-Type': 'application/json',
+          'Content-Type': 'application/json'
         },
-        body: JSON.stringify({ color, pieces }),
+        body: JSON.stringify({ color, pieces })
       })
       const content = await rawResponse.json()
       return content as INextMove

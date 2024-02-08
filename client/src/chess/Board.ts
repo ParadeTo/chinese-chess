@@ -19,9 +19,7 @@ export default class Board {
 
   public currentPlayer: Color = 'r'
   public readonly cells: (Piece | null)[][] = []
-  public readonly pieces: {
-    [key in Color]: Piece[]
-  } = {
+  public readonly pieces: { [key in Color]: Piece[] } = {
     r: [],
     b: []
   }
@@ -57,21 +55,38 @@ export default class Board {
   }
 
   generateMoves(color: Color) {
-    const pieces = this.pieces[color]
-    const piecesNodes: IMove[] = []
-    for (let piece of pieces) {
-      const moves = piece.getNextPositions(this).map(pos => ({
-        from: piece.pos,
-        to: pos,
-        value: -Infinity
-      }))
-      piecesNodes.push(...moves)
+    // const pieces = this.pieces[color]
+    // const piecesNodes: IMove[] = []
+    // for (let piece of pieces) {
+    //   const moves = piece.getNextPositions(this).map(pos => ({
+    //     from: piece.pos,
+    //     to: pos,
+    //     value: -Infinity
+    //   }))
+    //   piecesNodes.push(...moves)
+    // }
+    // return piecesNodes
+
+    const moves: IMove[] = []
+    for (let col = 0; col < Board.WIDTH; col++) {
+      for (let row = 0; row < Board.HEIGHT; row++) {
+        const piece = this.cells[col][row]
+        if (!piece) continue
+        if ((piece as Piece).color !== color) continue
+        const positions = piece.getNextPositions(this)
+        positions.forEach(pos => {
+          moves.push({ from: piece.pos, to: pos })
+        })
+      }
     }
-    return piecesNodes
+    return moves
   }
 
-  isFinish () {
-    return !(this.pieces.r.find(piece => piece.role === 'b') && this.pieces.b.find(piece => piece.role === 'b'))
+  isFinish() {
+    return !(
+      this.pieces.r.find(piece => piece.role === 'b') &&
+      this.pieces.b.find(piece => piece.role === 'b')
+    )
   }
 
   getAllPieces() {

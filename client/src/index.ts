@@ -8,7 +8,7 @@ import 'weui/dist/style/weui.min.css'
 import './index.less'
 
 // @ts-ignore
-window.wasmAi = Ai.new()
+window.wasmAi = Ai
 
 Vue.config.productionTip = false
 Vue.config.devtools = true

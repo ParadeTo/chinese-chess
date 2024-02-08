@@ -5,6 +5,7 @@ import Bridge from '@/ai/bridge'
 import { IPlayer } from '../store/types'
 import ProxyAi from '@/ai/proxy'
 import WasmAi from '@/ai/wasm'
+import MiniMaxAI from '@/ai/minimax'
 
 export default class Game {
   board: Board
@@ -18,6 +19,10 @@ export default class Game {
     this.currentPlayer = this.bPlayer.color === 'r' ? this.bPlayer : this.tPlayer
   }
 
+  getOpponent() {
+    return this.currentPlayer === this.tPlayer ? this.bPlayer : this.tPlayer
+  }
+
   switchPlayer() {
     if (this.currentPlayer === this.tPlayer) this.currentPlayer = this.bPlayer
     else this.currentPlayer = this.tPlayer
@@ -25,22 +30,27 @@ export default class Game {
 
   updatePiece(piece: Piece, newPos: number[], _piece?: any): UpdatePieceResult {
     if (piece.color === this.currentPlayer.color) {
-      if (this.currentPlayer.ai) {
-        debugger
-        this.currentPlayer.ai.updatePiece(piece, newPos)
-      }
-      return this.board.updatePiece(piece, newPos)
+      const r = this.board.updatePiece(piece, newPos)
+      this.updateOpponentPiece(piece, newPos)
+      return r
     }
     return { result: false }
   }
 
+  updateOpponentPiece(piece: Piece, newPos: number[]) {
+    const opponent = this.getOpponent()
+    if (opponent.ai && opponent.ai.needUpdateBoard()) {
+      opponent.ai.updatePiece(piece, newPos)
+    }
+  }
+
   async autoMove() {
-    debugger
     let nextMove
     if (this.currentPlayer.ai) {
       nextMove = await this.currentPlayer.ai.getNextMove(this.board, this.currentPlayer.color)
       if (nextMove) {
         const { from, to, piece } = nextMove as any
+        // this.updateOpponentPiece(piece, to)
         return this.updatePiece(this.board.cells[from[0]][from[1]] as Piece, to, piece)
       }
     }
@@ -82,7 +92,7 @@ export const createBoard = () => {
     new Z({ color: 'r', pos: [2, 6], key: 'rz2' }),
     new Z({ color: 'r', pos: [4, 6], key: 'rz3' }),
     new Z({ color: 'r', pos: [6, 6], key: 'rz4' }),
-    new Z({ color: 'r', pos: [8, 6], key: 'rz5' }),
+    new Z({ color: 'r', pos: [8, 6], key: 'rz5' })
   ]
   const board = new Board(pieces)
   return board
@@ -94,25 +104,33 @@ if (process.env.VUE_APP_ENV === 'blog') {
 }
 
 const createPlayer = (player: IPlayer, board?: Board) => {
-  const { color, type, level, useWasm } = player
+  const { color, type, level, aiType } = player
   if (type === 'human') return new Player(color, type)
   else {
-    return new Player(
-      color,
-      type,
-      // @ts-ignore
-      useWasm && window.wasmAi
-        ? // eslint-disable-line
-          // @ts-ignore
-          new WasmAi(window.wasmAi)
-        : new Bridge({
-            depth: (level as number) + 2,
+    const ai =
+      aiType === 'js'
+        ? new Bridge({
+            depth: level as number,
             board: board as Board,
             color,
             aiType: 'minimax',
             // eslint-disable-next-line comma-dangle
-            workerPath,
-          }),
+            workerPath
+          })
+        : new WasmAi(level + 1)
+    return new Player(
+      color,
+      type,
+      ai
+
+      // new Bridge({
+      //   depth: level as number,
+      //   board: board as Board,
+      //   color,
+      //   aiType: 'minimax',
+      //   // eslint-disable-next-line comma-dangle
+      //   workerPath
+      // })
       // new ProxyAi()
     )
   }
