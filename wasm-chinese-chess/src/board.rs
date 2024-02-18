@@ -7,6 +7,7 @@ use ndarray::Array2;
 use std::collections::HashMap;
 use std::convert::TryInto;
 use std::fmt::{self, Display};
+use std::rc::Rc;
 use wasm_bindgen::prelude::wasm_bindgen;
 
 #[wasm_bindgen]
@@ -18,23 +19,25 @@ pub struct Move {
 #[derive(Default, Debug, Clone)]
 pub struct Record {
     m: Move,
-    eaten: Option<Piece>,
+    eaten: Option<Rc<Piece>>,
 }
 
 pub struct Board {
-    pub cells: Array2<Option<Piece>>,
+    pub cells: Array2<Option<Rc<Piece>>>,
     // pub pieces: HashMap<Color, Vec<Piece>>,
     records: Vec<Record>,
 }
 impl Board {
     pub fn new(_pieces: Vec<Piece>) -> Board {
-        let mut cells: Array2<Option<Piece>> = Array2::<Option<Piece>>::default((WIDTH, HEIGHT));
+        let mut cells: Array2<Option<Rc<Piece>>> =
+            Array2::<Option<Rc<Piece>>>::default((WIDTH, HEIGHT));
         let mut piecesMap = HashMap::new();
         let mut rVec = Vec::new();
         let mut bVec = Vec::new();
         for piece in _pieces.iter() {
             let Pos(x, y) = *piece.get_pos();
-            cells[[x as usize, y as usize]] = Option::<Piece>::Some(piece.clone());
+            let p: Rc<Piece> = Rc::new(*piece);
+            cells[[x as usize, y as usize]] = Option::<Rc<Piece>>::Some(Rc::clone(&p));
             match piece.get_color() {
                 Color::Red => rVec.push(piece.clone()),
                 Color::Black => bVec.push(piece.clone()),
@@ -123,7 +126,7 @@ impl Board {
         )
     }
 
-    pub fn update_piece(&mut self, pos: &Pos, new_pos: &Pos) -> (bool, Option<Piece>) {
+    pub fn update_piece(&mut self, pos: &Pos, new_pos: &Pos) -> (bool, Option<Rc<Piece>>) {
         let mut cells = self.cells.clone();
         // if cells[[pos.0 as usize, pos.1 as usize]].is_none() {
         //     println!("{:}, {:?}", self, pos);
@@ -159,7 +162,7 @@ impl Board {
             eaten: if hasEaten {
                 Option::Some(
                     self.cells[[new_x as usize, new_y as usize]]
-                        .clone()
+                        // .clone()
                         .unwrap(),
                 )
             } else {
@@ -237,9 +240,9 @@ impl Board {
         num
     }
 
-    pub fn get_piece_by_pos(&self, pos: &Pos) -> Option<Piece> {
+    pub fn get_piece_by_pos(&self, pos: &Pos) -> Option<Rc<Piece>> {
         let Pos(x, y) = *pos;
-        self.cells[[x as usize, y as usize]].clone()
+        self.cells[[x as usize, y as usize]]
     }
 
     pub fn get_next_positions(&self, piece: Piece) -> Vec<Pos> {
@@ -264,12 +267,12 @@ impl Board {
             if let Some(last_move) = self.records.pop() {
                 let from = last_move.m.from;
                 let to = last_move.m.to;
-                let piece = self.cells[[to.0 as usize, to.1 as usize]].as_mut().unwrap();
+                let piece = self.cells[[to.0 as usize, to.1 as usize]].as_ref().unwrap();
                 let option_eaten = last_move.eaten;
                 piece.set_pos(from);
-                self.cells[[from.0 as usize, from.1 as usize]] = Some(piece.clone());
+                self.cells[[from.0 as usize, from.1 as usize]] = Some(*piece);
                 if let Some(mut eaten) = option_eaten {
-                    self.cells[[to.0 as usize, to.1 as usize]] = Some(eaten.clone());
+                    self.cells[[to.0 as usize, to.1 as usize]] = Some(eaten);
                 } else {
                     self.cells[[to.0 as usize, to.1 as usize]] = None;
                 }
