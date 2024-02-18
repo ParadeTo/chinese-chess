@@ -50,7 +50,7 @@ export default class ChineseChess extends Vue {
   mounted() {
     const { width } = (this.$refs.board as Element).getBoundingClientRect()
     this.width = width
-    ;(this.$refs.bg as HTMLImageElement).onload = e => {
+    ;(this.$refs.bg as HTMLImageElement).onload = (e) => {
       this.height = (this.$refs.bg as HTMLImageElement).height
     }
   }
@@ -60,8 +60,9 @@ export default class ChineseChess extends Vue {
   }
 
   getPiecePos(piece: Piece) {
-    return `top: ${piece.pos[1] * yInterval + startY}%; left: ${piece.pos[0] * xInterval +
-      startX}%;`
+    return `top: ${piece.pos[1] * yInterval + startY}%; left: ${
+      piece.pos[0] * xInterval + startX
+    }%;`
   }
 
   getClickPos(offsetX: number, offsetY: number) {
@@ -97,7 +98,7 @@ export default class ChineseChess extends Vue {
       piece.selected = false
       return
     }
-    this.pieces.forEach(p => {
+    this.pieces.forEach((p) => {
       p.selected = false
     })
 
@@ -112,7 +113,7 @@ export default class ChineseChess extends Vue {
     const [x, y] = this.getClickPos(offsetX, offsetY)
 
     if (x === -1 || y === -1) {
-      this.pieces.forEach(piece => {
+      this.pieces.forEach((piece) => {
         piece.selected = false
       })
       return
@@ -137,6 +138,9 @@ export default class ChineseChess extends Vue {
 
   async moveStepForAi() {
     const { result: autoMoveResult, eatenPiece: autoMoveEatenPiece } = await this.autoMove()
+    // await new Promise((resolve, reject) => {
+    //   setTimeout(resolve, 200)
+    // })
     if (autoMoveResult) {
       this.game.switchPlayer()
       if (autoMoveEatenPiece && autoMoveEatenPiece.role === 'b')
@@ -145,9 +149,9 @@ export default class ChineseChess extends Vue {
   }
 
   overGame(eatenPiece: Piece) {
-    setTimeout(() => {
+    this.$nextTick(() => {
       window.alert(`${eatenPiece.color === 'r' ? 'Black' : 'Red'} side win!`)
-    }, 1000)
+    })
     this.gameOver = true
   }
 
@@ -161,7 +165,7 @@ export default class ChineseChess extends Vue {
 
   @Watch('game.currentPlayer', { deep: true })
   onChange() {
-    if (this.game.currentPlayer.type === 'ai') {
+    if (this.game.currentPlayer.type === 'ai' && !this.gameOver) {
       this.moveStepForAi()
     }
   }
@@ -182,7 +186,9 @@ export default class ChineseChess extends Vue {
     width: 9%;
     top: 0;
     left: 0;
-    transition: 0.3s left, 0.3s top;
+    transition:
+      0.3s left,
+      0.3s top;
     &.selected {
       box-shadow: 0px 0px 4px 2px #fff700;
     }

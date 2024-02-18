@@ -11,7 +11,7 @@ export default class MiniMaxAI implements IAI {
   constructor({
     depth,
     evalModel = new WeightEvalModel(),
-    cutOff = true
+    cutOff = true,
   }: {
     depth: number
     evalModel?: IEvalModel
@@ -63,7 +63,7 @@ export default class MiniMaxAI implements IAI {
     depth: number,
     isMax: boolean,
     alpha: number,
-    beta: number
+    beta: number,
   ): number {
     if (depth === 0 || board.isFinish()) {
       // 从 ai 的角度来评估局势
@@ -75,7 +75,7 @@ export default class MiniMaxAI implements IAI {
     for (let move of moves) {
       const {
         from: [x, y],
-        to
+        to,
       } = move
       const piece = board.cells[x][y] as Piece
       board.updatePiece(piece, to)
@@ -105,36 +105,34 @@ export default class MiniMaxAI implements IAI {
   getBestMove(
     board: Board,
     color: Color,
-    moves: IMove[]
+    moves: IMove[],
   ): Promise<{ bestMove: INextMove; value: number }> {
     let max = -Infinity
     let bestMove: INextMove | null = null
-    console.time('getBestMove')
-    debugger
+    // console.time('getBestMove')
     for (let move of moves) {
       const {
         from: [x, y],
-        to
+        to,
       } = move
       const piece = board.cells[x][y] as Piece
       board.updatePiece(piece, to)
       const value = this.search(board, color, this.depth - 1, false, -Infinity, Infinity)
       board.backMoves()
-      debugger
       if (value > max) {
         max = value
         bestMove = move
       }
     }
-    console.timeEnd('getBestMove')
+    // console.timeEnd('getBestMove')
     return Promise.resolve({ bestMove: bestMove as INextMove, value: max })
   }
 
   async getNextMove(board: Board, color: Color): Promise<INextMove | null> {
-    console.time('getNextMove')
+    // console.time('getNextMove')
     const piecesMoves = board.generateMoves(color)
     const { bestMove } = await this.getBestMove(board, color, piecesMoves)
-    console.timeEnd('getNextMove')
+    // console.timeEnd('getNextMove')
     const bestMovePiece = board.cells[bestMove.from[0]][bestMove.from[1]]
     if (bestMovePiece) board.updatePiece(bestMovePiece, (bestMove as INextMove).to)
     return Promise.resolve(bestMove)

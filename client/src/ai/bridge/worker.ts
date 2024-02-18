@@ -14,7 +14,7 @@ const createPiece = ({ color, pos, key, role }: Piece): Piece => {
     p: P,
     s: S,
     x: X,
-    z: Z
+    z: Z,
   }
 
   return new mPiece[role as Role]({ color, pos, key })
@@ -22,7 +22,7 @@ const createPiece = ({ color, pos, key, role }: Piece): Piece => {
 
 const recoverBoard = (board: Board) => {
   const pieces: Piece[] = []
-  ;[...board.pieces.b, ...board.pieces.r].forEach(piece => pieces.push(createPiece(piece)))
+  ;[...board.pieces.b, ...board.pieces.r].forEach((piece) => pieces.push(createPiece(piece)))
   return new Board(pieces)
 }
 
@@ -30,10 +30,8 @@ let ai: IAI
 
 self.onmessage = async (e: { data: { type: string; data: any } }) => {
   const {
-    data: { type, data }
+    data: { type, data },
   } = e
-  console.log('get message: ')
-  console.log(type, data)
   switch (type) {
     case Msg.INIT_AI:
       const { aiType, depth } = data as { depth: number; aiType: AiType }
@@ -51,7 +49,11 @@ self.onmessage = async (e: { data: { type: string; data: any } }) => {
       break
     case Msg.GET_BEST_MOVE:
       {
-        let { board: rawBoard, color, piecesMoves } = data as { board: Board; color: Color; piecesMoves: IMove[] }
+        let {
+          board: rawBoard,
+          color,
+          piecesMoves,
+        } = data as { board: Board; color: Color; piecesMoves: IMove[] }
         // the board from message is the pure data without prototype
         const board = recoverBoard(rawBoard)
         const { bestMove, value } = await (ai as MiniMaxAI).getBestMove(board, color, piecesMoves)

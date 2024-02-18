@@ -30,8 +30,8 @@ export default class Game {
 
   updatePiece(piece: Piece, newPos: number[], _piece?: any): UpdatePieceResult {
     if (piece.color === this.currentPlayer.color) {
-      const r = this.board.updatePiece(piece, newPos)
       this.updateOpponentPiece(piece, newPos)
+      const r = this.board.updatePiece(piece, newPos)
       return r
     }
     return { result: false }
@@ -47,7 +47,10 @@ export default class Game {
   async autoMove() {
     let nextMove
     if (this.currentPlayer.ai) {
+      const s = performance.now()
       nextMove = await this.currentPlayer.ai.getNextMove(this.board, this.currentPlayer.color)
+      console.log('autoMove', this.currentPlayer.ai, performance.now() - s)
+      debugger
       if (nextMove) {
         const { from, to, piece } = nextMove as any
         // this.updateOpponentPiece(piece, to)
@@ -92,7 +95,7 @@ export const createBoard = () => {
     new Z({ color: 'r', pos: [2, 6], key: 'rz2' }),
     new Z({ color: 'r', pos: [4, 6], key: 'rz3' }),
     new Z({ color: 'r', pos: [6, 6], key: 'rz4' }),
-    new Z({ color: 'r', pos: [8, 6], key: 'rz5' })
+    new Z({ color: 'r', pos: [8, 6], key: 'rz5' }),
   ]
   const board = new Board(pieces)
   return board
@@ -104,7 +107,7 @@ if (process.env.VUE_APP_ENV === 'blog') {
 }
 
 const createPlayer = (player: IPlayer, board?: Board) => {
-  const { color, type, level, aiType } = player
+  const { color, type, level = 1, aiType } = player
   if (type === 'human') return new Player(color, type)
   else {
     const ai =
@@ -115,13 +118,13 @@ const createPlayer = (player: IPlayer, board?: Board) => {
             color,
             aiType: 'minimax',
             // eslint-disable-next-line comma-dangle
-            workerPath
+            workerPath,
           })
-        : new WasmAi(level + 1)
+        : new WasmAi(level)
     return new Player(
       color,
       type,
-      ai
+      ai,
 
       // new Bridge({
       //   depth: level as number,

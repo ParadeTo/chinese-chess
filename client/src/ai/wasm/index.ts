@@ -6,6 +6,7 @@ export default class WasmAi implements IAI {
   private ai: any
 
   constructor(depth: number) {
+    // @ts-ignore
     this.ai = window.wasmAi.new(depth)
   }
   needUpdateBoard(): boolean {

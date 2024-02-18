@@ -88,7 +88,7 @@ fn main() {
         .to_vec(),
     );
 
-    let mini_max = MiniMax::new(4, true);
+    let mini_max = MiniMax::new(5, true);
     let mut color = Color::Red;
     board.update_piece(&Pos(7, 7), &Pos(4, 7));
     let m = mini_max.get_next_move(&mut board, &Color::Black);

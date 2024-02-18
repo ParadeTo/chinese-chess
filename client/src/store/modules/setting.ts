@@ -9,15 +9,15 @@ const defaultPlayers: IPlayer[] = [
   {
     type: 'ai',
     color: 'b',
-    level: 1,
-    aiType: 'js'
+    level: 4,
+    aiType: 'wasm',
   },
   {
     type: 'ai',
     color: 'r',
-    level: 1,
-    aiType: 'wasm'
-  }
+    level: 4,
+    aiType: 'js',
+  },
   // {
   //   type: 'human',
   //   color: 'r'
@@ -25,12 +25,12 @@ const defaultPlayers: IPlayer[] = [
 ]
 const state: ISettingState = {
   players: defaultPlayers,
-  tmpPlayers: deepClone(defaultPlayers) as IPlayer[]
+  tmpPlayers: deepClone(defaultPlayers) as IPlayer[],
 }
 
 const getters: GetterTree<ISettingState, IRootState> = {
-  players: state => state.players,
-  tmpPlayers: state => state.tmpPlayers
+  players: (state) => state.players,
+  tmpPlayers: (state) => state.tmpPlayers,
 }
 
 const mutations: MutationTree<ISettingState> = {
@@ -40,7 +40,7 @@ const mutations: MutationTree<ISettingState> = {
 
   editPlayers(
     state: ISettingState,
-    { i, field, value }: { i: number; field: keyof IPlayer; value: any }
+    { i, field, value }: { i: number; field: keyof IPlayer; value: any },
   ) {
     const players = deepClone(state.tmpPlayers)
     players[i][field] = value
@@ -54,7 +54,7 @@ const mutations: MutationTree<ISettingState> = {
       players[i].level = 1
     }
     state.tmpPlayers = players
-  }
+  },
 }
 
 const actions = {}
@@ -64,7 +64,7 @@ const Setting: Module<ISettingState, IRootState> = {
   state,
   getters,
   actions,
-  mutations
+  mutations,
 }
 
 export default Setting
