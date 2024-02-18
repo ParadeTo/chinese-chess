@@ -21,6 +21,8 @@ pub struct Record {
     eaten: Option<Piece>,
 }
 
+#[derive(Clone)]
+
 pub struct Board {
     pub cells: Array2<Option<Piece>>,
     // pub pieces: HashMap<Color, Vec<Piece>>,
