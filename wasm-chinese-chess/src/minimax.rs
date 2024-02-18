@@ -1,6 +1,9 @@
 pub mod weight;
 
-use std::cmp::{max, min};
+use std::{
+    cmp::{max, min},
+    sync::Arc,
+};
 
 use crate::{
     board::{Board, Move},
@@ -93,6 +96,8 @@ impl MiniMax {
                 to: Pos(0, 0),
             },
         };
+        let moves_ref = Arc::new(moves);
+        let thread_num = 4;
         for m in moves.iter() {
             board.update_piece(&m.from, &m.to);
             let value = self.search(board, color, self.depth - 1, false, -INFINITE, INFINITE);
